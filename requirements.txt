@@ -1,0 +1,9 @@
+pypinyin
+beautifulsoup4
+Pillow
+typing-extensions
+aiohttp
+datetime
+httpx
+requests
+pyyaml
