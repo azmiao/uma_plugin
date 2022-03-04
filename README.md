@@ -1,0 +1,2 @@
+# uma_plugin
+这是一个适用hoshinobot的马娘功能插件整合版
