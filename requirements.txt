@@ -1,9 +1,7 @@
 pypinyin
-beautifulsoup4
+bs4
 Pillow
 typing-extensions
 aiohttp
 datetime
-httpx
-requests
-pyyaml
+pathos
