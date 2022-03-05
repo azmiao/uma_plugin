@@ -62,10 +62,40 @@ def generate_img(sup_type):
     for img_name in list(data_dict.keys()):
         all_height += data_dict[img_name]['height']
         all_width = data_dict[img_name]['width']
-    end_img = Image.new('RGB', (all_width, all_height))
+    # 这里报错就是说明，此时新的节奏榜出炉，但一图流还未出炉
+    try:
+        end_img = Image.new('RGB', (all_width, all_height))
+    except:
+        # 生成旧版节奏榜
+        file_list = generate_old_img(sup_type)
+        if not file_list:
+            return False
+        for img_name in file_list:
+            current_dir = os.path.join(os.path.dirname(__file__), f'data/{img_name}')
+            img = Image.open(current_dir)
+            data_dict[img_name] = {}
+            data_dict[img_name]['width'] = img.width
+            data_dict[img_name]['height'] = img.height
+            data_dict[img_name]['img'] = img
+        all_height = 0
+        for img_name in list(data_dict.keys()):
+            all_height += data_dict[img_name]['height']
+            all_width = data_dict[img_name]['width']
+        end_img = Image.new('RGB', (all_width, all_height))
     all_height = 0
     for img_name in list(data_dict.keys()):
         img_tmp = data_dict[img_name]['img']
         end_img.paste(img_tmp, (0, all_height))
         all_height += data_dict[img_name]['height']
     return end_img
+
+def generate_old_img(sup_type):
+    sup_type = sup_type.replace('卡', '')
+    file_name_pattern = re.compile(f'力\S+\.png')
+    path = os.path.join(os.path.dirname(__file__), 'data/')
+    file_list = []
+    if os.path.isdir(path) and os.listdir(path):
+        for file in os.listdir(path):
+            if re.match(file_name_pattern, file):
+                file_list.append(str(file))
+    return file_list

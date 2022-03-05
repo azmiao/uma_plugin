@@ -148,7 +148,7 @@ https://github.com/azmiao/uma_plugin/
 
     然后重启 HoshinoBot
 
-    注意：
+    重点：
 
         1.装完插件后首次启动会自动更新马娘抽卡数据和图片，预计用时1分钟
 
