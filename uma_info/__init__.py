@@ -59,6 +59,8 @@ async def get_tod(bot, ev):
         f_data = json.load(f)
         f.close()
     tod = datetime.datetime.now().strftime('%m-%d')
+    tod_list = tod.split('-', 1)
+    tod = '-'.join(str(int(tod_num, 10)) for tod_num in tod_list)
     tod_list = []
     name_list = list(f_data.keys())
     name_list.remove('current_chara')
@@ -124,6 +126,8 @@ async def push_bir():
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         f_data = json.load(f)
     tod = datetime.datetime.now().strftime('%m-%d')
+    tod_list = tod.split('-', 1)
+    tod = '-'.join(str(int(tod_num, 10)) for tod_num in tod_list)
     tod_list = []
     name_list = list(f_data.keys())
     name_list.remove('current_chara')
