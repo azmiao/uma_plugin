@@ -207,13 +207,13 @@ async def get_single_info(bot, ev):
                 if not height:
                     msg = f'{uma_name_tmp}暂时还没公布身高哟'
                     await bot.finish(ev, msg)
-                msg = f'{uma_name_tmp}的身高是:\n{height}'
+                msg = f'{uma_name_tmp}的身高是:\n{height}cm'
             elif info_type == '体重':
                 weight = f_data[uma_name]['weight']
                 if not weight:
                     msg = f'{uma_name_tmp}暂时还没公布体重哟'
                     await bot.finish(ev, msg)
-                msg = f'{uma_name_tmp}的体重是:\n{weight}cm'
+                msg = f'{uma_name_tmp}的体重是:\n{weight}'
             elif info_type == '三围':
                 measurements = f_data[uma_name]['measurements']
                 if not measurements:
