@@ -21,7 +21,7 @@ https://github.com/azmiao/uma_plugin/
 
 大多数数据均可自动更新，但是：
 
-位于 `uma_info` 文件夹下的 `replace_dict.json` 和 位于 `uma_compatibility` 文件夹下的 `relation_type.json` 和 位于 `umamusume_news` 文件夹下的 `replace_dict.json` 是无法自动更新的
+位于 `uma_info` 文件夹下的 `replace_dict.json` 和 位于 `umamusume_news` 文件夹下的 `replace_dict.json` 是无法自动更新的
 
 一旦有更新我会以 commit 的形式上传至本仓库，如果您会使用RSS的话可以添加本仓库，如果嫌麻烦可以使用我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加[本仓库链接](https://github.com/azmiao/uma_plugin/)即可，一旦有任何commit更新您的bot都会提醒您
 

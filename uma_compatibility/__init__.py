@@ -1,7 +1,18 @@
 from hoshino import Service
 import json
 import os
+import asyncio
 from .caculate import judge_name, get_relation
+from .update_type import update
+
+file_path = os.path.join(os.path.dirname(__file__), 'relation_type.json')
+if not os.path.exists(file_path):
+    loop = asyncio.get_event_loop()
+    flag = loop.run_until_complete(update())
+    if flag:
+        print(f'检测到马娘相性组文件不存在，已成功下载相性组文件')
+    else:
+        print(f'检测到马娘相性组文件不存在，但更新失败，请重启机器人重试')
 
 sv_help = '''
 ==注意==
@@ -145,3 +156,11 @@ async def best_com(bot, ev):
             else:
                 break
     await bot.send(ev, msg)
+
+@sv.scheduled_job('cron', hour='2', minute='00')
+async def auto_update():
+    flag = await update()
+    if flag:
+        sv.logger.info(f'已更新相性组文件')
+    else:
+        sv.logger.error(f'相性组文件自动更新失败')
