@@ -14,7 +14,7 @@ import demjson
 # 是否使用ocr_space接口，默认启用
 ENABLE_OCR_SPACE = True
 # ocr_space接口的apikey
-APIKEY = ''
+APIKEY = 'K89720689788957'
 
 async def uma_spider():
     current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
