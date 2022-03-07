@@ -9,6 +9,7 @@ from hoshino import R
 from hoshino.typing import MessageSegment
 from hoshino import aiorequests
 import hoshino
+import demjson
 
 # 是否使用ocr_space接口，默认启用
 ENABLE_OCR_SPACE = True
@@ -191,8 +192,10 @@ async def download_ocr(en_name, url):
     }
     with open(current_dir,'rb') as f:
         resp = await aiorequests.post(api, files = {f'{en_name}.png': f}, data = data, timeout = 60)
-        res = await resp.json()
-    text = res['ParsedResults'][0]['ParsedText'].replace('\r\n', '')
+        resp.encodin = 'utf-8'
+        res_json = await resp.json()
+        json_obj = demjson.encode(res_json) # 解决解析json出错问题
+    text = json.loads(json_obj)['ParsedResults'][0]['ParsedText'].replace('\r\n', '')
     cv, bir, height, weight, measurements = '', '', '', '', ''
     text = str(text)
     cv_tmp = re.search(r'CV:(\S+)([0-9]+月)', text)
