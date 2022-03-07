@@ -26,7 +26,6 @@ async def uma_spider():
         en_name = 'specialweek'
     next_en_name = ''
     while(1):
-        time.sleep(0.5)
         if next_en_name == 'specialweek':
             uma_data['current_chara'] = 'specialweek'
             with open(current_dir, 'w', encoding = 'UTF-8') as af:
