@@ -152,7 +152,6 @@ async def send_ocr(en_name, url):
     img_text = message['message']
     img_id_tmp = re.findall(r'CQ:image,file=.+?\.image', img_text)
     img_id = img_id_tmp[0].replace('CQ:image,file=','')
-    time.sleep(0.5)
     data = await bot.ocr_image(image = img_id)
     text_list = list(data['texts'])
     cv, bir, height, measurements = '', '', '', ''
