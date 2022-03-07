@@ -3,14 +3,13 @@ from bs4 import BeautifulSoup
 from urllib.parse import unquote
 import bs4
 import re
-import aiorequests
 
 headers = {'User-Agent': '"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; TencentTraveler 4.0)"'}
 
 async def get_cn_name():
     url = 'https://wiki.biligame.com/umamusume/支援卡图鉴'
-    response = await aiorequests.get(url, timeout=7)
-    soup = BeautifulSoup(await response.text, 'lxml')
+    response = httpx.get(url, timeout=7)
+    soup = BeautifulSoup(response.text, 'lxml')
     _tbody = get_tbody(soup)
     trs = _tbody.find_all('tr')
     att_dict = {'头像': 0, '名称': 1}
