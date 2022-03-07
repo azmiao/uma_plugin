@@ -76,6 +76,11 @@ def get_news():
         time_tmp = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
         news_time = time_tmp - timedelta(hours=1)
         msg = msg + '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.news_url + '\n'
+    current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
+    prev_time = news_list[0].news_time
+    file = open(current_dir, 'w', encoding="UTF-8")
+    file.write(str(prev_time))
+    file.close()
     return msg
 
 def news_broadcast():

@@ -35,7 +35,11 @@ async def help(bot, ev):
 # 主动获取新闻功能
 @sv.on_fullmatch(('马娘新闻', '赛马娘新闻'))
 async def uma_news(bot, ev):
-    await bot.send(ev, get_news())
+    try:
+        msg = get_news()
+    except:
+        msg = '获取新闻失败，请等5分钟后再次尝试'
+    await bot.send(ev, msg)
 
 # 马娘新闻播报
 @svuma.scheduled_job('cron', minute='*/5')
