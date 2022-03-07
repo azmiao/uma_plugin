@@ -294,8 +294,8 @@ async def update_info(bot, ev):
             return
     except Exception as e:
         msg = f'马娘数据库更新失败，将在1分钟后继续自动更新，原因：{e}'
-        sv.logger.info(msg)
         traceback.print_exc()
+        sv.logger.info(msg)
         await bot.send(ev, msg)
         await asyncio.sleep(60)
         await auto_update_info()
