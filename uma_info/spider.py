@@ -1,5 +1,3 @@
-import requests
-import httpx
 import json
 import time
 import os
@@ -8,6 +6,9 @@ from .chinesefy import get_cn_name
 import hoshino
 from hoshino import R
 from hoshino.typing import MessageSegment
+from hoshino import aiorequests
+import hoshino
+import demjson
 
 # 是否使用ocr_space接口，默认启用
 ENABLE_OCR_SPACE = True
@@ -25,7 +26,6 @@ async def uma_spider():
         en_name = 'specialweek'
     next_en_name = ''
     while(1):
-        time.sleep(0.5)
         if next_en_name == 'specialweek':
             uma_data['current_chara'] = 'specialweek'
             with open(current_dir, 'w', encoding = 'UTF-8') as af:
@@ -34,11 +34,11 @@ async def uma_spider():
             break
         try:
             data, next_en_name, en_name = await get_info(en_name)
-        except requests.exceptions.RequestException:
+        except aiorequests.exceptions.RequestException:
             return en_name
         uma_data['current_chara'] = en_name
         uma_data[en_name] = data
-        print(f'成功处理{en_name}的数据！')
+        hoshino.logger.info(f'成功处理{en_name}的数据！')
         en_name = next_en_name
         with open(current_dir, 'w', encoding = 'UTF-8') as af:
             json.dump(uma_data, af, indent=4, ensure_ascii=False)
@@ -97,7 +97,9 @@ async def get_info(en_name):
         'pragma': 'no-cache',
         'referer': f'https://umamusume.jp/character/detail/?name={en_name}'
     }
-    uma_data = requests.get(url, params = params, timeout = 10).json()[0]
+    uma_res = await aiorequests.get(url, params = params, timeout = 10)
+    uma_json = await uma_res.json()
+    uma_data = uma_json[0]
     detail_img = uma_data['acf']['detail_img']['pc']
     if ENABLE_OCR_SPACE:
         cv, bir, height, weight, measurements = await download_ocr(en_name, detail_img)
@@ -172,10 +174,11 @@ async def send_ocr(en_name, url):
 async def download_ocr(en_name, url):
     if not os.path.exists(R.img('uma_bir').path):
         os.mkdir(R.img('uma_bir').path)
-    response = httpx.get(url, timeout=10)
+    response = await aiorequests.get(url, timeout=10)
+    resp_data = await response.content
     current_dir = os.path.join(R.img('uma_bir').path, f'{en_name}.png')
     with open(current_dir, 'wb') as f:
-        f.write(response.read())
+        f.write(resp_data)
 
     api = 'https://api.ocr.space/parse/image'
     apikey = APIKEY
@@ -187,8 +190,11 @@ async def download_ocr(en_name, url):
         'detectOrientation': False
     }
     with open(current_dir,'rb') as f:
-        res = requests.post(api, files = {f'{en_name}.png': f}, data = data, timeout = 60).json()
-    text = res['ParsedResults'][0]['ParsedText'].replace('\r\n', '')
+        resp = await aiorequests.post(api, files = {f'{en_name}.png': f}, data = data, timeout = 60)
+        resp.encodin = 'utf-8'
+        res_json = await resp.json()
+        json_obj = demjson.encode(res_json) # 解决解析json出错问题
+    text = json.loads(json_obj)['ParsedResults'][0]['ParsedText'].replace('\r\n', '')
     cv, bir, height, weight, measurements = '', '', '', '', ''
     text = str(text)
     cv_tmp = re.search(r'CV:(\S+)([0-9]+月)', text)
