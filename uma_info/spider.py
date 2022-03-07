@@ -14,7 +14,7 @@ import demjson
 # 是否使用ocr_space接口，默认启用
 ENABLE_OCR_SPACE = True
 # ocr_space接口的apikey
-APIKEY = ''
+APIKEY = 'K89720689788957'
 
 async def uma_spider():
     current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
@@ -176,10 +176,11 @@ async def send_ocr(en_name, url):
 async def download_ocr(en_name, url):
     if not os.path.exists(R.img('uma_bir').path):
         os.mkdir(R.img('uma_bir').path)
-    response = httpx.get(url, timeout=10)
+    response = await aiorequests.get(url, timeout=10)
+    resp_data = await response.content
     current_dir = os.path.join(R.img('uma_bir').path, f'{en_name}.png')
     with open(current_dir, 'wb') as f:
-        f.write(response.read())
+        f.write(resp_data)
 
     api = 'https://api.ocr.space/parse/image'
     apikey = APIKEY

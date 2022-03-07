@@ -306,7 +306,7 @@ async def update_info(bot, ev):
     await bot.send(ev, msg)
 
 # 自动更新
-@sv.scheduled_job('cron', hour='19', minute='37')
+@sv.scheduled_job('cron', hour='1', minute='31')
 async def auto_update_info():
     bot = hoshino.get_bot()
     superid = hoshino.config.SUPERUSERS[0]

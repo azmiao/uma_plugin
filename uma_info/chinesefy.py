@@ -9,7 +9,8 @@ headers = {'User-Agent': '"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Te
 async def get_cn_name():
     url = 'https://wiki.biligame.com/umamusume/支援卡图鉴'
     response = await aiorequests.get(url, timeout=7)
-    soup = BeautifulSoup(response.text, 'lxml')
+    resp_data = await response.text
+    soup = BeautifulSoup(resp_data, 'lxml')
     _tbody = get_tbody(soup)
     trs = _tbody.find_all('tr')
     att_dict = {'头像': 0, '名称': 1}
