@@ -8,7 +8,6 @@ from hoshino import R
 from hoshino.typing import MessageSegment
 from hoshino import aiorequests
 import hoshino
-import demjson
 
 # 是否使用ocr_space接口，默认启用
 ENABLE_OCR_SPACE = True
