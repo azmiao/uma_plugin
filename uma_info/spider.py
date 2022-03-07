@@ -8,12 +8,15 @@ from hoshino import R
 from hoshino.typing import MessageSegment
 from hoshino import aiorequests
 import hoshino
-import demjson
 
 # 是否使用ocr_space接口，默认启用
 ENABLE_OCR_SPACE = True
 # ocr_space接口的apikey
 APIKEY = ''
+
+class Dict(dict):
+    __setattr__ = dict.__setitem__
+    __getattr__ = dict.__getitem__
 
 async def uma_spider():
     current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
@@ -98,7 +101,7 @@ async def get_info(en_name):
         'referer': f'https://umamusume.jp/character/detail/?name={en_name}'
     }
     uma_res = await aiorequests.get(url, params = params, timeout = 10)
-    uma_json = await uma_res.json()
+    uma_json = await uma_res.json(object_hook=Dict)
     uma_data = uma_json[0]
     detail_img = uma_data['acf']['detail_img']['pc']
     if ENABLE_OCR_SPACE:
@@ -191,10 +194,8 @@ async def download_ocr(en_name, url):
     }
     with open(current_dir,'rb') as f:
         resp = await aiorequests.post(api, files = {f'{en_name}.png': f}, data = data, timeout = 60)
-        resp.encodin = 'utf-8'
-        res_json = await resp.json()
-        json_obj = demjson.encode(res_json) # 解决解析json出错问题
-    text = json.loads(json_obj)['ParsedResults'][0]['ParsedText'].replace('\r\n', '')
+        res_json = await resp.json(object_hook=Dict)
+    text = res_json['ParsedResults'][0]['ParsedText'].replace('\r\n', '')
     cv, bir, height, weight, measurements = '', '', '', '', ''
     text = str(text)
     cv_tmp = re.search(r'CV:(\S+)([0-9]+月)', text)
