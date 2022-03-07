@@ -6,6 +6,7 @@
 版本：1.0.0
 '''
 
+import traceback
 from hoshino import Service, priv
 from hoshino.typing import MessageSegment
 from hoshino.util import pic2b64
@@ -294,6 +295,7 @@ async def update_info(bot, ev):
     except Exception as e:
         msg = f'马娘数据库更新失败，将在1分钟后继续自动更新，原因：{e}'
         sv.logger.info(msg)
+        traceback.print_exc()
         await bot.send(ev, msg)
         await asyncio.sleep(60)
         await auto_update_info()

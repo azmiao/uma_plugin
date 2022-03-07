@@ -1,4 +1,3 @@
-import requests
 import httpx
 import json
 import time
@@ -8,11 +7,13 @@ from .chinesefy import get_cn_name
 import hoshino
 from hoshino import R
 from hoshino.typing import MessageSegment
+from hoshino import aiorequests
+import hoshino
 
 # 是否使用ocr_space接口，默认启用
 ENABLE_OCR_SPACE = True
 # ocr_space接口的apikey
-APIKEY = ''
+APIKEY = 'K81510514688957'
 
 async def uma_spider():
     current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
@@ -34,11 +35,11 @@ async def uma_spider():
             break
         try:
             data, next_en_name, en_name = await get_info(en_name)
-        except requests.exceptions.RequestException:
+        except aiorequests.exceptions.RequestException:
             return en_name
         uma_data['current_chara'] = en_name
         uma_data[en_name] = data
-        print(f'成功处理{en_name}的数据！')
+        hoshino.logger.info(f'成功处理{en_name}的数据！')
         en_name = next_en_name
         with open(current_dir, 'w', encoding = 'UTF-8') as af:
             json.dump(uma_data, af, indent=4, ensure_ascii=False)
@@ -97,7 +98,9 @@ async def get_info(en_name):
         'pragma': 'no-cache',
         'referer': f'https://umamusume.jp/character/detail/?name={en_name}'
     }
-    uma_data = requests.get(url, params = params, timeout = 10).json()[0]
+    uma_res = await aiorequests.get(url, params = params, timeout = 10)
+    uma_json = await uma_res.json()
+    uma_data = uma_json[0]
     detail_img = uma_data['acf']['detail_img']['pc']
     if ENABLE_OCR_SPACE:
         cv, bir, height, weight, measurements = await download_ocr(en_name, detail_img)
@@ -187,7 +190,8 @@ async def download_ocr(en_name, url):
         'detectOrientation': False
     }
     with open(current_dir,'rb') as f:
-        res = requests.post(api, files = {f'{en_name}.png': f}, data = data, timeout = 60).json()
+        resp = await aiorequests.post(api, files = {f'{en_name}.png': f}, data = data, timeout = 60)
+        res = await resp.json()
     text = res['ParsedResults'][0]['ParsedText'].replace('\r\n', '')
     cv, bir, height, weight, measurements = '', '', '', '', ''
     text = str(text)
