@@ -1,5 +1,4 @@
 import json
-import time
 import os
 import re
 from .chinesefy import get_cn_name
