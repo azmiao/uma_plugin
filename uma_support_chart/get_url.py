@@ -59,7 +59,7 @@ async def generate_img(sup_type):
         # 就生成旧版节奏榜
         file_list = await generate_old_img(sup_type)
         if not file_list:
-            return False
+            return False, False
         for img_name in file_list:
             current_dir = os.path.join(R.img('uma_support_chart').path, f'{img_name}')
             img = Image.open(current_dir)
