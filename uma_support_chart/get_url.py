@@ -3,8 +3,9 @@ import re
 import os
 from PIL import Image
 from bs4 import BeautifulSoup
+from hoshino import R
 
-def generate_url(sup_type):
+async def generate_url(sup_type):
     # 先保留rank吧，防止跟以前的根卡界面一样
     rank = 'SSR'
     # 试了下，发现bwiki是可以自动跳转的，所以可以这样写，还减少了反爬虫的概率
@@ -19,10 +20,10 @@ def generate_url(sup_type):
         chart_url = 'https://wiki.biligame.com/umamusume/SSR根卡节奏榜（Ver.1.15.2）已更新SR织姬'
     elif sup_type == '智卡':
         chart_url = 'https://wiki.biligame.com/umamusume/SSR智卡节奏榜（Ver.1.15.2）已更新周年光钻'
-    img_dict = get_img(rank, sup_type, chart_url)
+    img_dict = await get_img(rank, sup_type, chart_url)
     return img_dict
 
-def get_img(rank, sup_type, chart_url):
+async def get_img(rank, sup_type, chart_url):
     res = httpx.get(chart_url, timeout=10)
     soup = BeautifulSoup(res.text, 'lxml')
     pattern = re.compile(f'{rank}{sup_type}节奏榜\S+')
@@ -31,47 +32,36 @@ def get_img(rank, sup_type, chart_url):
     ver = re.search(r'(Ver\.)([0-9]*\.[0-9]*\.[0-9]*)', str(true_id))
     ver = ver.group(2)
     sup_type_tmp = sup_type.replace('卡', '')
-    pattern_img = re.compile(f'{sup_type_tmp}{ver}\.\S+')
-    img_id_list = soup.find_all(alt=pattern_img)
     img_dict = {}
-    for img_id in img_id_list:
-        img_name = img_id.get('alt')
-        img_url = img_id.get('src')
-        img_dict[img_name] = img_url
+    for i in range(3):
+        file_name = f'{sup_type_tmp}{ver}.{str(i)}.png'
+        res_tmp = httpx.get(f'https://wiki.biligame.com/umamusume/文件:{file_name}', timeout=10)
+        soup_tmp = BeautifulSoup(res_tmp.text, 'lxml')
+        img_url_tmp = soup_tmp.find(title=file_name)
+        if img_url_tmp:
+            img_url = img_url_tmp.get('href')
+            img_dict[file_name] = img_url
     return img_dict
 
-def download_img(url, current_dir):
-    if not os.path.exists(os.path.join(os.path.dirname(__file__), f'data/')):
-        os.mkdir(os.path.join(os.path.dirname(__file__), f'data/'))
+async def download_img(url, current_dir):
+    img_path = R.img('uma_support_chart').path
+    if not os.path.exists(img_path):
+        os.mkdir(img_path)
     response = httpx.get(url, timeout=10)
     with open(current_dir, 'wb') as f:
         f.write(response.read())
 
-def generate_img(sup_type):
-    img_dict = generate_url(sup_type)
+async def generate_img(sup_type):
+    img_dict = await generate_url(sup_type)
     data_dict = {}
-    for img_name in list(img_dict.keys()):
-        current_dir = os.path.join(os.path.dirname(__file__), f'data/{img_name}')
-        download_img(img_dict[img_name], current_dir)
-        img = Image.open(current_dir)
-        data_dict[img_name] = {}
-        data_dict[img_name]['width'] = img.width
-        data_dict[img_name]['height'] = img.height
-        data_dict[img_name]['img'] = img
-    all_height = 0
-    for img_name in list(data_dict.keys()):
-        all_height += data_dict[img_name]['height']
-        all_width = data_dict[img_name]['width']
-    # 这里报错就是说明，此时新的节奏榜出炉，但一图流还未出炉
-    try:
-        end_img = Image.new('RGB', (all_width, all_height))
-    except:
-        # 生成旧版节奏榜
-        file_list = generate_old_img(sup_type)
+    # 如果最新的网页已更新，但大佬的图片未上传（一般不会遇到这样的问题）
+    if not img_dict:
+        # 就生成旧版节奏榜
+        file_list = await generate_old_img(sup_type)
         if not file_list:
             return False
         for img_name in file_list:
-            current_dir = os.path.join(os.path.dirname(__file__), f'data/{img_name}')
+            current_dir = os.path.join(R.img('uma_support_chart').path, f'{img_name}')
             img = Image.open(current_dir)
             data_dict[img_name] = {}
             data_dict[img_name]['width'] = img.width
@@ -82,17 +72,31 @@ def generate_img(sup_type):
             all_height += data_dict[img_name]['height']
             all_width = data_dict[img_name]['width']
         end_img = Image.new('RGB', (all_width, all_height))
+        return end_img, 'old'
+    for img_name in list(img_dict.keys()):
+        current_dir = os.path.join(R.img('uma_support_chart').path, f'{img_name}')
+        await download_img(img_dict[img_name], current_dir)
+        img = Image.open(current_dir)
+        data_dict[img_name] = {}
+        data_dict[img_name]['width'] = img.width
+        data_dict[img_name]['height'] = img.height
+        data_dict[img_name]['img'] = img
+    all_height = 0
+    for img_name in list(data_dict.keys()):
+        all_height += data_dict[img_name]['height']
+        all_width = data_dict[img_name]['width']
+    end_img = Image.new('RGB', (all_width, all_height))
     all_height = 0
     for img_name in list(data_dict.keys()):
         img_tmp = data_dict[img_name]['img']
         end_img.paste(img_tmp, (0, all_height))
         all_height += data_dict[img_name]['height']
-    return end_img
+    return end_img, 'new'
 
-def generate_old_img(sup_type):
+async def generate_old_img(sup_type):
     sup_type = sup_type.replace('卡', '')
     file_name_pattern = re.compile(f'力\S+\.png')
-    path = os.path.join(os.path.dirname(__file__), 'data/')
+    path = R.img('uma_support_chart').path
     file_list = []
     if os.path.isdir(path) and os.listdir(path):
         for file in os.listdir(path):
