@@ -41,6 +41,20 @@ async def get_img(rank, sup_type, chart_url):
         if img_url_tmp:
             img_url = img_url_tmp.get('href')
             img_dict[file_name] = img_url
+        else:
+            # 可能是同一张图上传了两张，但第一张图删了，变成了(1)
+            # 总不可能更新一张图更新3遍吧（
+            for j in range(3):
+                file_name_temp = f'{sup_type_tmp}{ver}.{str(i)}({str(j)}).png'
+                res_temp = httpx.get(f'https://wiki.biligame.com/umamusume/文件:{file_name_temp}', timeout=10)
+                soup_temp = BeautifulSoup(res_temp.text, 'lxml')
+                img_url_temp = soup_temp.find(title=file_name_temp)
+                if img_url_temp:
+                    break
+            if img_url_temp:
+                file_name = file_name_temp
+                img_url = img_url_temp.get('href')
+                img_dict[file_name] = img_url
     return img_dict
 
 async def download_img(url, current_dir):

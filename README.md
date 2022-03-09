@@ -51,6 +51,16 @@ https://github.com/azmiao/uma_plugin/
 
 ### 如何更新
 
+> 若是从 v1.2 版本之前(不包括 v1.2)的版本更新到最新版，如果您嫌麻烦建议直接把 `uma_plugin` 文件夹删了，再按照下面的安装教程重新安装一遍
+
+    并且建议删除前，把文件 `/uma_info/config.json` 备份出来，这样就不用再 手动更新马娘数据 了, 否则重装后需要重新使用群命令："手动更新马娘数据" 更新基础数据
+
+> 若是从 v1.2 版本之后(包括 v1.2)的版本更新到最新版，就非常方便，可以直接在你的 `hoshino/modules/uma_plugin文件夹里，以管理员方式打开powershell，然后输入下方命令，运行完重启hoshinobot即可：
+
+```
+git pull
+```
+
 <details>
 <summary>点我看看一些常规更新的内容</summary>
 
@@ -63,15 +73,6 @@ https://github.com/azmiao/uma_plugin/
 因此一旦有更新我会以 commit 的形式上传至本仓库，如果您可以直接 watch 本仓库，如果会使用RSS的话可以添加本仓库，再者嫌麻烦的话可以使用我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加[本仓库链接](https://github.com/azmiao/uma_plugin/)即可，一旦有任何commit更新您的bot都会提醒您
 
 </details>
-
-> 若是从 v1.2 版本之前(不包括 v1.2)的版本更新到最新版，如果您嫌麻烦建议直接把 `uma_plugin` 文件夹删了，再按照下面的安装教程重新安装一遍
-
-    并且建议删除前，把文件 `/uma_info/config.json` 备份出来，这样就不用再 手动更新马娘数据 了
-
-> 若是从 v1.2 版本之后(包括 v1.2)的版本更新到最新版，就非常方便，可以直接在你的 `hoshino/modules/uma_plugin文件夹里，以管理员方式打开powershell，然后输入命令即可：
-    ```
-    git pull
-    ```
 
 ### 使用本插件需要的东西
 
@@ -217,13 +218,11 @@ https://github.com/azmiao/uma_plugin/
 
     然后重启 HoshinoBot
 
-    重点：
+    等待装完插件后首次启动的自动更新马娘抽卡数据和图片，预计用时1分钟？
 
-        1.装完插件后首次启动会自动更新马娘抽卡数据和图片，预计用时1分钟
+    更新完后请维护组 __再发送群消息__  “手动更新马娘数据” 来更新马娘数据库的数据，预计用时8分钟
 
-        2.更新完后请维护组再发送 “手动更新马娘数据” 来更新马娘数据库的数据，预计用时8分钟
-
-        3.更新期间您可以看着QQ消息，或者看着Hoshino日志以防意外情况
+    3.更新期间您可以看着QQ消息，或者看着Hoshino日志以防意外情况
 
 6. 额外功能：（自动提醒）
 
