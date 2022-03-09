@@ -2,31 +2,39 @@
 
 这是一个适用hoshinobot的赛马娘功能插件，数据来自马娘官网和bwiki
 
-这里包含了之前开源了的功能以及新开发的功能
+这里包含了之前开源了的功能以及新开发的功能，其他功能仍在锐意开发中
+
+### ★ 如果你喜欢的话，请给仓库点一个star支持一下23333 ★
+
 <details>
-<summary>点我展开</summary>
+<summary>点我查看主要的几个功能模块</summary>
 
-[马娘新闻播报](https://github.com/azmiao/umamusume_news) 
+（具体命令请看下方功能命令和描述）
 
-[马娘模拟抽卡](https://github.com/azmiao/uma_gacha)
++ [马娘新闻播报](https://github.com/azmiao/umamusume_news) 
 
-马娘基础数据库
++ [马娘模拟抽卡](https://github.com/azmiao/uma_gacha)
 
-支援卡节奏榜
++ 马娘基础数据库
 
-相性计算器
++ 支援卡节奏榜
 
-马娘黄历
++ 相性计算器
+
++ 马娘黄历
 
 </details>
 
-其他功能仍在锐意开发中
+<details>
+<summary>点我查看独立版和整合版的区别</summary>
 
-[相性计算器] 功能离不开 [马娘基础数据库] ，其他功能均可单独运行，如果您的Bot现在装了本插件即可删除之前的 [马娘新闻播报](https://github.com/azmiao/umamusume_news) [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 插件
++ 独立版的 [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 可以完全单独运行，内容也完全一致，可以从本整合版里直接复制出来用，但记得要装依赖哦！
 
-后续关于 [马娘新闻播报](https://github.com/azmiao/umamusume_news) [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 的代码更新将会在原仓库和本仓库同步更新
++ 独立版的 [马娘新闻播报](https://github.com/azmiao/umamusume_news) 也可以完全单独运行，但和整合版的代码稍有不同，因此不可以从本整合版里直接复制出来用！
 
-★ 如果你喜欢的话，请给仓库点一个star支持一下23333 ★
++ 另外后续关于 [马娘新闻播报](https://github.com/azmiao/umamusume_news) [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 的代码更新将会在原仓库和本仓库同步更新
+
+</details>
 
 ## 本项目地址：
 https://github.com/azmiao/uma_plugin/
@@ -53,13 +61,14 @@ https://github.com/azmiao/uma_plugin/
 需要我手动更新，当然如果你有觉得可以添加的别称，可以fork后pull requests
 
 因此一旦有更新我会以 commit 的形式上传至本仓库，如果您可以直接 watch 本仓库，如果会使用RSS的话可以添加本仓库，再者嫌麻烦的话可以使用我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加[本仓库链接](https://github.com/azmiao/uma_plugin/)即可，一旦有任何commit更新您的bot都会提醒您
+
 </details>
 
 > 若是从 v1.2 版本之前(不包括 v1.2)的版本更新到最新版，如果您嫌麻烦建议直接把 `uma_plugin` 文件夹删了，再按照下面的安装教程重新安装一遍
 
     并且建议删除前，把文件 `/uma_info/config.json` 备份出来，这样就不用再 手动更新马娘数据 了
 
-> 若是从 v1.2 版本(包括 v1.2)开始的版本更新，可以在你的 `hoshino/modules/uma_plugin文件夹里，以管理员方式打开powershell，然后输入命令即可：
+> 若是从 v1.2 版本之后(包括 v1.2)的版本更新到最新版，就非常方便，可以直接在你的 `hoshino/modules/uma_plugin文件夹里，以管理员方式打开powershell，然后输入命令即可：
     ```
     git pull
     ```
@@ -72,12 +81,13 @@ https://github.com/azmiao/uma_plugin/
 <summary>点我查看需要 OCR 的原因</summary>
 
 + 由于部分数据来自官网，因此数据非常全，但这~~垃圾~~官网不少数据是整合进一张图里面了，不得不用一个OCR来识别出来，而gocq自带的OCR接口只能识别接收到的图片，虽然已经有思路如何绕过这个门槛，利用QQ的image缓存机制来识别，但这样依然非常不方便，而且为了部分功能实现的资源占用更低，还是选择了第三方的接口，ocr_space的接口速度也比较快，而且免费版每天有500次，而本插件每天只需要进行88次即可，但是网站比较不稳定，偶尔会500~~免费的还要什么自行车~~
+
 </details>
 
 ## 功能命令和描述
+
 <details>
-<summary>点我展开</summary>
-### 马娘基础数据库模块
+<summary><font size = 4>马娘基础数据库模块</font></summary>
 
 | 功能命令 | 介绍 |
 | :---- | :---- |
@@ -104,7 +114,10 @@ https://github.com/azmiao/uma_plugin/
 | (每天1:31自动更新马娘数据) | 该功能没有命令 |
 | (每天9:31自动推送该日生日的马娘) | 该功能没有命令，且本功能需额外开启 |
 
-### 相性计算器
+</details>
+
+<details>
+<summary><font size = 4>相性计算器</font></summary>
 
 | 功能命令 | 介绍 |
 | :---- | :---- |
@@ -113,7 +126,10 @@ https://github.com/azmiao/uma_plugin/
 | 查相性 马娘1 马娘2 | 查两只马娘之间的相性，这里不可以加胜鞍 |
 | 相性榜 马娘 | 相性榜是指生成对这只马娘相性最好的马娘排行榜 |
 
-### 支援卡节奏榜
+</details>
+
+<details>
+<summary><font size = 4>支援卡节奏榜</font></summary>
 
 | 功能命令 | 介绍 |
 | :---- | :---- |
@@ -123,7 +139,10 @@ https://github.com/azmiao/uma_plugin/
 | 根卡节奏榜 | 对应根性卡 |
 | 智卡节奏榜 | 对应智力卡 |
 
-### 马娘新闻播报
+</details>
+
+<details>
+<summary><font size = 4>马娘新闻播报</font></summary>
 
 | 功能命令 | 介绍 |
 | :---- | :---- |
@@ -132,7 +151,10 @@ https://github.com/azmiao/uma_plugin/
 | 新闻翻译 1 | 翻译第1条新闻，编号可选值(1/2/3/4/5) |
 | (马娘新闻推送) | 该功能没有命令，且本功能需额外开启 |
 
-### 马娘模拟抽卡
+</details>
+
+<details>
+<summary><font size = 4>马娘模拟抽卡</font></summary>
 
 | 功能命令 | 介绍 |
 | :---- | :---- |
@@ -147,16 +169,22 @@ https://github.com/azmiao/uma_plugin/
 | 重载赛马娘卡池 | 仅刷新马娘当前UP卡池的信息（不含图片数据），功能限维护组 |
 | (每天4点自动更新马娘信息) | 该功能没有命令 |
 
-### 马娘黄历
+</details>
+
+<details>
+<summary><font size = 4>马娘黄历</font></summary>
 
 | 功能命令 | 介绍 |
 | :---- | :---- |
 | 马娘签到 | 看看今日的黄历？ |
+
 </details>
 
 ## 食用教程：
+
 <details>
 <summary>点我展开</summary>
+
 0. 申请OCR_SPACE的免费API，（需要一个非QQ的邮箱即可）：[点我前往官网申请](http://ocr.space/ocrapi/freekey)，网站发邮件偶尔会非常慢，~~绝了~~慢慢等吧
 
     第一封邮件是确认注册
@@ -210,6 +238,7 @@ https://github.com/azmiao/uma_plugin/
     ```
 
     可以通过发消息输入"lssv"查看这个功能前面是不是⚪来确认是否开启成功
+
 </details>
 
 ## 另有图片预览，请看：
