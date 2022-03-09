@@ -12,7 +12,9 @@ import hoshino
 # 是否使用ocr_space接口，默认启用
 ENABLE_OCR_SPACE = True
 # ocr_space接口的apikey
-APIKEY = ''
+apikey_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'APIKEY.txt')
+with open(apikey_path, 'r', encoding = 'UTF-8') as api_f:
+    APIKEY = api_f.read()
 
 class Dict(dict):
     __setattr__ = dict.__setitem__

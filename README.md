@@ -1,10 +1,26 @@
 ## uma_info
 
-这是一个适用hoshinobot的马娘功能插件，数据来自马娘官网和bwiki
+这是一个适用hoshinobot的赛马娘功能插件，数据来自马娘官网和bwiki
 
-这里包含了之前开源了的 [马娘新闻播报](https://github.com/azmiao/umamusume_news) [马娘模拟抽卡](https://github.com/azmiao/uma_gacha)，以及新开发的 [马娘基础数据库] [支援卡节奏榜] [相性计算器] 功能。
+这里包含了之前开源了的功能以及新开发的功能
+<details>
+<summary>点我展开</summary>
 
-[马娘基础数据库] 仍在锐意开发中，后续将支持支援卡相关功能，大概
+[马娘新闻播报](https://github.com/azmiao/umamusume_news) 
+
+[马娘模拟抽卡](https://github.com/azmiao/uma_gacha)
+
+马娘基础数据库
+
+支援卡节奏榜
+
+相性计算器
+
+马娘黄历
+
+</details>
+
+其他功能仍在锐意开发中
 
 [相性计算器] 功能离不开 [马娘基础数据库] ，其他功能均可单独运行，如果您的Bot现在装了本插件即可删除之前的 [马娘新闻播报](https://github.com/azmiao/umamusume_news) [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 插件
 
@@ -15,34 +31,52 @@
 ## 本项目地址：
 https://github.com/azmiao/uma_plugin/
 
-## 注意
-
-### 关于数据库的部分数据更新问题
-
-大多数数据均可自动更新，但是：
-
-位于 `uma_info` 文件夹下的 `replace_dict.json` 和 位于 `umamusume_news` 文件夹下的 `replace_dict.json` 是无法自动更新的
-
-一旦有更新我会以 commit 的形式上传至本仓库，如果您会使用RSS的话可以添加本仓库，如果嫌麻烦可以使用我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加[本仓库链接](https://github.com/azmiao/uma_plugin/)即可，一旦有任何commit更新您的bot都会提醒您
-
-### 使用本插件需要的东西
-
-一个OCR_SPACE的免费API（需要一个非QQ的邮箱即可）：[点我前往官网申请](http://ocr.space/ocrapi/freekey)，网站发邮件偶尔会非常慢，~~绝了~~慢慢等吧
-
-至于为什么需要，请看下方 说明1
-
 ## 更新日志
+
+22-03-09    v1.2    一些调整，以及修改部分文件使之规范化github储存库，方便 git pull, [pull #4](https://github.com/azmiao/uma_plugin/pull/4)
 
 22-03-06    v1.1    新增了“马娘签到”功能
 
 22-03-04    v1.0    first commit
 
-## 说明
+## 注意事项
 
-1. 由于部分数据来自官网，因此数据非常全，但这~~垃圾~~官网不少数据是整合进一张图里面了，不得不用一个OCR来识别出来，而gocq自带的OCR接口只能识别接收到的图片，虽然已经有思路如何绕过这个门槛，利用QQ的image缓存机制来识别，但这样依然非常不方便，而且为了部分功能实现的资源占用更低，还是选择了第三方的接口，ocr_space的接口速度也比较快，而且免费版每天有500次，而本插件每天只需要进行88次即可，但是网站比较不稳定，偶尔会500~~免费的还要什么自行车~~
+### 如何更新
 
-## 功能
+<details>
+<summary>点我看看一些常规更新的内容</summary>
 
+大多数数据均可自动更新，但是：
+
+位于 `uma_info` 文件夹下的 `replace_dict.json` (角色别称) 
+
+需要我手动更新，当然如果你有觉得可以添加的别称，可以fork后pull requests
+
+因此一旦有更新我会以 commit 的形式上传至本仓库，如果您可以直接 watch 本仓库，如果会使用RSS的话可以添加本仓库，再者嫌麻烦的话可以使用我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加[本仓库链接](https://github.com/azmiao/uma_plugin/)即可，一旦有任何commit更新您的bot都会提醒您
+</details>
+
+> 若是从 v1.2 版本之前(不包括 v1.2)的版本更新到最新版，如果您嫌麻烦建议直接把 `uma_plugin` 文件夹删了，再按照下面的安装教程重新安装一遍
+
+    并且建议删除前，把文件 `/uma_info/config.json` 备份出来，这样就不用再 手动更新马娘数据 了
+
+> 若是从 v1.2 版本(包括 v1.2)开始的版本更新，可以在你的 `hoshino/modules/uma_plugin文件夹里，以管理员方式打开powershell，然后输入命令即可：
+    ```
+    git pull
+    ```
+
+### 使用本插件需要的东西
+
+一个OCR_SPACE的免费API（需要一个非QQ的邮箱即可）：[点我前往官网申请](http://ocr.space/ocrapi/freekey)，网站发邮件偶尔会非常慢，~~绝了~~慢慢等吧
+
+<details>
+<summary>点我查看需要 OCR 的原因</summary>
+
++ 由于部分数据来自官网，因此数据非常全，但这~~垃圾~~官网不少数据是整合进一张图里面了，不得不用一个OCR来识别出来，而gocq自带的OCR接口只能识别接收到的图片，虽然已经有思路如何绕过这个门槛，利用QQ的image缓存机制来识别，但这样依然非常不方便，而且为了部分功能实现的资源占用更低，还是选择了第三方的接口，ocr_space的接口速度也比较快，而且免费版每天有500次，而本插件每天只需要进行88次即可，但是网站比较不稳定，偶尔会500~~免费的还要什么自行车~~
+</details>
+
+## 功能命令和描述
+<details>
+<summary>点我展开</summary>
 ### 马娘基础数据库模块
 
 | 功能命令 | 介绍 |
@@ -118,9 +152,11 @@ https://github.com/azmiao/uma_plugin/
 | 功能命令 | 介绍 |
 | :---- | :---- |
 | 马娘签到 | 看看今日的黄历？ |
+</details>
 
 ## 食用教程：
-
+<details>
+<summary>点我展开</summary>
 0. 申请OCR_SPACE的免费API，（需要一个非QQ的邮箱即可）：[点我前往官网申请](http://ocr.space/ocrapi/freekey)，网站发邮件偶尔会非常慢，~~绝了~~慢慢等吧
 
     第一封邮件是确认注册
@@ -136,23 +172,20 @@ https://github.com/azmiao/uma_plugin/
 
 2. 如果之前装过 [马娘新闻播报](https://github.com/azmiao/umamusume_news) 和 [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 的，请先删除那两个文件夹，没有就跳过这一步
 
-3. 解决前提问题：
+3. 填写APIKEY：
 
-    1. 填写APIKEY：
-        打开本文件下的 uma_info 文件夹，再打开 `spider.py` 文件
-        在 `APIKEY = ''` 的引号里加上你申请的APIKEY
-    2. 欸？我要写啥来着
-        ~~上了个厕所就忘了23333~~
-        后面想起来再补吧
+    打开 uma_plugin 文件夹下的 `APIKEY.txt` 文件
 
-3. 安装依赖：
+    在里面粘贴上你申请的APIKEY即可
+
+4. 安装依赖：
 
     到HoshinoBot\hoshino\modules\uma_plugin目录下，管理员方式打开powershell
     ```
     pip install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple
     ```
 
-4. 在 HoshinoBot\hoshino\config\ `__bot__.py` 文件的 MODULES_ON 加入 'uma_plugin'
+5. 在 HoshinoBot\hoshino\config\ `__bot__.py` 文件的 MODULES_ON 加入 'uma_plugin'
 
     然后重启 HoshinoBot
 
@@ -162,11 +195,9 @@ https://github.com/azmiao/uma_plugin/
 
         2.更新完后请维护组再发送 “手动更新马娘数据” 来更新马娘数据库的数据，预计用时8分钟
 
-        3.由于一些问题插件部分功能，例如 “手动更新马娘数据” 采用了同步更新，所以更新期间机器人不会响应任何消息，期间的所有消息都在更新完后发送
+        3.更新期间您可以看着QQ消息，或者看着Hoshino日志以防意外情况
 
-        4.更新期间您可以看着QQ消息，或者看着Hoshino日志以防意外情况
-
-5. 额外功能：（自动提醒）
+6. 额外功能：（自动提醒）
 
     在某个群里发消息输入下文以开启马娘生日提醒
     ```
@@ -179,7 +210,8 @@ https://github.com/azmiao/uma_plugin/
     ```
 
     可以通过发消息输入"lssv"查看这个功能前面是不是⚪来确认是否开启成功
+</details>
 
-### 另有图片预览，请看：
+## 另有图片预览，请看：
 
 https://www.594594.xyz/2022/03/04/uma_plugin/

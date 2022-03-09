@@ -150,3 +150,24 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# uma_plugin 特有的自动生成的文件，防止git pull异常
+
+# 根目录下的APIKEY.txt
+
+/APIKEY.txt
+
+# 所有文件夹下自动生成的data文件夹
+data/*
+
+# uma_compatibility文件夹下自动生成的相性组文件
+/uma_compatibility/relation_type.json
+
+# uma_gacha文件夹下的储存当前全部角色的pickle
+/uma_gacha/char_atlas.txt
+
+# uma_info文件夹下的全部角色的基础数据文件
+/uma_info/config.json
+
+# umamusume_news文件夹下的记录最新时间的文件
+/umamusume_news/prev_time.yml

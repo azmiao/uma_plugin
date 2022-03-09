@@ -8,7 +8,6 @@ from datetime import timedelta
 import operator
 from .translator_lite.apis import youdao
 from io import BytesIO
-import yaml
 import random
 import time
 from hoshino import R
@@ -155,16 +154,23 @@ def replace_text(text_tmp):
     text = re.sub(r'<figure>.*?<\/figure>', '', text)
     text = re.sub(r'<exclusion-game>.*<\/exclusion-game>', '', text)
     text = re.sub(r'<br>', '\n\n', text)
-    # 替换赛马娘游戏术语
+    # 替换部分游戏术语
     current_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
-    file = open(current_dir, 'r', encoding = 'UTF-8')
-    file_data = file.read()
-    file.close()
-    config = yaml.load(file_data, Loader = yaml.FullLoader)
-    keys_list = list(config.keys())
-    for key in keys_list:
-        value = config[key]
+    with open(current_dir, 'r', encoding = 'UTF-8') as other_file:
+        other_dict = json.load(other_file)
+    for key in list(other_dict.keys()):
+        value = other_dict[key]
         text = text.replace(f'{key}', f'{value}')
+    # 替换马娘名字，来自马娘基础数据库
+    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r', encoding = 'UTF-8') as f:
+        f_data = json.load(f)
+        f.close()
+    name_list = list(f_data.keys())
+    name_list.remove('current_chara')
+    for uma_name in name_list:
+        jp_name = f_data[uma_name]['jp_name']
+        cn_name = f_data[uma_name]['cn_name']
+        text = text.replace(f'{jp_name}', f'{cn_name}')
     return text
 
 # 翻译完如果把中文又翻译一遍导致出问题可以在这里，再次替换一下？
@@ -195,7 +201,7 @@ def translate_news(news_id):
             res_dict = res.json()
             res.close()
         if res_dict['detail']['title'] == '現在確認している不具合について':
-            news_msg = res_dict['detail']['message'][:500] + '...'
+            news_msg = res_dict['detail']['message'][:1000] + '...'
             flag = 1
         else:
             news_msg = res_dict['detail']['message']
@@ -207,7 +213,7 @@ def translate_news(news_id):
         news_text = youdao(news_msg, 'ja', 'zh')
         news_text = second_replace(news_text)
         if flag == 1:
-            news_text = '(该新闻特别长，因此只显示前500个字符)\n\n' + news_text
+            news_text = '(该新闻特别长，因此只显示前1000个字符)\n\n' + news_text
         if res_dict['detail']['image_big'] != '':
             img_url = res_dict['detail']['image_big']
             response = requests.get(img_url)
