@@ -9,8 +9,7 @@ sv_help = '''
 空格别漏，记得换行
 没反应 应该是你指令错了
 
-属性只需写：速力根智四项
-跑法可选：逃马、先行、差马、追马
+跑法可选：逃马、先马、差马、追马
 跑场可选：芝、泥地
 跑道长度：1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2500, 3000, 3200, 3400, 3600
 干劲可选：绝好调、好调、普通、不调、绝不掉
@@ -21,7 +20,7 @@ sv_help = '''
 
 ==指令(下方为一个例子)==
 算耐力
-属性:1200 1200 600 700
+属性:1200 600 1200 600 700
 适应性:逃马-A 芝-A 1600-A
 干劲:绝好调 状况:良
 固回:0 普回:0 金回:1
@@ -36,7 +35,7 @@ async def help(bot, ev):
 
 @sv.on_rex(r'''
 算耐力
-属性(:|：)(\d{1,4}) (\d{1,4}) (\d{1,4}) (\d{1,4})
+属性(:|：)(\d{1,4}) (\d{1,4}) (\d{1,4}) (\d{1,4}) (\d{1,4})
 适应性(:|：)(\S{2})-(\S) (\S{1,2})-(\S) (\d{4})-(\S)
 干劲(:|：)(\S{2,3}) 状况(:|：)(\S{1,2})
 固回(:|：)(\d{1,2}) 普回(:|：)(\d{1,2}) 金回(:|：)(\d{1,2})'''.strip())
@@ -44,34 +43,36 @@ async def get_endurance(bot, ev):
     # 获取各个数据
     # 速度上限
     speed_limit = int(ev['match'].group(2))
+    # 耐力
+    endurance_tmp = int(ev['match'].group(3))
     # 力量
-    power = int(ev['match'].group(3))
+    power = int(ev['match'].group(4))
     # 根性
-    determination = int(ev['match'].group(4))
+    determination = int(ev['match'].group(5))
     # 智力
-    intelligence = int(ev['match'].group(5))
-    # 跑法：逃马、先行、差马、追马
-    run_type = ev['match'].group(7)
+    intelligence = int(ev['match'].group(6))
+    # 跑法：逃马、先马、差马、追马
+    run_type = ev['match'].group(8)
     # 跑法适应性：S, A, B, C, D, E, F, G
-    run_adaptability = ev['match'].group(8).upper()
+    run_adaptability = ev['match'].group(9).upper()
     # 场地类型：芝、泥地
-    site_type = ev['match'].group(9)
+    site_type = ev['match'].group(10)
     # 场地适应性：S, A, B, C, D, E, F, G
-    site_adaptability = ev['match'].group(10).upper()
+    site_adaptability = ev['match'].group(11).upper()
     # 跑道长度：1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2500, 3000, 3200, 3400, 3600
-    track_length = int(ev['match'].group(11))
+    track_length = int(ev['match'].group(12))
     # 跑道长度适应性：S, A, B, C, D, E, F, G
-    track_adaptability = ev['match'].group(12).upper()
+    track_adaptability = ev['match'].group(13).upper()
     # 干劲：绝好调、好调、普通、不调、绝不掉
-    feeling = ev['match'].group(14)
+    feeling = ev['match'].group(15)
     # 场况：良、稍重、重、不良
-    situation = ev['match'].group(16)
+    situation = ev['match'].group(17)
     # 固有回体等级
-    stable_recover_level = int(ev['match'].group(18))
+    stable_recover_level = int(ev['match'].group(19))
     # 普通回体个数
-    common_recover_num = int(ev['match'].group(20))
+    common_recover_num = int(ev['match'].group(21))
     # 金回体个数
-    upper_recover_num = int(ev['match'].group(22))
+    upper_recover_num = int(ev['match'].group(23))
 
     # 开始计算
     # 速度上限补正
@@ -103,7 +104,7 @@ async def get_endurance(bot, ev):
     endurance = cacul_endurance(endurance_begin, endurance_middle, endurance_end, track_length, run_type)
     # 理论
     # 理论体力
-    theoretical_hp = theoretical_endurance(track_length, run_type)
+    theoretical_hp = theoretical_endurance(track_length, endurance_tmp, run_type)
     # 回体技能折算耐力
     stable_recover_endu, common_recover_endu, upper_recover_endu = cacul_skill_endu(stable_recover_level, hp, run_type)
     # 回体技能折算体力
@@ -115,6 +116,7 @@ async def get_endurance(bot, ev):
     end_endurance = get_end_endurance(end_hp, track_length, run_type)
     msg = f'''
 速度上限：{speed_limit}
+耐力：{endurance_tmp}
 力量：{power}
 根性：{determination}
 智力：{intelligence}
@@ -126,8 +128,6 @@ async def get_endurance(bot, ev):
 序盘体力需求：{round(endurance_begin, 1)}
 中盘体力需求：{round(endurance_middle, 1)}
 终盘体力需求：{round(endurance_end, 1)}
-无回体技能的体力需求：{round(hp, 1)}
-无回体技能的耐力需求：{round(endurance, 1)}
 
 本次携带了：
     - {stable_recover_level}级的固有回体
@@ -142,9 +142,13 @@ async def get_endurance(bot, ev):
 -固有体力回复{round(stable_recover, 1)}体力
     - 折合耐力：{round(stable_recover_endu, 1)}
 
+汇总：
+无回体技能的体力需求：{round(hp, 1)}
+算上技能后的本马体力：{round(end_hp, 1)}
+
 结论：
-本次跑完所需体力：{round(end_hp, 1)}
-折合所需耐力：{round(end_endurance, 1)}
+无回体技能的耐力需求：{round(endurance, 1)}
+算上技能后的本马耐力：{round(end_endurance, 1)}
 
 注：此数据取自根性下坡改版前的数据
 实际需求比计算器结果要高不少，尤其是大赛

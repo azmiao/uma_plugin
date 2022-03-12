@@ -55,7 +55,7 @@ run_type_bonus = {
         'acceleration_middle': 1,
         'acceleration_end': 0.996
     },
-    '先行': {
+    '先马': {
         'hp_bonus': 0.89,
         'speed_begin': 0.978,
         'speed_middle': 0.991,

@@ -126,8 +126,8 @@ def cacul_endurance(endurance_begin, endurance_middle, endurance_end, track_leng
     return endurance
 
 # 理论体力
-def theoretical_endurance(track_length, run_type):
-    theoretical_hp = track_length + 100 * 0.8 * run_type_bonus[run_type]['hp_bonus']
+def theoretical_endurance(track_length, endurance_tmp, run_type):
+    theoretical_hp = track_length + endurance_tmp * 0.8 * run_type_bonus[run_type]['hp_bonus']
     return theoretical_hp
 
 # 回体技能折算耐力
