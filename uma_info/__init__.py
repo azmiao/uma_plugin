@@ -285,25 +285,25 @@ async def update_info(bot, ev):
             msg = f'马娘数据库更新完成，开始更新对应中文名'
             sv.logger.info(msg)
             await bot.send(ev, msg)
-        else:
-            msg = f'马娘数据库更新在更新{except_uma}时遇到问题，1分钟后将从该马娘开始继续更新'
+            await get_cn()
+            msg = '马娘数据库中文名更新完成！任务结束！'
             sv.logger.info(msg)
             await bot.send(ev, msg)
-            await asyncio.sleep(60)
+        else:
+            msg = f'马娘数据库更新在更新{except_uma}时遇到问题，3分钟后将转至自动任务继续更新'
+            sv.logger.info(msg)
+            await bot.send(ev, msg)
+            await asyncio.sleep(180)
             await auto_update_info()
             return
     except Exception as e:
-        msg = f'马娘数据库更新失败，将在1分钟后继续自动更新，原因：{e}'
+        msg = f'马娘数据库更新失败，3分钟后将转至自动任务继续更新，原因：{e}'
         traceback.print_exc()
         sv.logger.info(msg)
         await bot.send(ev, msg)
-        await asyncio.sleep(60)
+        await asyncio.sleep(180)
         await auto_update_info()
         return
-    await get_cn()
-    msg = '马娘数据库中文名更新完成！任务结束！'
-    sv.logger.info(msg)
-    await bot.send(ev, msg)
 
 # 自动更新
 @sv.scheduled_job('cron', hour='1', minute='31')
@@ -318,17 +318,15 @@ async def auto_update_info():
             sv.logger.info(msg)
             await bot.send_private_msg(user_id=superid, message=msg)
         else:
-            msg = f'马娘数据库更新在更新{except_uma}时遇到问题，1分钟后将从该马娘开始继续更新'
+            msg = f'马娘数据库更新在更新{except_uma}时遇到问题，3分钟后将从该马娘开始继续更新'
             sv.logger.info(msg)
-            await bot.send_private_msg(user_id=superid, message=msg)
-            await asyncio.sleep(60)
+            await asyncio.sleep(180)
             await auto_update_info()
             return
     except Exception as e:
-        msg = f'马娘数据库自动更新失败，将在1分钟后继续自动更新，原因：{e}'
+        msg = f'马娘数据库自动更新失败，将在3分钟后继续自动更新，原因：{e}'
         sv.logger.info(msg)
-        await bot.send_private_msg(user_id=superid, message=msg)
-        await asyncio.sleep(60)
+        await asyncio.sleep(180)
         await auto_update_info()
         return
     await get_cn()
