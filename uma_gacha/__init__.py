@@ -62,19 +62,19 @@ async def uma_gacha_char_jing(bot, ev):
     await bot.send(ev, msg, at_sender=True)
 
 # 育成卡单抽
-@sv.on_fullmatch('育成卡单抽', only_to_me=True)
+@sv.on_fullmatch(('育成卡单抽', '支援卡单抽'), only_to_me=True)
 async def uma_gacha_card_one(bot, ev):
     msg = await pretty_draw(1, 'card')
     await bot.send(ev, msg, at_sender=True)
 
 # 育成卡十连
-@sv.on_fullmatch('育成卡十连', only_to_me=True)
+@sv.on_fullmatch(('育成卡十连', '支援卡十连'), only_to_me=True)
 async def uma_gacha_card_ten(bot, ev):
     msg = await pretty_draw(10, 'card')
     await bot.send(ev, msg, at_sender=True)
 
 # 育成卡井
-@sv.on_fullmatch(('育成卡井', '育成卡一井'), only_to_me=True)
+@sv.on_fullmatch(('育成卡井', '育成卡一井', '支援卡井', '支援卡一井'), only_to_me=True)
 async def uma_gacha_card_jing(bot, ev):
     msg = await pretty_draw(200, 'card')
     await bot.send(ev, msg, at_sender=True)
