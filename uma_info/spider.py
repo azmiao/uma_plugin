@@ -238,6 +238,10 @@ async def download_ocr(en_name, url):
         cv, bir, height, weight, measurements = '三宅麻理恵', '5-31', '145', 'マーベラス!', 'B87・W52・H77'
     if en_name == 'bikopegasus':
         cv, weight = '田中あいみ', '体重微増（いっぱい食べて大きくなる！）'
-    if en_name == "kitasanblack":
+    if en_name == 'kitasanblack':
         cv, weight = '矢野妃菜喜', 'もりもり成長中!'
+    if en_name == 'winningticket':
+        cv = '渡部優衣'
+    if en_name == 'fujikiseki':
+        cv = '松井恵理子'
     return cv, bir, height, weight, measurements
