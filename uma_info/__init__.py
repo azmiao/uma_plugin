@@ -274,8 +274,9 @@ async def update_info(bot, ev):
         sv.logger.info('本地配置文件已存在，正在开始创建副本，更新完将替换原文件')
         data = {}
         current_dir_tmp = os.path.join(os.path.dirname(__file__), 'config_tmp.json')
-        with open(current_dir_tmp, 'w', encoding = 'UTF-8') as af:
-            json.dump(data, af, indent=4, ensure_ascii=False)
+        if not os.path.exists(current_dir_tmp):
+            with open(current_dir_tmp, 'w', encoding = 'UTF-8') as af:
+                json.dump(data, af, indent=4, ensure_ascii=False)
         sv.logger.info('副本文件创建完成，开始更新数据库数据')
     if ENABLE_OCR_SPACE:
         msg = '正在开始更新马娘数据库\n由于使用了ocrspace接口，可能不稳定，稍后会将部分图片保存至本地res目录下的uma_bir文件夹'
@@ -325,8 +326,9 @@ async def auto_update_info():
     else:
         data = {}
         current_dir_tmp = os.path.join(os.path.dirname(__file__), 'config_tmp.json')
-        with open(current_dir_tmp, 'w', encoding = 'UTF-8') as af:
-            json.dump(data, af, indent=4, ensure_ascii=False)
+        if not os.path.exists(current_dir_tmp):
+            with open(current_dir_tmp, 'w', encoding = 'UTF-8') as af:
+                json.dump(data, af, indent=4, ensure_ascii=False)
     bot = hoshino.get_bot()
     superid = hoshino.config.SUPERUSERS[0]
     sv.logger.info(f'开始自动更新马娘数据库')
