@@ -43,6 +43,8 @@ https://github.com/azmiao/uma_plugin/
 
 ## 更新日志
 
+22-03-18    v1.3.1    调整了自动更新策略，将在更新时生成一个缓存文件，更新完再复制过去，以防止更新期间部分功能不能用，顺便新增手动更新相性信息功能
+
 22-03-09    v1.3    新增了“马娘耐力计算器”功能，但数据为 根性与下坡 改版前的数据，且为非常理想的数值
 
 22-03-09    v1.2    一些调整，以及修改部分文件使之规范化github储存库，方便 git pull, [pull #4](https://github.com/azmiao/uma_plugin/pull/4)
@@ -90,6 +92,27 @@ git pull
 </details>
 
 ## 功能命令和描述
+
+### 注：群内查看功能帮助可以发送：“马娘帮助”
+
+<details>
+<summary><font size = 4>维护组的所有命令</font></summary>
+
+马娘数据库的：
+
+ - 手动更新马娘数据
+
+马娘相性的：
+
+ - 手动更新相性信息
+
+马娘抽卡的：
+
+ - 更新马娘信息
+
+ - 重载赛马娘卡池
+
+</details>
 
 <details>
 <summary><font size = 4>马娘基础数据库模块</font></summary>

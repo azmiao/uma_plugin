@@ -168,6 +168,7 @@ data/*
 
 # uma_info文件夹下的全部角色的基础数据文件
 /uma_info/config.json
+/uma_info/config_tmp.json
 
 # umamusume_news文件夹下的记录最新时间的文件
 /umamusume_news/prev_time.yml

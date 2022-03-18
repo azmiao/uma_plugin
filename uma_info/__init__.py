@@ -3,7 +3,7 @@
 
 作者：AZMIAO
 
-版本：1.0.0
+版本：1.3.1
 '''
 
 import traceback
@@ -269,6 +269,14 @@ async def update_info(bot, ev):
         with open(current_dir, 'w', encoding = 'UTF-8') as af:
             json.dump(data, af, indent=4, ensure_ascii=False)
         sv.logger.info('本地配置文件创建完成，开始更新数据库数据')
+        current_dir_tmp = current_dir
+    else:
+        sv.logger.info('本地配置文件已存在，正在开始创建副本，更新完将替换原文件')
+        data = {}
+        current_dir_tmp = os.path.join(os.path.dirname(__file__), 'config_tmp.json')
+        with open(current_dir_tmp, 'w', encoding = 'UTF-8') as af:
+            json.dump(data, af, indent=4, ensure_ascii=False)
+        sv.logger.info('副本文件创建完成，开始更新数据库数据')
     if ENABLE_OCR_SPACE:
         msg = '正在开始更新马娘数据库\n由于使用了ocrspace接口，可能不稳定，稍后会将部分图片保存至本地res目录下的uma_bir文件夹'
         if not APIKEY:
@@ -280,12 +288,13 @@ async def update_info(bot, ev):
         await bot.finish(ev, msg)
     await bot.send(ev, msg)
     try:
-        except_uma = await uma_spider()
+        except_uma = await uma_spider(current_dir_tmp)
         if not except_uma:
             msg = f'马娘数据库更新完成，开始更新对应中文名'
             sv.logger.info(msg)
             await bot.send(ev, msg)
-            await get_cn()
+            await get_cn(current_dir_tmp)
+            await replace_config(current_dir_tmp, current_dir)
             msg = '马娘数据库中文名更新完成！任务结束！'
             sv.logger.info(msg)
             await bot.send(ev, msg)
@@ -308,11 +317,21 @@ async def update_info(bot, ev):
 # 自动更新
 @sv.scheduled_job('cron', hour='1', minute='31')
 async def auto_update_info():
+    if not os.path.exists(current_dir):
+        data = {}
+        with open(current_dir, 'w', encoding = 'UTF-8') as af:
+            json.dump(data, af, indent=4, ensure_ascii=False)
+        current_dir_tmp = current_dir
+    else:
+        data = {}
+        current_dir_tmp = os.path.join(os.path.dirname(__file__), 'config_tmp.json')
+        with open(current_dir_tmp, 'w', encoding = 'UTF-8') as af:
+            json.dump(data, af, indent=4, ensure_ascii=False)
     bot = hoshino.get_bot()
     superid = hoshino.config.SUPERUSERS[0]
     sv.logger.info(f'开始自动更新马娘数据库')
     try:
-        except_uma = await uma_spider()
+        except_uma = await uma_spider(current_dir_tmp)
         if not except_uma:
             msg = f'马娘数据库自动更新完成，开始更新对应中文名'
             sv.logger.info(msg)
@@ -329,7 +348,16 @@ async def auto_update_info():
         await asyncio.sleep(180)
         await auto_update_info()
         return
-    await get_cn()
+    await get_cn(current_dir_tmp)
+    await replace_config(current_dir_tmp, current_dir)
     msg = '马娘数据库中文名更新完成！任务结束！'
     sv.logger.info(msg)
     await bot.send_private_msg(user_id=superid, message=msg)
+
+# 将缓存文件内容拷贝到真实的配置文件内
+async def replace_config(current_dir_tmp, current_dir):
+    with open(current_dir_tmp, 'r', encoding = 'UTF-8') as f:
+        uma_data = json.load(f)
+        f.close()
+    with open(current_dir, 'w', encoding = 'UTF-8') as af:
+        json.dump(uma_data, af, indent=4, ensure_ascii=False)

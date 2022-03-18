@@ -87,4 +87,8 @@ async def select_source(bot, ev):
             news_url_tmp = news.news_url
             news_id = int(news_url_tmp.replace('▲https://umamusume.jp/news/detail.php?id=', ''))
             msg = msg + translate_news(news_id)
-            await bot.send(ev, msg)
+            try:
+                await bot.send(ev, msg)
+            except Exception as err:
+                if err == '<ActionFailed, retcode=100>':
+                    await bot.send(ev, "翻译内容被风控，发送失败！请稍后尝试！")

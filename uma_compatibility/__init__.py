@@ -1,4 +1,4 @@
-from hoshino import Service
+from hoshino import Service, priv
 import json
 import os
 import asyncio
@@ -157,10 +157,23 @@ async def best_com(bot, ev):
                 break
     await bot.send(ev, msg)
 
-@sv.scheduled_job('cron', hour='2', minute='00')
+@sv.scheduled_job('cron', hour='2', minute='03')
 async def auto_update():
     flag = await update()
     if flag:
         sv.logger.info(f'已更新相性组文件')
     else:
         sv.logger.error(f'相性组文件自动更新失败')
+
+@sv.on_fullmatch("手动更新相性信息")
+async def update_com(bot, ev):
+    if not priv.check_priv(ev, priv.SUPERUSER):
+        msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
+        await bot.send(ev, msg)
+        return
+    flag = await update()
+    if flag:
+        msg = f'已更新至最新相性组文件'
+    else:
+        msg = f'相性组文件更新失败'
+    await bot.send(ev, msg)

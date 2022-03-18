@@ -20,8 +20,7 @@ class Dict(dict):
     __setattr__ = dict.__setitem__
     __getattr__ = dict.__getitem__
 
-async def uma_spider():
-    current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
+async def uma_spider(current_dir):
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         uma_data = json.load(f)
         f.close()
@@ -51,8 +50,7 @@ async def uma_spider():
     return ''
 
 # 拿到中文名字
-async def get_cn():
-    current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
+async def get_cn(current_dir):
     uma_dict = await get_cn_name()
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         f_data = json.load(f)
@@ -65,8 +63,6 @@ async def get_cn():
             cn_name = uma_dict[jp_name]['cn_name']
         except:
             cn_name = ''
-        if jp_name == 'ハルウララ':
-            cn_name = '春乌拉拉'
         try:
             grass = uma_dict[jp_name]['grass']
             mud = uma_dict[jp_name]['mud']
