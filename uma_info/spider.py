@@ -28,6 +28,8 @@ async def uma_spider(current_dir):
         en_name = uma_data['current_chara']
     except:
         en_name = 'specialweek'
+    if en_name == 'specialweek':
+        uma_data = {}
     next_en_name = ''
     while(1):
         if next_en_name == 'specialweek':
