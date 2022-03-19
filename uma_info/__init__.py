@@ -3,11 +3,11 @@
 
 作者：AZMIAO
 
-版本：1.3.1
+版本：1.3.2
 '''
 
 import traceback
-from hoshino import Service, priv
+from hoshino import Service, priv, R
 from hoshino.typing import MessageSegment
 from hoshino.util import pic2b64
 import hoshino
@@ -193,7 +193,10 @@ async def get_single_info(bot, ev):
                 if not voice:
                     msg = f'{uma_name_tmp}暂时还没有语音哟'
                     await bot.finish(ev, msg)
-                msg = MessageSegment.record(file = voice)
+                save_path = R.img('uma_voice').path
+                mp3_name = uma_name + '.mp3'
+                voice_file = os.path.join(save_path, mp3_name)
+                msg = MessageSegment.record(f'file:///{os.path.abspath(voice_file)}')
             elif info_type == '头像':
                 sns_icon = f_data[uma_name]['sns_icon']
                 msg = MessageSegment.image(file = sns_icon)

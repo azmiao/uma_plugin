@@ -8,6 +8,7 @@ from hoshino import R
 from hoshino.typing import MessageSegment
 from hoshino import aiorequests
 import hoshino
+import requests
 
 # 是否使用ocr_space接口，默认启用
 ENABLE_OCR_SPACE = True
@@ -111,6 +112,11 @@ async def get_info(en_name):
     category = uma_data['acf']['category']['value']
     try:
         voice = uma_data['acf']['voice']
+        flag = await DownloadFile(en_name, voice)
+        if flag == 'exist':
+            hoshino.logger.info(f'{en_name}的语音文件已存在，将不会重新下载')
+        elif flag == 'finish':
+            hoshino.logger.info(f'{en_name}的语音文件已成功下载')
     except:
         voice = ''
     try:
@@ -247,3 +253,23 @@ async def download_ocr(en_name, url):
     if en_name == 'fujikiseki':
         cv = '松井恵理子'
     return cv, bir, height, weight, measurements
+
+# 下载语音
+async def DownloadFile(en_name, mp3_url):
+    mp3_name = en_name + '.mp3'
+    save_path = R.img('uma_voice').path
+    if not os.path.exists(save_path):
+        os.mkdir(R.img('uma_voice').path)
+    file_path = os.path.join(save_path, mp3_name)
+    if os.path.exists(file_path):
+        return 'exist'
+    # 为什么要用requests而不用异步的httpx或者aioquests呢
+    # aioreq貌似没加stream
+    # 另外我也不知道为啥，我自己电脑测试httpx没问题，但服务器上就只能下载出1KB的文件
+    # 最后迫于生计（
+    # 换成了requests
+    res = requests.get(mp3_url, stream=True)
+    with open(file_path, 'wb') as fd:
+        for chunk in res.iter_content():
+            fd.write(chunk)
+    return 'finish'
