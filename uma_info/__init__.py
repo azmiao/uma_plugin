@@ -6,7 +6,6 @@
 版本：1.3.2
 '''
 
-import traceback
 from hoshino import Service, priv, R
 from hoshino.typing import MessageSegment
 from hoshino.util import pic2b64
@@ -304,15 +303,16 @@ async def update_info(bot, ev):
             await bot.send(ev, msg)
         else:
             msg = f'马娘数据库更新在更新{except_uma}时遇到问题，3分钟后将转至自动任务继续更新'
-            sv.logger.info(msg)
+            sv.logger.error(msg)
             await bot.send(ev, msg)
             await asyncio.sleep(180)
             await auto_update_info()
             return
     except Exception as e:
         msg = f'马娘数据库更新失败，3分钟后将转至自动任务继续更新，原因：{e}'
-        traceback.print_exc()
-        sv.logger.info(msg)
+        sv.logger.error(msg)
+        sv.logger.error(type(e)) # 获取错误类型class
+        sv.logger.error(e, exc_info=True) # log中捕获traceback
         await bot.send(ev, msg)
         await asyncio.sleep(180)
         await auto_update_info()
@@ -343,13 +343,15 @@ async def auto_update_info():
             await bot.send_private_msg(user_id=superid, message=msg)
         else:
             msg = f'马娘数据库更新在更新{except_uma}时遇到问题，3分钟后将从该马娘开始继续更新'
-            sv.logger.info(msg)
+            sv.logger.error(msg)
             await asyncio.sleep(180)
             await auto_update_info()
             return
     except Exception as e:
         msg = f'马娘数据库自动更新失败，将在3分钟后继续自动更新，原因：{e}'
-        sv.logger.info(msg)
+        sv.logger.error(msg)
+        sv.logger.error(type(e)) # 获取错误类型class
+        sv.logger.error(e, exc_info=True) # log中捕获traceback
         await asyncio.sleep(180)
         await auto_update_info()
         return
