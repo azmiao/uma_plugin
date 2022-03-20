@@ -41,7 +41,9 @@
 ## 本项目地址：
 https://github.com/azmiao/uma_plugin/
 
-## 更新日志
+## 最近四条更新日志
+
+22-03-20    v1.3.3    节奏榜新增了 友人卡节奏榜
 
 22-03-19    v1.3.2  新增了更新数据时自动下载语音文件，更新到此版本后需要手动更新一下数据，当然等半夜的自动更新也行
 
@@ -49,11 +51,16 @@ https://github.com/azmiao/uma_plugin/
 
 22-03-09    v1.3    新增了“马娘耐力计算器”功能，但数据为 根性与下坡 改版前的数据，且为非常理想的数值
 
+<details>
+<summary>更以前的更新日志</summary>
+
 22-03-09    v1.2    一些调整，以及修改部分文件使之规范化github储存库，方便 git pull, [pull #4](https://github.com/azmiao/uma_plugin/pull/4)
 
 22-03-06    v1.1    新增了“马娘签到”功能
 
 22-03-04    v1.0    first commit
+
+</details>
 
 ## 注意事项
 

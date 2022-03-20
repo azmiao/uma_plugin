@@ -20,6 +20,9 @@ async def generate_url(sup_type):
         chart_url = 'https://wiki.biligame.com/umamusume/SSR根卡节奏榜（Ver.1.15.2）已更新SR织姬'
     elif sup_type == '智卡':
         chart_url = 'https://wiki.biligame.com/umamusume/SSR智卡节奏榜（Ver.1.15.2）已更新周年光钻'
+    elif sup_type == '友人卡':
+        chart_url = 'https://wiki.biligame.com/umamusume/友人卡节奏榜（Ver.1.16.6）至天狼星小队'
+        rank = ''
     img_dict = await get_img(rank, sup_type, chart_url)
     return img_dict
 
