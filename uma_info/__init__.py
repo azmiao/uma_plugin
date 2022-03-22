@@ -309,11 +309,14 @@ async def update_info(bot, ev):
             await auto_update_info()
             return
     except Exception as e:
-        msg = f'马娘数据库更新失败，3分钟后将转至自动任务继续更新，原因：{e}'
-        sv.logger.error(msg)
-        sv.logger.error(type(e)) # 获取错误类型class
-        sv.logger.error(e, exc_info=True) # log中捕获traceback
-        await bot.send(ev, msg)
+        if type(e) == 'IndexError':
+            sv.logger.error('马娘数据 OCR_SPACE API响应失败！将在3分钟后继续自动更新')
+        else:
+            msg = f'马娘数据库自动更新失败，将在3分钟后继续自动更新，原因：{e}'
+            sv.logger.error(msg)
+            sv.logger.error(type(e)) # 获取错误类型class
+            sv.logger.error(e, exc_info=True) # log中捕获traceback
+            await bot.send(ev, msg)
         await asyncio.sleep(180)
         await auto_update_info()
         return
@@ -348,10 +351,13 @@ async def auto_update_info():
             await auto_update_info()
             return
     except Exception as e:
-        msg = f'马娘数据库自动更新失败，将在3分钟后继续自动更新，原因：{e}'
-        sv.logger.error(msg)
-        sv.logger.error(type(e)) # 获取错误类型class
-        sv.logger.error(e, exc_info=True) # log中捕获traceback
+        if type(e) == 'IndexError':
+            sv.logger.error('马娘数据 OCR_SPACE API响应失败！将在3分钟后继续自动更新')
+        else:
+            msg = f'马娘数据库自动更新失败，将在3分钟后继续自动更新，原因：{e}'
+            sv.logger.error(msg)
+            sv.logger.error(type(e)) # 获取错误类型class
+            sv.logger.error(e, exc_info=True) # log中捕获traceback
         await asyncio.sleep(180)
         await auto_update_info()
         return
