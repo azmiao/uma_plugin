@@ -309,7 +309,7 @@ async def update_info(bot, ev):
             await auto_update_info()
             return
     except Exception as e:
-        if type(e) == 'IndexError':
+        if e == 'list index out of range':
             sv.logger.error('马娘数据 OCR_SPACE API响应失败！将在3分钟后继续自动更新')
         else:
             msg = f'马娘数据库自动更新失败，将在3分钟后继续自动更新，原因：{e}'
@@ -351,7 +351,7 @@ async def auto_update_info():
             await auto_update_info()
             return
     except Exception as e:
-        if type(e) == 'IndexError':
+        if e == 'list index out of range':
             sv.logger.error('马娘数据 OCR_SPACE API响应失败！将在3分钟后继续自动更新')
         else:
             msg = f'马娘数据库自动更新失败，将在3分钟后继续自动更新，原因：{e}'
