@@ -172,3 +172,6 @@ data/*
 
 # umamusume_news文件夹下的记录最新时间的文件
 /umamusume_news/prev_time.yml
+
+# uma_face文件夹下的自动生成的表情包配置文件
+/uma_face/img_config.json

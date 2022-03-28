@@ -137,7 +137,7 @@ async def push_bir():
                 cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else f_data[uma_name]['jp_name']
                 tod_list.append(cn_name)
     if not tod_list:
-        sv.logger.info(f'今天没有马娘生日哟')
+        svbr.logger.info(f'今天没有马娘生日哟')
         return
     msg = '今天生日的马娘有：\n' + ' | '.join(tod_list)
     await svbr.broadcast(msg, 'uma_bir_push', 0.2)
