@@ -175,3 +175,6 @@ data/*
 
 # uma_face文件夹下的自动生成的表情包配置文件
 /uma_face/img_config.json
+
+# uma_comic文件夹下的自动生成的漫画配置文件
+/uma_comic/comic_config.json
