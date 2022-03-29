@@ -57,7 +57,7 @@ async def force_update(bot, ev):
 @sv.scheduled_job('cron', hour='4', minute='02')
 async def auto_update():
     img_dict = await get_imgurl()
-    current_dir = os.path.join(os.path.dirname(__file__), f'img_config.json')
+    current_dir = os.path.join(os.path.dirname(__file__), f'comic_config.json')
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         img_data = json.load(f)
     if len(list(img_dict.keys())) > len(list(img_data.keys())):
