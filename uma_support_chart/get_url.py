@@ -4,10 +4,12 @@ import os
 from PIL import Image
 from bs4 import BeautifulSoup
 import json
+import asyncio
 from hoshino import R, logger
 
 # 获取真实的url链接
 async def get_true_url(old_url):
+    await asyncio.sleep(0.5)
     res = httpx.get(old_url, timeout=10)
     soup = BeautifulSoup(res.text, 'lxml')
     redirect = soup.find('div', {"class": "redirectMsg"})
@@ -92,7 +94,6 @@ async def get_image(img_dict, sup_type, chart_url, ver_body):
     # 真实的页面
     res = httpx.get(chart_url, timeout=10)
     soup = BeautifulSoup(res.text, 'lxml')
-    # 目前仅支持一个节奏榜最多两张图片，若以后变成三张图片拼接就需要range(3)了
     name_pattern = re.compile(f'{sup_type}{ver_body}\.\d\.\d[\.\(\d\)]?\.png')
     img_soup_list = soup.find_all('img', {"decoding": "async"})
     for img_soup in img_soup_list:
@@ -151,7 +152,10 @@ async def fix_img(img_dict, sup_type):
 
 # 返回消息
 async def generate_img(sup_type):
-    img_dict, is_update = await generate_url(sup_type)
+    try:
+        img_dict, is_update = await generate_url(sup_type)
+    except httpx.ConnectTimeout:
+        return '请求超时，请重试'
     img_path = R.img('uma_support_chart').path
     end_path = os.path.join(img_path, 'end_img/')
     if not os.path.exists(end_path):
