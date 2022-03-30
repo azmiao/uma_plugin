@@ -89,6 +89,11 @@ async def generate_img(sup_type):
             all_height += data_dict[img_name]['height']
             all_width = data_dict[img_name]['width']
         end_img = Image.new('RGB', (all_width, all_height))
+        all_height = 0
+        for img_name in list(data_dict.keys()):
+            img_tmp = data_dict[img_name]['img']
+            end_img.paste(img_tmp, (0, all_height))
+            all_height += data_dict[img_name]['height']
         return end_img, 'old'
     for img_name in list(img_dict.keys()):
         current_dir = os.path.join(R.img('uma_support_chart').path, f'{img_name}')
@@ -112,11 +117,37 @@ async def generate_img(sup_type):
 
 async def generate_old_img(sup_type):
     sup_type = sup_type.replace('卡', '')
-    file_name_pattern = re.compile(f'力\S+\.png')
+    file_name_pattern = re.compile(f'{sup_type}(\d)\.(\d+)\.(\d)\.(\d)\.(\S+\.)?png')
     path = R.img('uma_support_chart').path
     file_list = []
+    file_del_list = []
     if os.path.isdir(path) and os.listdir(path):
         for file in os.listdir(path):
-            if re.match(file_name_pattern, file):
+            file_tmp = re.match(file_name_pattern, file)
+            if file_tmp:
+                file_ver = file_tmp.group(1) + file_tmp.group(2) + file_tmp.group(3)
+                file_del_list.append((int(file_ver), file_tmp))
                 file_list.append(str(file))
+        await del_eld_img(file_del_list)
     return file_list
+
+# 清理更早版本的图片
+async def del_eld_img(file_del_list):
+    if len(file_del_list) == 1:
+        return
+    new_ver = 0
+    for del_img in file_del_list:
+        new_ver = del_img[0]
+        for del_img_tmp in file_del_list:
+            if del_img_tmp[0] < new_ver:
+                flag = await del_it(del_img_tmp[1])
+
+# 删文件
+async def del_it(file_tmp):
+    path = R.img('uma_support_chart').path
+    img_path = os.path.join(path, file_tmp)
+    if os.path.exists(img_path):
+        os.remove(img_path)
+        return True
+    else:
+        return False
