@@ -62,6 +62,8 @@ async def get_cn(current_dir):
         jp_name = f_data[en_name]['jp_name']
         try:
             cn_name = uma_dict[jp_name]['cn_name']
+            if cn_name == '乌拉拉':
+                cn_name = '春' + cn_name
         except:
             cn_name = ''
         try:
