@@ -178,3 +178,6 @@ data/*
 
 # uma_comic文件夹下的自动生成的漫画配置文件
 /uma_comic/comic_config.json
+
+# uma_support_chart文件夹下的自动生成的节奏榜配置文件
+/uma_support_chart/sup_config.json
