@@ -31,7 +31,7 @@ class news_class:
 
 # 获取列表
 async def get_item():
-    asyncio.sleep(0.5)
+    await asyncio.sleep(0.5)
     url = 'https://umamusume.jp/api/ajax/pr_info_index?format=json'
     data = {}
     data['announce_label'] = 0
@@ -186,7 +186,7 @@ async def second_replace(news_text):
 
 # 翻译新闻
 async def translate_news(news_id):
-    asyncio.sleep(0.5)
+    await asyncio.sleep(0.5)
     url = 'https://umamusume.jp/api/ajax/pr_info_detail?format=json'
     data = {}
     data['announce_id'] = news_id

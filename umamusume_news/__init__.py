@@ -86,7 +86,7 @@ async def select_source(bot, ev):
             msg = f'马娘新闻《{news.news_title}》翻译内容如下：\n\n'
             news_url_tmp = news.news_url
             news_id = int(news_url_tmp.replace('▲https://umamusume.jp/news/detail.php?id=', ''))
-            asyncio.sleep(0.5)
+            await asyncio.sleep(0.5)
             msg += await translate_news(news_id)
             try:
                 await bot.send(ev, msg)
