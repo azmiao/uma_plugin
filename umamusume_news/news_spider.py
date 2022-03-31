@@ -9,9 +9,10 @@ import operator
 from .translator_lite.apis import youdao
 from io import BytesIO
 import random
-import time
+import asyncio
 from hoshino import R
 
+# 随机挑选一个小可爱作为header
 user_agent_list = ["Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36",
@@ -19,16 +20,18 @@ user_agent_list = ["Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHT
     "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36",
     "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)",
     "Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10.5; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15",
-    ]
+]
 
+# 新闻类
 class news_class:
     def __init__(self,news_time,news_url,news_title):
         self.news_time = news_time
         self.news_url = news_url
         self.news_title = news_title
 
-def get_item():
-    time.sleep(1)
+# 获取列表
+async def get_item():
+    asyncio.sleep(0.5)
     url = 'https://umamusume.jp/api/ajax/pr_info_index?format=json'
     data = {}
     data['announce_label'] = 0
@@ -45,13 +48,14 @@ def get_item():
         'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
         'content-type': 'application/json;charset=UTF-8'
     }
-    with requests.post(url=url,data=json.dumps(data),headers=headers, timeout=(5,10), stream = True) as res:
+    with requests.post(url = url, data = json.dumps(data), headers = headers, timeout=(5,10), stream = True) as res:
         res_dict = res.json()
         res.close()
     return res_dict
 
-def sort_news():
-    res_dict = get_item()
+# 调整新闻列表
+async def sort_news():
+    res_dict = await get_item()
     news_list = []
     for n in range(0, 5):
         if (res_dict['information_list'][n]['update_at'] == None):
@@ -68,8 +72,9 @@ def sort_news():
     news_list.sort(key = news_key, reverse = True)
     return news_list
 
-def get_news():
-    news_list = sort_news()
+# 获取新闻
+async def get_news():
+    news_list = await sort_news()
     msg = '◎◎ 马娘官网新闻 ◎◎\n'
     for news in news_list:
         time_tmp = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
@@ -82,8 +87,9 @@ def get_news():
     file.close()
     return msg
 
-def news_broadcast():
-    news_list = sort_news()
+# 获取新闻更新
+async def news_broadcast():
+    news_list = await sort_news()
     current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
     file = open(current_dir, 'r', encoding="UTF-8")
     init_time = str(file.read())
@@ -111,7 +117,7 @@ def news_broadcast():
 # 函数单独写一个是怎么回事呢？函数相信大家都很熟悉，但是函数单独写一个是怎么回事呢，下面就让小编带大家一起了解吧。
 # 函数单独写一个，其实就是我想单独写一个函数，大家可能会很惊讶函数怎么会单独写一个呢？但事实就是这样，小编也感到非常惊讶。
 # 这就是关于函数单独写一个的事情了，大家有什么想法呢，欢迎在评论区告诉小编一起讨论哦！
-def judge() -> bool:
+async def judge() -> bool:
     current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
     if (os.path.exists(current_dir) == True):
         file = open(current_dir, 'r', encoding="UTF-8")
@@ -127,7 +133,7 @@ def judge() -> bool:
         file.write(str(init_time))
         file.close()
 
-    news_list = sort_news()
+    news_list = await sort_news()
     for news in news_list:
         prev_time = news.news_time
         break
@@ -138,7 +144,7 @@ def judge() -> bool:
         return False
 
 # 替换不必要的文本
-def replace_text(text_tmp):
+async def replace_text(text_tmp):
     # 替换多余的html关键字
     text = text_tmp.replace('&nbsp;', ' ')
     text = re.sub(r'<div.*?>', '', text)
@@ -174,13 +180,13 @@ def replace_text(text_tmp):
     return text
 
 # 翻译完如果把中文又翻译一遍导致出问题可以在这里，再次替换一下？
-def second_replace(news_text):
+async def second_replace(news_text):
     # news_text = news_text.replace('', '') # 我先注释了
     return news_text
 
 # 翻译新闻
-def translate_news(news_id):
-    time.sleep(1)
+async def translate_news(news_id):
+    asyncio.sleep(0.5)
     url = 'https://umamusume.jp/api/ajax/pr_info_detail?format=json'
     data = {}
     data['announce_id'] = news_id
@@ -205,13 +211,13 @@ def translate_news(news_id):
             flag = 1
         else:
             news_msg = res_dict['detail']['message']
-        news_msg = replace_text(news_msg)
+        news_msg = await replace_text(news_msg)
     except:
         news_text = '错误！马娘官网连接失败'
         return news_text
     try:
         news_text = youdao(news_msg, 'ja', 'zh')
-        news_text = second_replace(news_text)
+        news_text = await second_replace(news_text)
         if flag == 1:
             news_text = '(该新闻特别长，因此只显示前1000个字符)\n\n' + news_text
         if res_dict['detail']['image_big'] != '':

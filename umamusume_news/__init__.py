@@ -1,9 +1,8 @@
 import os
 import shutil
-import hoshino
-from hoshino import Service, R, priv
-from hoshino.typing import *
-from hoshino.util import FreqLimiter, concat_pic, pic2b64, silence
+import asyncio
+from hoshino import Service, R
+from hoshino.util import FreqLimiter
 from .news_spider import *
 
 sv_help = '''=====功能=====
@@ -36,7 +35,7 @@ async def help(bot, ev):
 @sv.on_fullmatch(('马娘新闻', '赛马娘新闻'))
 async def uma_news(bot, ev):
     try:
-        msg = get_news()
+        msg = await get_news()
     except:
         msg = '获取新闻失败，请等5分钟后再次尝试'
     await bot.send(ev, msg)
@@ -45,9 +44,10 @@ async def uma_news(bot, ev):
 @svuma.scheduled_job('cron', minute='*/5')
 async def uma_news_poller():
     try:
-        if (judge() == True):
+        flag = await judge()
+        if flag:
             svuma.logger.info('检测到马娘新闻更新！')
-            await svuma.broadcast(news_broadcast(), 'umamusume-news-poller', 0.2)
+            await svuma.broadcast(await news_broadcast(), 'umamusume-news-poller', 0.2)
         else:
             svuma.logger.info('暂未检测到马娘新闻更新')
             return
@@ -62,7 +62,7 @@ async def select_source(bot, ev):
         await bot.send(ev, f'请勿频繁操作，冷却时间为{_limtime}秒！', at_sender=True)
         return
     try:
-        news_list = sort_news()
+        news_list = await sort_news()
     except Exception as e:
         msg = f'错误！马娘官网连接失败，原因：{e}'
         await bot.send(ev, msg)
@@ -86,7 +86,8 @@ async def select_source(bot, ev):
             msg = f'马娘新闻《{news.news_title}》翻译内容如下：\n\n'
             news_url_tmp = news.news_url
             news_id = int(news_url_tmp.replace('▲https://umamusume.jp/news/detail.php?id=', ''))
-            msg = msg + translate_news(news_id)
+            asyncio.sleep(0.5)
+            msg += await translate_news(news_id)
             try:
                 await bot.send(ev, msg)
             except Exception as err:
