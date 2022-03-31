@@ -73,6 +73,7 @@ async def get_img(img_dict, sup_type, chart_url):
     # 比较版本号
     ver_int = int(ver.replace('.', ''))
     ver_old_int = 0
+    ver_old = 0
     if img_dict[sup_type].get('version', None):
         ver_old = img_dict[sup_type]['version']
         ver_old_int = int(ver_old.replace('.', ''))
@@ -86,7 +87,11 @@ async def get_img(img_dict, sup_type, chart_url):
         img_dict[sup_type]['img_data'] = {}
         # 删除旧版图片
         await del_img(sup_type)
-        img_dict = await get_image(img_dict, sup_type, chart_url, ver_body,)
+        # 获取新图片
+        img_dict = await get_image(img_dict, sup_type, chart_url, ver_body)
+        # 如果img_data是空就说明网页更新但图片未上传，恢复旧版本号
+        if not img_dict[sup_type]['img_data']:
+            img_dict[sup_type]['version'] = ver_old
     return img_dict, is_update
 
 # 获取详细图片数据
@@ -164,11 +169,16 @@ async def generate_img(sup_type):
     # 没有更新时，直接发送本地图片
     if not is_update:
         logger.info(f'{sup_type}卡节奏榜没有更新，将发送本地图片文件')
-        # 图片丢失就再合成一下
+        # 图片丢失就再合成一下，正常情况不会运行到这
         if not os.path.exists(end_img_path):
             logger.info(f'本地{sup_type}卡节奏榜图片文件丢失，正在重新合成')
             end_img = await fix_img(img_dict, sup_type)
             end_img.save(end_img_path, 'PNG')
+        msg = f'[CQ:image,file=file:///{os.path.abspath(end_img_path)}]'
+        return msg
+    # 检测到更新，但是图片还没上传
+    if not img_dict[sup_type]['img_data']:
+        logger.info(f'{sup_type}卡节奏榜有更新，但未获取到图片，将发送旧版图片')
         msg = f'[CQ:image,file=file:///{os.path.abspath(end_img_path)}]'
         return msg
     # 有更新就先合成完整图片
