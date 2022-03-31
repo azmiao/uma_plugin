@@ -31,7 +31,7 @@ async def get_help(bot, ev):
     await bot.send(ev, sv_help)
 
 # 支持1到10个字符的马娘名字
-@sv.on_rex(r'^(\S{1,10})表情包')
+@sv.on_rex(r'^(\S{1,10})表情包$')
 async def get_umaface(bot, ev):
     uma_name_tmp = ev['match'].group(1)
     if uma_name_tmp == '马娘':

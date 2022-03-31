@@ -28,7 +28,7 @@ sv = Service('uma_support_chart', help_=sv_help)
 async def help(bot, ev):
     await bot.send(ev, sv_help)
 
-@sv.on_rex(r'^(\S{1,2})卡节奏榜')
+@sv.on_rex(r'^(\S{1,2})卡节奏榜$')
 async def SSR_speed_chart(bot, ev):
     sup_type = ev['match'].group(1)
     if sup_type not in ['速', '耐', '力', '根', '智', '友人']:
