@@ -122,6 +122,7 @@ def replace_update_name(member_dict: dict, game_name: str):
 # 获取大图（小图快爬）
 async def _modify_avatar_url(session: aiohttp.ClientSession, game_name: str, char_name: str):
     if game_name == 'pretty_card':
+        char_name = char_name.replace('?', '%3F')
         async with session.get(f'https://wiki.biligame.com/umamusume/{char_name}', timeout=7) as res:
             soup = BeautifulSoup(await res.text(), 'lxml')
             img_url = soup.find('div', {'class': 'support_card-left'}).find('div').find('img').get('src')
