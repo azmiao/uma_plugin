@@ -225,13 +225,13 @@ async def translate_news(news_id):
             response = requests.get(img_url)
             ls_f = base64.b64encode(BytesIO(response.content).read())
             imgdata = base64.b64decode(ls_f)
-            save_dir = R.img('umamusume_news').path
+            save_dir = os.path.join(R.img('umamusume').path, 'umamusume_news/')
             path_dir = os.path.join(save_dir,'news_img.jpg')
             file = open(path_dir,'wb')
             file.write(imgdata)
             file.close()
             news_img = ' '.join(map(str, [
-                R.img(f'umamusume_news/news_img.jpg').cqcode,
+                R.img(f'umamusume/umamusume_news/news_img.jpg').cqcode,
             ]))
             news_text = f'{news_img}' + news_text
     except Exception as e:

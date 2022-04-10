@@ -127,7 +127,7 @@ async def uma_gacha_reload(bot, ev):
 @sv.scheduled_job('cron', hour='4', minute='00')
 async def auto_update():
     sv.logger.info('开始检测马娘卡池是否有更新')
-    draw_path = R.img('uma_gacha').path
+    draw_path = os.path.join(R.img('umamusume').path, 'uma_gacha/')
     with open(f'{draw_path}/draw_card_up/pretty_up_char.json', encoding='UTF-8') as f:
         data = json.load(f)
     up_time = str(data['char']['time'])

@@ -45,7 +45,7 @@ async def create_config(img_dict):
 
 # 下载图片
 async def download_img(id, url):
-    img_path = R.img('uma_face').path
+    img_path = os.path.join(R.img('umamusume').path, 'uma_face/')
     if not os.path.exists(img_path):
         os.mkdir(img_path)
     current_dir = os.path.join(img_path, f'{id}.png')
@@ -81,7 +81,7 @@ async def get_face_uma(uma_name_tmp):
     uma_name = await get_en_name(uma_name_tmp)
     if not uma_name:
         return ''
-    path = R.img('uma_face').path
+    path = os.path.join(R.img('umamusume').path, 'uma_face/')
     current_dir = os.path.join(os.path.dirname(__file__), f'img_config.json')
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         img_data = json.load(f)
@@ -102,7 +102,7 @@ async def get_face_uma(uma_name_tmp):
 
 # 按编号的表情包
 async def get_face_id(id):
-    path = R.img('uma_face').path
+    path = os.path.join(R.img('umamusume').path, 'uma_face/')
     img_path = os.path.join(path, f'{id}.png')
     if not os.path.exists(img_path):
         lenth = len(os.listdir(path))
@@ -112,7 +112,7 @@ async def get_face_id(id):
 
 # 随机表情包
 async def get_face_random():
-    path = R.img('uma_face').path
+    path = os.path.join(R.img('umamusume').path, 'uma_face/')
     if not os.listdir(path):
         return 'res/img/uma_face/下没有表情包文件呢，请联系维护组检查'
     file_name = random.choice(os.listdir(path))

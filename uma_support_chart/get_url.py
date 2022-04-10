@@ -111,7 +111,7 @@ async def get_image(img_dict, sup_type, chart_url, ver_body):
 
 # 下载图片
 async def download_img(file_name, url):
-    img_path = R.img('uma_support_chart').path
+    img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
     if not os.path.exists(img_path):
         os.mkdir(img_path)
     current_dir = os.path.join(img_path, file_name)
@@ -122,7 +122,7 @@ async def download_img(file_name, url):
 
 # 删除旧版图片
 async def del_img(sup_type):
-    img_path = R.img('uma_support_chart').path
+    img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
     img_pattern = re.compile(f'{sup_type}\S+\.png')
     for file in os.listdir(img_path):
         file_name = re.match(img_pattern, file)
@@ -136,7 +136,7 @@ async def del_img(sup_type):
 async def fix_img(img_dict, sup_type):
     data_dict = {}
     for img_name in list(img_dict[sup_type]['img_data'].keys()):
-        current_dir = os.path.join(R.img('uma_support_chart').path, f'{img_name}')
+        current_dir = os.path.join(os.path.join(R.img('umamusume').path, 'uma_support_chart/'), f'{img_name}')
         img = Image.open(current_dir)
         data_dict[img_name] = {}
         data_dict[img_name]['width'] = img.width
@@ -161,7 +161,7 @@ async def generate_img(sup_type):
         img_dict, is_update = await generate_url(sup_type)
     except httpx.ConnectTimeout:
         return '请求超时，请重试'
-    img_path = R.img('uma_support_chart').path
+    img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
     end_path = os.path.join(img_path, 'end_img/')
     if not os.path.exists(end_path):
         os.mkdir(end_path)

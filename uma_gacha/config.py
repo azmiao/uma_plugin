@@ -8,7 +8,7 @@ except ModuleNotFoundError:
     import json
 
 logger = log.new_logger('config', hoshino.config.DEBUG)
-DRAW_PATH = R.img('uma_gacha').path
+DRAW_PATH = os.path.join(R.img('umamusume').path, 'uma_gacha/')
 
 if not os.path.exists(DRAW_PATH):
     os.mkdir(f'{DRAW_PATH}')

@@ -49,7 +49,7 @@ async def create_config(img_dict):
 
 # 下载图片
 async def download_img(id, url):
-    img_path = R.img('uma_comic').path
+    img_path = os.path.join(R.img('umamusume').path, 'uma_comic/')
     if not os.path.exists(img_path):
         os.mkdir(img_path)
     current_dir = os.path.join(img_path, f'uma_comic_{id}.jpg')
@@ -86,7 +86,7 @@ async def get_comic_uma(uma_name_tmp):
     uma_name = await get_en_name(uma_name_tmp)
     if not uma_name:
         return ''
-    path = R.img('uma_comic').path
+    path = os.path.join(R.img('umamusume').path, 'uma_comic/')
     current_dir = os.path.join(os.path.dirname(__file__), f'comic_config.json')
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         img_data = json.load(f)
@@ -106,7 +106,7 @@ async def get_comic_uma(uma_name_tmp):
 
 # 按编号的漫画
 async def get_comic_id(id):
-    path = R.img('uma_comic').path
+    path = os.path.join(R.img('umamusume').path, 'uma_comic/')
     img_path = os.path.join(path, f'uma_comic_{id}.jpg')
     if not os.path.exists(img_path):
         lenth = len(os.listdir(path))
@@ -116,7 +116,7 @@ async def get_comic_id(id):
 
 # 随机漫画
 async def get_comic_random():
-    path = R.img('uma_comic').path
+    path = os.path.join(R.img('umamusume').path, 'uma_comic/')
     if not os.listdir(path):
         return 'res/img/uma_comic/下没有漫画文件呢，请联系维护组检查'
     file_name = random.choice(os.listdir(path))

@@ -183,11 +183,12 @@ async def send_ocr(en_name, url):
 
 # ocr_space接口
 async def download_ocr(en_name, url):
-    if not os.path.exists(R.img('uma_bir').path):
-        os.mkdir(R.img('uma_bir').path)
+    path = os.path.join(R.img('umamusume').path, 'uma_bir/')
+    if not os.path.exists(path):
+        os.mkdir(path)
     response = await aiorequests.get(url, timeout=10)
     resp_data = await response.content
-    current_dir = os.path.join(R.img('uma_bir').path, f'{en_name}.png')
+    current_dir = os.path.join(path, f'{en_name}.png')
     with open(current_dir, 'wb') as f:
         f.write(resp_data)
 
@@ -259,10 +260,10 @@ async def download_ocr(en_name, url):
 # 下载语音
 async def DownloadFile(en_name, mp3_url):
     mp3_name = en_name + '.mp3'
-    save_path = R.img('uma_voice').path
-    if not os.path.exists(save_path):
-        os.mkdir(R.img('uma_voice').path)
-    file_path = os.path.join(save_path, mp3_name)
+    path = os.path.join(R.img('umamusume').path, 'uma_voice/')
+    if not os.path.exists(path):
+        os.mkdir(path)
+    file_path = os.path.join(path, f'{mp3_name}')
     if os.path.exists(file_path):
         return 'exist'
     # 研究了下原来是aioreq不支持iter_content分块的编码请求，先这样将就吧，起码是异步了
