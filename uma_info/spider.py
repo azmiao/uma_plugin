@@ -2,6 +2,8 @@ import json
 import time
 import os
 import re
+from PIL import Image
+
 from .chinesefy import get_cn_name
 import hoshino
 from hoshino import R
@@ -191,6 +193,12 @@ async def download_ocr(en_name, url):
     current_dir = os.path.join(path, f'{en_name}.png')
     with open(current_dir, 'wb') as f:
         f.write(resp_data)
+    # 调整分辨率
+    img = Image.open(current_dir)
+    imgSize = img.size
+    if imgSize != (1292, 836):
+        out = img.resize((1292, 836), Image.ANTIALIAS)
+        out.save(current_dir)
 
     api = 'https://api.ocr.space/parse/image'
     apikey = APIKEY
@@ -218,23 +226,18 @@ async def download_ocr(en_name, url):
         bir_list = bir.split('-', 1)
         bir = '-'.join(str(int(bir_num, 10)) for bir_num in bir_list)
     height_tmp = re.search(r'([0-9][0-9][0-9])5', text)
-    height_tmp_2 = re.search(r'([0-9][0-9][0-9])cm', text)
-    height_tmp_3 = re.search(r'([0-9][0-9][0-9])。m', text)
-    height_tmp_4 = re.search(r'[0-9][0-9][0-9]', text)
+    height_tmp_2 = re.search(r'([0-9][0-9][0-9])(c|C|。)m', text)
+    height_tmp_3 = re.search(r'[0-9][0-9][0-9]', text)
     if height_tmp:
         height = height_tmp.group(1)
         weight_tmp = re.search(r'([0-9][0-9][0-9])5(\S*)(B[0-9][0-9])', text)
         weight = weight_tmp.group(2) if weight_tmp else weight
     elif height_tmp_2:
         height = height_tmp_2.group(1)
-        weight_tmp = re.search(r'([0-9][0-9][0-9])cm(\S*)(B[0-9][0-9])', text)
-        weight = weight_tmp.group(2) if weight_tmp else weight
+        weight_tmp = re.search(r'([0-9][0-9][0-9])(c|C|。)m(\S*)(B[0-9][0-9])', text)
+        weight = weight_tmp.group(3) if weight_tmp else weight
     elif height_tmp_3:
-        height = height_tmp_3.group(1)
-        weight_tmp = re.search(r'([0-9][0-9][0-9])。m(\S*)(B[0-9][0-9])', text)
-        weight = weight_tmp.group(2) if weight_tmp else weight
-    elif height_tmp_4:
-        height = height_tmp_4.group(0)
+        height = height_tmp_3.group(0)
         weight_tmp = re.search(r'([0-9][0-9][0-9])(\S*)(B[0-9][0-9])', text)
         weight = weight_tmp.group(2) if weight_tmp else weight
     else:

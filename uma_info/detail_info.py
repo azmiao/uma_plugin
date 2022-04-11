@@ -5,11 +5,11 @@ from .adaptability import get_adaptability
 from hoshino import R
 
 async def get_detail(uma_name, f_data):
-    im = Image.open(os.path.join(R.img('uma_bir').path, f'{uma_name}.png'))
-    current_dir = os.path.join(R.img('uma_bir').path, f'uniform/{uma_name}_uniform.png')
+    im = Image.open(os.path.join(R.img('umamusume').path, f'uma_bir/{uma_name}.png'))
+    current_dir = os.path.join(R.img('umamusume').path, f'uma_bir/uniform/{uma_name}_uniform.png')
     uniform = str(f_data[uma_name]['uniform_img'])
-    if not os.path.exists(os.path.join(R.img('uma_bir').path, f'uniform/')):
-        os.mkdir(os.path.join(R.img('uma_bir').path, f'uniform/'))
+    if not os.path.exists(os.path.join(R.img('umamusume').path, f'uma_bir/uniform/')):
+        os.mkdir(os.path.join(R.img('umamusume').path, f'uma_bir/uniform/'))
     if not os.path.exists(current_dir):
         await download_img(uniform, current_dir)
     uniform_img = Image.open(current_dir).convert("RGBA")

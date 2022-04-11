@@ -360,7 +360,7 @@ async def auto_update_info():
             await asyncio.sleep(180)
             await auto_update_info()
             return
-    except IndexError:
+    except (IndexError, TypeError):
         sv.logger.error('马娘数据 OCR_SPACE API响应失败！将在3分钟后继续自动更新')
         await asyncio.sleep(180)
         await auto_update_info()
