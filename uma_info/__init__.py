@@ -57,7 +57,9 @@ async def get_help(bot, ev):
 async def get_tod(bot, ev):
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         f_data = json.load(f)
-        f.close()
+    rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
+    with open(rep_dir, 'r', encoding = 'UTF-8') as f:
+        rep_data = json.load(f)
     tod = datetime.datetime.now().strftime('%m-%d')
     tod_list = tod.split('-', 1)
     tod = '-'.join(str(int(tod_num, 10)) for tod_num in tod_list)
@@ -67,7 +69,7 @@ async def get_tod(bot, ev):
     for uma_name in name_list:
         if f_data[uma_name]['category'] == 'umamusume':
             if str(f_data[uma_name]['bir']) == str(tod):
-                cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else f_data[uma_name]['jp_name']
+                cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else rep_data[uma_name][0]
                 tod_list.append(cn_name)
     if not tod_list:
         msg = f'今天没有马娘生日哟'
@@ -105,14 +107,16 @@ async def search_uma(bot, ev):
     uma_bir_tmp = ev.message
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         f_data = json.load(f)
-        f.close()
+    rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
+    with open(rep_dir, 'r', encoding = 'UTF-8') as f:
+        rep_data = json.load(f)
     uma_list = []
     name_list = list(f_data.keys())
     name_list.remove('current_chara')
     for uma_name in name_list:
         if f_data[uma_name]['category'] == 'umamusume':
             if str(f_data[uma_name]['bir']) == str(uma_bir_tmp):
-                cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else f_data[uma_name]['jp_name']
+                cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else rep_data[uma_name][0]
                 uma_list.append(cn_name)
     if not uma_list:
         msg = f'这天没有马娘生日哟'
@@ -125,6 +129,9 @@ async def push_bir():
     bot = hoshino.get_bot()
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         f_data = json.load(f)
+    rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
+    with open(rep_dir, 'r', encoding = 'UTF-8') as f:
+        rep_data = json.load(f)
     tod = datetime.datetime.now().strftime('%m-%d')
     tod_list = tod.split('-', 1)
     tod = '-'.join(str(int(tod_num, 10)) for tod_num in tod_list)
@@ -134,7 +141,7 @@ async def push_bir():
     for uma_name in name_list:
         if f_data[uma_name]['category'] == 'umamusume':
             if f_data[uma_name]['bir'] == str(tod):
-                cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else f_data[uma_name]['jp_name']
+                cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else rep_data[uma_name][0]
                 tod_list.append(cn_name)
     if not tod_list:
         svbr.logger.info(f'今天没有马娘生日哟')
