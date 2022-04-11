@@ -155,14 +155,22 @@ async def fix_img(img_dict, sup_type):
     logger.info(f'{sup_type}卡节奏榜图片合成成功，即将准备发送')
     return end_img
 
+# 删除错误的信息配置
+async def del_err_info(sup_type):
+    current_dir = os.path.join(os.path.dirname(__file__), 'sup_config.json')
+    with open(current_dir, 'r', encoding='UTF-8') as f:
+        img_dict = json.load(f)
+    img_dict.pop(sup_type)
+    with open(current_dir, 'w', encoding='UTF-8') as f:
+        json.dump(img_dict, f, indent=4, ensure_ascii=False)
+
 # 返回消息
 async def generate_img(sup_type):
     try:
         img_dict, is_update = await generate_url(sup_type)
     except httpx.ConnectTimeout:
         return '请求超时，请重试'
-    img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
-    end_path = os.path.join(img_path, 'end_img/')
+    end_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/end_img/')
     if not os.path.exists(end_path):
         os.mkdir(end_path)
     end_img_path = os.path.join(end_path, f'end_{sup_type}.png')
@@ -172,7 +180,14 @@ async def generate_img(sup_type):
         # 图片丢失就再合成一下，正常情况不会运行到这
         if not os.path.exists(end_img_path):
             logger.info(f'本地{sup_type}卡节奏榜图片文件丢失，正在重新合成')
-            end_img = await fix_img(img_dict, sup_type)
+            try:
+                end_img = await fix_img(img_dict, sup_type)
+            # 如果配置里有信息，但实际没有图片
+            except UnboundLocalError as e:
+                await del_err_info(sup_type)
+                msg_ = f'遇到特殊问题{e}，因此已清除缓存信息，请尝试重新使用命令“{sup_type}卡节奏榜”'
+                logger.info(msg_)
+                return msg_
             end_img.save(end_img_path, 'PNG')
         msg = f'[CQ:image,file=file:///{os.path.abspath(end_img_path)}]'
         return msg
