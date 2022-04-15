@@ -181,3 +181,6 @@ data/*
 
 # uma_support_chart文件夹下的自动生成的节奏榜配置文件
 /uma_support_chart/sup_config.json
+
+# uma_tasks文件夹下的自动生成的马娘限时任务信息文件
+/uma_tasks/tasks_config.json

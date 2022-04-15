@@ -290,7 +290,7 @@ async def update_info(bot, ev):
     if ENABLE_OCR_SPACE:
         msg = '正在开始更新马娘数据库\n由于使用了ocrspace接口，可能不稳定，稍后会将部分图片保存至本地res目录下的uma_bir文件夹'
         if not APIKEY:
-            msg = '您已使用了ocrspace接口，但未获取到APIKEY，请到`spider.py`添加后重启hoshino再使用本功能。\n若不需要请到`spider.py`关闭ocrspace接口'
+            msg = '您已使用了ocrspace接口，但未获取到APIKEY，请到`APIKEY.txt`添加后重启hoshino再使用本功能。\n若不需要请到`spider.py`关闭ocrspace接口'
             await bot.finish(ev, msg)
     else:
         # msg = '正在开始更新马娘数据库\n由于使用了自带 QQ接口，比较稳定，但会发送私聊图片至维护组QQ，不会将图片保存在本地'

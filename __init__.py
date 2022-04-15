@@ -14,6 +14,7 @@ sv_help = '''
 马娘相性帮助
 马娘表情包帮助
 马娘漫画帮助
+马娘限时任务帮助
 '''.strip()
 
 sv = Service('uma_help', help_ = sv_help)
