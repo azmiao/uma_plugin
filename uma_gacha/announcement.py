@@ -188,7 +188,10 @@ class PrettyAnnouncement:
             data['card']['title'] = '支援卡：' + ' & '.join(str(y) for y in card_up_list)
             img_url_list = []
             for center_img in context.find_all('center'):
-                img_url_list.append(center_img.find('img')['src'])
+                if center_img.find('img'):
+                    img_url_list.append(center_img.find('img')['src'])
+                else:
+                    img_url_list.append('')
             data['char']['pool_img'] = img_url_list[1]
             data['card']['pool_img'] = img_url_list[2]
         except TimeoutError:
