@@ -9,3 +9,4 @@ pypinyin==0.46.0
 PyYAML==6.0
 requests==2.27.1
 ujson==5.1.0
+prettytable==3.2.0
