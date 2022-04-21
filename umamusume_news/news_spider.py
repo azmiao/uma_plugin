@@ -124,7 +124,7 @@ async def judge() -> bool:
         init_time = str(file.read())
         file.close()
     else:
-        news_list = sort_news()
+        news_list = await sort_news()
         for news in news_list:
             init_time = news.news_time
             break
