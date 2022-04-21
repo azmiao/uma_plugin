@@ -82,18 +82,16 @@ async def get_news():
         msg = msg + '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.news_url + '\n'
     current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
     prev_time = news_list[0].news_time
-    file = open(current_dir, 'w', encoding="UTF-8")
-    file.write(str(prev_time))
-    file.close()
+    with open(current_dir, 'w', encoding="UTF-8") as f:
+        f.write(str(prev_time))
     return msg
 
 # 获取新闻更新
 async def news_broadcast():
     news_list = await sort_news()
     current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
-    file = open(current_dir, 'r', encoding="UTF-8")
-    init_time = str(file.read())
-    file.close()
+    with open(current_dir, 'r', encoding="UTF-8") as f:
+        init_time = str(f.read())
     init_time = datetime.datetime.strptime(init_time, '%Y-%m-%d %H:%M:%S')
     msg = '◎◎ 马娘官网新闻更新 ◎◎\n'
     for news in news_list:
@@ -108,9 +106,8 @@ async def news_broadcast():
     for news in news_list:
         set_time = news.news_time
         break
-    file = open(current_dir, 'w', encoding="UTF-8")
-    file.write(str(set_time))
-    file.close()
+    with open(current_dir, 'w', encoding="UTF-8") as f:
+        f.write(str(set_time))
     return msg
 
 # 判断一下是否有更新，为什么要单独写一个函数呢
@@ -119,21 +116,17 @@ async def news_broadcast():
 # 这就是关于函数单独写一个的事情了，大家有什么想法呢，欢迎在评论区告诉小编一起讨论哦！
 async def judge() -> bool:
     current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
-    if (os.path.exists(current_dir) == True):
-        file = open(current_dir, 'r', encoding="UTF-8")
-        init_time = str(file.read())
-        file.close()
+    news_list = await sort_news()
+    if os.path.exists(current_dir):
+        with open(current_dir, 'r', encoding="UTF-8") as f:
+            init_time = str(f.read())
     else:
-        news_list = await sort_news()
         for news in news_list:
             init_time = news.news_time
             break
         current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
-        file = open(current_dir, 'w', encoding="UTF-8")
-        file.write(str(init_time))
-        file.close()
-
-    news_list = await sort_news()
+        with open(current_dir, 'w', encoding="UTF-8") as f:
+            f.write(str(init_time))
     for news in news_list:
         prev_time = news.news_time
         break
