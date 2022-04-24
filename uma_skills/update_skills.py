@@ -44,8 +44,8 @@ async def update_info():
         for each_td in each_tr.find_all('td'):
             each_td = each_td.text.replace('\n', '')
             each_tr_list.append(each_td)
-        skill_name_jp = each_tr_list[1]
-        skill_name_cn = each_tr_list[2]
+        skill_name_jp = each_tr_list[1].replace(' ', '_')
+        skill_name_cn = each_tr_list[2].replace(' ', '_')
         # 额外处理一下继承技能
         if rarity == '普通·继承':
             skill_name_jp = '继承技/' + skill_name_jp

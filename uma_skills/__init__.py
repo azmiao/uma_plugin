@@ -35,7 +35,7 @@ skill_type = ['被动（速度）', '被动（耐力）', '被动（力量）', 
 params = rarity + limit + color + skill_type
 
 sv_help = f'''=====命令=====
-[查技能 xxx] xxx为中/日文技能名，注意继承后的固有名为 "继承技/(固有名)"，例如"继承技/113転び114起き"
+[查技能 xxx] xxx为中/日文技能名，技能名中的空格请替换为下划线"_"。注意继承后的固有名为 "继承技/(固有名)"，例如"继承技/113転び114起き"
 
 [查技能 (条件1) (条件2)...] 查技能后面可以加任意1个或多个条件，用空格隔开，例如"查技能 通用 妨害（速度）"，条件可选项如下
 
@@ -58,7 +58,7 @@ async def get_help(bot, ev):
     await bot.send(ev, sv_help)
 
 @sv.on_prefix('查技能')
-async def check_meanings(bot, ev):
+async def check_skill(bot, ev):
     alltext = ev.message.extract_plain_text().replace(')', '）').replace('(', '（')
     skill_list = alltext.split(' ')
     with open(current_dir, 'r', encoding='UTF-8') as f:
