@@ -184,3 +184,6 @@ data/*
 
 # uma_tasks文件夹下的自动生成的马娘限时任务信息文件
 /uma_tasks/tasks_config.json
+
+# uma_skills文件夹下的自动生成的马娘技能信息文件
+/uma_skills/skills_config.json
