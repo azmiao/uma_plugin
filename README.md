@@ -51,7 +51,7 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近四条更新日志
 
-22-04-25    v2.0    大版本更新，强烈推荐，之后可无需APIKEY，注意：更新后需要更新安装依赖
+22-04-25    v2.0    大版本更新，强烈推荐，之后可无需APIKEY，注意：更新后需要更新安装依赖，并重新“手动更新马娘数据”
 
 <details>
 <summary>v2.0版本更新日志</summary>

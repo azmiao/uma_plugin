@@ -32,7 +32,7 @@ async def del_dir():
     if os.path.exists(voice_path):
         shutil.rmtree(voice_path)
     if os.path.exists(config_tmp_path):
-        shutil.rmtree(config_tmp_path)
+        os.remove(config_tmp_path)
 
 # 复制配置文件
 async def copy_config(config_name, data_path):

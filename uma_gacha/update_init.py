@@ -20,7 +20,7 @@ async def update():
         os.mkdir(f'{DRAW_PATH}/draw_card/pretty')
         os.mkdir(f'{DRAW_PATH}/draw_card_up')
     check_config()
-    logger.info('====未检测到马娘抽卡信息，正在开始更新====')
+    logger.info('====正在检测马娘抽卡信息====')
     await async_update_game()
     _check_dir()
     if not os.path.exists(os.path.join(os.path.dirname(__file__), 'char_atlas.txt')):

@@ -191,7 +191,7 @@ async def get_single_info(bot, ev):
                 save_path = os.path.join(R.img('umamusume').path, 'base_data/voice_data')
                 mp3_name = uma_name + '.mp3'
                 voice_file = os.path.join(save_path, mp3_name)
-                msg = f'[CQ:record,file:///{os.path.abspath(voice_file)}]'
+                msg = f'[CQ:record,file=file:///{os.path.abspath(voice_file)}]'
             elif info_type == '头像':
                 sns_icon = f_data[uma_name]['sns_icon']
                 msg = f'[CQ:image,file={sns_icon}]'
