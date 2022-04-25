@@ -113,7 +113,9 @@ https://github.com/azmiao/uma_plugin/
 
 #### 如何监控更新：建议使用 RSS 或者我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加[本仓库链接](https://github.com/azmiao/uma_plugin/)监控本仓库commit，以便跟随功能更新和BUG修复
 
-> 若是从 v1.2 版本之后(包括 v1.2)的版本更新到最新版，直接在你的 `hoshino/modules/uma_plugin文件夹里，打开powershell输入下方命令，运行完重启hoshinobot即可（注：v2.0开始依赖更新了，记得也更新一下依赖哦）：
+> 若是从 v1.2 版本之后(包括 v1.2)的版本更新到最新版，直接在你的 `hoshino/modules/uma_plugin文件夹里，打开powershell输入下方命令，运行完重启hoshinobot即可：
+
+（注：v2.0开始请删除您的APIKEY.txt后再使用命令）
 
 ```
 git pull
@@ -335,13 +337,13 @@ git pull
     git clone https://github.com/azmiao/uma_plugin
     ```
 
-2. 如果之前装过 [马娘新闻播报](https://github.com/azmiao/umamusume_news) 和 [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 的，请先删除那两个文件夹，没有就跳过这一步
+2. 如果之前装过独立版的 [马娘新闻播报](https://github.com/azmiao/umamusume_news) 和 [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 的，请先删除那两个文件夹，没有就跳过这一步
 
 3. 安装依赖：
 
     到HoshinoBot\hoshino\modules\uma_plugin目录下，管理员方式打开powershell
     ```
-    pip install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple
+    pip install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple --user
     ```
 
 4. 在 HoshinoBot\hoshino\config\ `__bot__.py` 文件的 MODULES_ON 加入 'uma_plugin'
