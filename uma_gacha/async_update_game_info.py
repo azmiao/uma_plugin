@@ -1,11 +1,8 @@
 import asyncio
-from hoshino import log
-import hoshino
+from hoshino import logger
 import os
 from .pretty_handle import update_pretty_info, init_pretty_data
 from .config import DRAW_PATH
-
-logger = log.new_logger('async_update_game_info', hoshino.config.DEBUG)
 
 async def async_update_game():
     tasks = []

@@ -74,7 +74,7 @@ async def create_img(is_title, info_data, filename_tmp):
 
     table_info = str(table)
     space = 5
-    current_dir = os.path.join(os.path.dirname(__file__), 'simhei.ttf')
+    current_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'simhei.ttf')
     font = ImageFont.truetype(current_dir, 20, encoding='utf-8')
     im = Image.new('RGB',(10, 10),(255, 255, 255, 0))
     draw = ImageDraw.Draw(im, 'RGB')

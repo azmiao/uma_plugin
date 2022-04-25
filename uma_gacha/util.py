@@ -10,8 +10,7 @@ import pypinyin
 from PIL import UnidentifiedImageError
 from .create_img import CreateImg
 from hoshino.typing import MessageSegment
-import hoshino
-from hoshino import log
+from hoshino import logger
 import random
 from dataclasses import dataclass
 import os
@@ -19,8 +18,6 @@ import asyncio
 
 loop = asyncio.get_event_loop()
 headers = {'User-Agent': '"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; TencentTraveler 4.0)"'}
-
-logger = log.new_logger('util', hoshino.config.DEBUG)
 
 @dataclass
 class BaseData:

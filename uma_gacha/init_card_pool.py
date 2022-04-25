@@ -7,7 +7,6 @@ try:
 except ModuleNotFoundError:
     import json
 
-
 def init_game_pool(game: str, data: dict, Operator: Any):
     tmp_lst = []
     if game == 'pretty':

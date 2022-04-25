@@ -153,10 +153,6 @@ cython_debug/
 
 # uma_plugin 特有的自动生成的文件，防止git pull异常
 
-# 根目录下的APIKEY.txt
-
-/APIKEY.txt
-
 # 所有文件夹下自动生成的data文件夹
 data/*
 
@@ -168,7 +164,6 @@ data/*
 
 # uma_info文件夹下的全部角色的基础数据文件
 /uma_info/config.json
-/uma_info/config_tmp.json
 
 # umamusume_news文件夹下的记录最新时间的文件
 /umamusume_news/prev_time.yml

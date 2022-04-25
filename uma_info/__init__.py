@@ -1,22 +1,14 @@
-'''
-插件仓库：https://github.com/azmiao/uma_bir
-
-作者：AZMIAO
-
-版本：1.3.2
-'''
-
-from hoshino import Service, priv, R
-from hoshino.typing import MessageSegment
-from hoshino.util import pic2b64
-import hoshino
 import os
-import asyncio
 import datetime
 import json
-from .spider import uma_spider, get_cn, ENABLE_OCR_SPACE, APIKEY
+
+from .spider import uma_update
 from .adaptability import get_adaptability
 from .detail_info import get_detail
+from hoshino import Service, priv, R
+from hoshino.util import pic2b64
+
+current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
 
 sv_help = '''
 == 仅支持马娘 ==
@@ -43,8 +35,6 @@ sv_help = '''
 == 维护组功能 ==
 [手动更新马娘数据] 功能限维护组
 '''.strip()
-
-current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
 
 sv = Service('uma_info', help_ = sv_help, enable_on_default = True)
 svbr = Service('uma_bir_push', enable_on_default = False)
@@ -126,7 +116,6 @@ async def search_uma(bot, ev):
 
 @svbr.scheduled_job('cron', hour='8', minute='31')
 async def push_bir():
-    bot = hoshino.get_bot()
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         f_data = json.load(f)
     rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
@@ -199,13 +188,13 @@ async def get_single_info(bot, ev):
                 if not voice:
                     msg = f'{uma_name_tmp}暂时还没有语音哟'
                     await bot.finish(ev, msg)
-                save_path = R.img('uma_voice').path
+                save_path = os.path.join(R.img('umamusume').path, 'base_data/voice_data')
                 mp3_name = uma_name + '.mp3'
                 voice_file = os.path.join(save_path, mp3_name)
-                msg = MessageSegment.record(f'file:///{os.path.abspath(voice_file)}')
+                msg = f'[CQ:record,file:///{os.path.abspath(voice_file)}]'
             elif info_type == '头像':
                 sns_icon = f_data[uma_name]['sns_icon']
-                msg = MessageSegment.image(file = sns_icon)
+                msg = f'[CQ:image,file={sns_icon}]'
             elif info_type == 'cv':
                 cv = f_data[uma_name]['cv']
                 if not cv:
@@ -235,33 +224,33 @@ async def get_single_info(bot, ev):
                 if not uniform_img:
                     msg = f'{uma_name_tmp}暂时还没公布制服哟'
                     await bot.finish(ev, msg)
-                msg = MessageSegment.image(file = uniform_img)
+                msg = f'[CQ:image,file={uniform_img}]'
             elif info_type == '决胜服':
                 winning_suit_img = f_data[uma_name]['winning_suit_img']
                 if not winning_suit_img:
                     msg = f'{uma_name_tmp}暂时还没公布决胜服哟'
                     await bot.finish(ev, msg)
-                msg = MessageSegment.image(file = winning_suit_img)
+                msg = f'[CQ:image,file={winning_suit_img}]'
             elif info_type == '原案':
                 original_img = f_data[uma_name]['original_img']
                 if not original_img:
                     msg = f'{uma_name_tmp}暂时还没公布原案哟'
                     await bot.finish(ev, msg)
-                msg = MessageSegment.image(file = original_img)
+                msg = f'[CQ:image,file={original_img}]'
             elif info_type == '适应性':
                 img_tmp = await get_adaptability(uma_name, f_data)
                 img = pic2b64(img_tmp)
                 if not img:
                     msg = f'{uma_name_tmp}暂时还没有适应性数据哟'
                     await bot.finish(ev, msg)
-                msg = MessageSegment.image(img)
+                msg = f'[CQ:image,file={img}]'
             elif info_type == '详细信息':
                 img_tmp = await get_detail(uma_name, f_data)
                 img = pic2b64(img_tmp)
                 if not img:
                     msg = f'出现错误！未获取到详细信息！请到Github仓库反馈！'
                     await bot.finish(ev, msg)
-                msg = MessageSegment.image(img)
+                msg = f'[CQ:image,file={img}]'
     if not msg:
         msg = f'这个角色可能不存在或者角色名称对不上'
     await bot.send(ev, msg)
@@ -270,119 +259,10 @@ async def get_single_info(bot, ev):
 async def update_info(bot, ev):
     if not priv.check_priv(ev, priv.SUPERUSER):
         msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
-        await bot.send(ev, msg)
-        return
-    if not os.path.exists(current_dir):
-        sv.logger.info('本地配置文件不存在，正在开始创建')
-        data = {}
-        with open(current_dir, 'w', encoding = 'UTF-8') as af:
-            json.dump(data, af, indent=4, ensure_ascii=False)
-        sv.logger.info('本地配置文件创建完成，开始更新数据库数据')
-        current_dir_tmp = current_dir
-    else:
-        sv.logger.info('本地配置文件已存在，正在开始创建副本，更新完将替换原文件')
-        data = {}
-        current_dir_tmp = os.path.join(os.path.dirname(__file__), 'config_tmp.json')
-        if not os.path.exists(current_dir_tmp):
-            with open(current_dir_tmp, 'w', encoding = 'UTF-8') as af:
-                json.dump(data, af, indent=4, ensure_ascii=False)
-        sv.logger.info('副本文件创建完成，开始更新数据库数据')
-    if ENABLE_OCR_SPACE:
-        msg = '正在开始更新马娘数据库\n由于使用了ocrspace接口，可能不稳定，稍后会将部分图片保存至本地res目录下的uma_bir文件夹'
-        if not APIKEY:
-            msg = '您已使用了ocrspace接口，但未获取到APIKEY，请到`APIKEY.txt`添加后重启hoshino再使用本功能。\n若不需要请到`spider.py`关闭ocrspace接口'
-            await bot.finish(ev, msg)
-    else:
-        # msg = '正在开始更新马娘数据库\n由于使用了自带 QQ接口，比较稳定，但会发送私聊图片至维护组QQ，不会将图片保存在本地'
-        msg = 'QQ接口目前有有尚未解决的问题因此不可用！（近期应该都解决不了）请换ocrspace接口使用！'
         await bot.finish(ev, msg)
+    try:
+        await uma_update(current_dir)
+        msg = '马娘数据更新完成'
+    except Exception as e:
+        msg = f'马娘数据更新失败{e}'
     await bot.send(ev, msg)
-    try:
-        except_uma = await uma_spider(current_dir_tmp)
-        if not except_uma:
-            msg = f'马娘数据库更新完成，开始更新对应中文名'
-            sv.logger.info(msg)
-            await bot.send(ev, msg)
-            await get_cn(current_dir_tmp)
-            await replace_config(current_dir_tmp, current_dir)
-            msg = '马娘数据库中文名更新完成！任务结束！'
-            sv.logger.info(msg)
-            await bot.send(ev, msg)
-        else:
-            msg = f'马娘数据库更新在更新{except_uma}时遇到问题，3分钟后将转至自动任务继续更新'
-            sv.logger.error(msg)
-            await bot.send(ev, msg)
-            await asyncio.sleep(180)
-            await auto_update_info()
-            return
-    except IndexError:
-        msg = f'马娘数据 OCR_SPACE API响应失败！将在3分钟后继续自动更新'
-        await bot.send(ev, msg)
-        await asyncio.sleep(180)
-        await auto_update_info()
-        return
-    except Exception as e:
-        msg = f'马娘数据库自动更新失败，将在3分钟后继续自动更新，原因：{e}'
-        sv.logger.error(msg)
-        sv.logger.error(type(e)) # 获取错误类型class
-        sv.logger.error(e, exc_info=True) # log中捕获traceback
-        await bot.send(ev, msg)
-        await asyncio.sleep(180)
-        await auto_update_info()
-        return
-
-# 自动更新
-@sv.scheduled_job('cron', hour='1', minute='31')
-async def auto_update_info():
-    if not os.path.exists(current_dir):
-        data = {}
-        with open(current_dir, 'w', encoding = 'UTF-8') as af:
-            json.dump(data, af, indent=4, ensure_ascii=False)
-        current_dir_tmp = current_dir
-    else:
-        data = {}
-        current_dir_tmp = os.path.join(os.path.dirname(__file__), 'config_tmp.json')
-        if not os.path.exists(current_dir_tmp):
-            with open(current_dir_tmp, 'w', encoding = 'UTF-8') as af:
-                json.dump(data, af, indent=4, ensure_ascii=False)
-    bot = hoshino.get_bot()
-    superid = hoshino.config.SUPERUSERS[0]
-    sv.logger.info(f'开始自动更新马娘数据库')
-    try:
-        except_uma = await uma_spider(current_dir_tmp)
-        if not except_uma:
-            msg = f'马娘数据库自动更新完成，开始更新对应中文名'
-            sv.logger.info(msg)
-            await bot.send_private_msg(user_id=superid, message=msg)
-        else:
-            msg = f'马娘数据库更新在更新{except_uma}时遇到问题，3分钟后将从该马娘开始继续更新'
-            sv.logger.error(msg)
-            await asyncio.sleep(180)
-            await auto_update_info()
-            return
-    except (IndexError, TypeError):
-        sv.logger.error('马娘数据 OCR_SPACE API响应失败！将在3分钟后继续自动更新')
-        await asyncio.sleep(180)
-        await auto_update_info()
-        return
-    except Exception as e:
-        msg = f'马娘数据库自动更新失败，将在3分钟后继续自动更新，原因：{e}'
-        sv.logger.error(msg)
-        sv.logger.error(type(e)) # 获取错误类型class
-        sv.logger.error(e, exc_info=True) # log中捕获traceback
-        await asyncio.sleep(180)
-        await auto_update_info()
-        return
-    await get_cn(current_dir_tmp)
-    await replace_config(current_dir_tmp, current_dir)
-    msg = '马娘数据库中文名更新完成！任务结束！'
-    sv.logger.info(msg)
-    await bot.send_private_msg(user_id=superid, message=msg)
-
-# 将缓存文件内容拷贝到真实的配置文件内
-async def replace_config(current_dir_tmp, current_dir):
-    with open(current_dir_tmp, 'r', encoding = 'UTF-8') as f:
-        uma_data = json.load(f)
-        f.close()
-    with open(current_dir, 'w', encoding = 'UTF-8') as af:
-        json.dump(uma_data, af, indent=4, ensure_ascii=False)

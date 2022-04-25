@@ -1,4 +1,3 @@
-#coding:utf-8
 import aiohttp
 import requests
 from .config import DRAW_PATH
@@ -6,8 +5,7 @@ from asyncio.exceptions import TimeoutError
 from bs4 import BeautifulSoup
 from .util import download_img, remove_prohibited_str
 from urllib.parse import unquote
-import hoshino
-from hoshino import log
+from hoshino import logger
 import bs4
 import re
 try:
@@ -15,9 +13,7 @@ try:
 except ModuleNotFoundError:
     import json
 
-logger = log.new_logger('update_game_info', hoshino.config.DEBUG)
 headers = {'User-Agent': '"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; TencentTraveler 4.0)"'}
-
 
 async def update_info(url: str, game_name: str, info_list: list = None):
     try:

@@ -51,16 +51,39 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近四条更新日志
 
+22-04-25    v2.0    大版本更新，强烈推荐，之后可无需APIKEY，注意：更新后需要更新安装依赖
+
+<details>
+<summary>v2.0版本更新日志</summary>
+
+1. 采用新方案来处理马娘基础数据库，目前采用方案如下：
+
+    我在Github新建了一个仓库 [uma_info_data](https://github.com/azmiao/uma_info_data) ，该仓库使用了Github提供的Action，以workflow的形式运行获取马娘数据的代码，使用本人的APIKEY运行，已通过环境变量设置保护其内容，运行完成后自动上传到该仓库。
+
+    因此，只要在本地img目录下持续git pull该仓库就可以获取最新数据，采用gitpython运行
+
+2. 调整目录结构，将部分文件(字体文件)移动到根目录，以减小插件大小
+
+3. 马娘黄历支持当日再次签到，不过还是之前签到过的内容，仅供查看
+
+4. 文件图片目录调整， `img/umamusume` 文件夹下将马娘数据的图片分为 `base_data` 和 `extra_data `，以便基础数据库的更新
+
+5. 整合首次启动和自动更新的代码，防止太多线程同时工作被反爬虫
+
+6. 以及其他我也不记得哪里的修改
+
+</details>
+
 22-04-24    v1.7    新增马娘技能查询功能
 
 22-04-15    v1.6    新增马娘限时任务功能，并修复一些描述，此版本开始需要更新依赖
 
 22-04-11    v1.5.3  修复图片文件夹的问题，并修复由于也文摄辉背景图分辨率过高导致OCR无结果的问题
 
-22-04-10    v1.5.2  将所有的图片文件夹移动至umamusume文件夹下
-
 <details>
 <summary>更以前的更新日志</summary>
+
+22-04-10    v1.5.2  将所有的图片文件夹移动至umamusume文件夹下
 
 22-03-30    v1.5.1  重构支援卡节奏榜代码，理论上性能更好，冗余更低
 
@@ -90,24 +113,13 @@ https://github.com/azmiao/uma_plugin/
 
 #### 如何监控更新：建议使用 RSS 或者我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加[本仓库链接](https://github.com/azmiao/uma_plugin/)监控本仓库commit，以便跟随功能更新和BUG修复
 
-> 若是从 v1.2 版本之后(包括 v1.2)的版本更新到最新版，直接在你的 `hoshino/modules/uma_plugin文件夹里，打开powershell输入下方命令，运行完重启hoshinobot即可（注：v1.6开始依赖更新了，记得也更新一下依赖哦）：
+> 若是从 v1.2 版本之后(包括 v1.2)的版本更新到最新版，直接在你的 `hoshino/modules/uma_plugin文件夹里，打开powershell输入下方命令，运行完重启hoshinobot即可（注：v2.0开始依赖更新了，记得也更新一下依赖哦）：
 
 ```
 git pull
 ```
 
 > 若是从 v1.2 版本之前(不包括 v1.2)的版本更新到最新版，建议直接把 `uma_plugin` 文件夹删了，再按照本页面最底下的安装教程重新安装一遍。并且建议删除前，把文件 `/uma_info/config.json` 备份出来，这样重新安装完就不用再手动更新马娘数据了。否则重装后需要重新使用群命令："手动更新马娘数据" 更新基础数据
-
-</details>
-
-### 使用本插件需要的东西
-
-一个OCR_SPACE的免费API（需要一个非QQ的邮箱即可），详细看下方食用教程吧
-
-<details>
-<summary>点我查看需要 OCR 的原因</summary>
-
-+ 由于部分数据来自官网，因此数据非常全，但这~~垃圾~~官网不少数据是整合进一张图里面了，不得不用一个OCR来识别出来，而gocq自带的OCR接口只能识别接收到的图片，虽然已经有思路如何绕过这个门槛，利用QQ的image缓存机制来识别，但这样依然非常不方便，而且为了部分功能实现的资源占用更低，还是选择了第三方的接口，ocr_space的接口速度也比较快(除了网站经常炸之外2333)，而且免费版每天有500次，而本插件每天只需要进行90次左右即可(但随着马娘角色增多而增加)，但是网站比较不稳定，偶尔会500~~免费的还要什么自行车~~
 
 </details>
 
@@ -316,13 +328,7 @@ git pull
 <details>
 <summary>点我展开</summary>
 
-0. 申请OCR_SPACE的免费API，（需要一个非QQ的邮箱即可）：[点我前往官网申请](http://ocr.space/ocrapi/freekey)，网站发邮件偶尔会非常慢，~~绝了~~慢慢等吧，哦，对了，记得翻翻垃圾邮件
-
-    第一封邮件是确认注册
-    
-    第二封邮件才是给你发APIKEY
-
-1. 下载或git clone本插件：
+1. git clone本插件：
 
     在 HoshinoBot\hoshino\modules 目录下使用以下命令拉取本项目
     ```
@@ -331,26 +337,18 @@ git pull
 
 2. 如果之前装过 [马娘新闻播报](https://github.com/azmiao/umamusume_news) 和 [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 的，请先删除那两个文件夹，没有就跳过这一步
 
-3. 填写APIKEY：
-
-    打开 uma_plugin 文件夹下的 `APIKEY.txt` 文件
-
-    在里面粘贴上你申请的APIKEY即可
-
-4. 安装依赖：
+3. 安装依赖：
 
     到HoshinoBot\hoshino\modules\uma_plugin目录下，管理员方式打开powershell
     ```
     pip install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple
     ```
 
-5. 在 HoshinoBot\hoshino\config\ `__bot__.py` 文件的 MODULES_ON 加入 'uma_plugin'
+4. 在 HoshinoBot\hoshino\config\ `__bot__.py` 文件的 MODULES_ON 加入 'uma_plugin'
 
     然后重启 HoshinoBot
 
-    装完插件后首次启动时会更新马娘抽卡和漫画等的图片资源，请耐心等待。更新期间您可以看着看着Hoshino日志以防意外情况
-
-    自动更新完后请维护组 __再手动发送群消息__  “手动更新马娘数据” 来更新马娘数据库的数据，预计用时8分钟，这里是由于使用了API，但API网站不定时炸，所以觉得手动更新比较好，更新出错的话会自动转自动任务在3分钟后继续运行，再出错就再等3分钟再运行，当然如果一直出错的话可能会运行非常非常久(~~不过经测试最多运行两个半小时~~)，因此运行本指令的时候，你可以安心的去玩了，但不要关机器人哦，不影响其他功能使用的，等着机器人给你发消息提示更新完成就行了。如果你实在手痒关了机器人也没事，重新开启机器人后再发送“手动更新马娘数据”，他会从上次出错的地方继续更新的。
+    装完插件后首次启动时会更新马娘各种数据，按带宽的大小可能需要3-10分钟不等，请耐心等待，您可以看着控制台看他有没有报错
 
 6. 额外功能：（自动提醒）
 

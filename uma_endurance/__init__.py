@@ -76,44 +76,44 @@ async def get_endurance(bot, ev):
 
     # 开始计算
     # 速度上限补正
-    speed_limit_patch = judge_speed(speed_limit, site_type, feeling, situation)
+    speed_limit_patch = await judge_speed(speed_limit, site_type, feeling, situation)
     # 体力补正
-    hp_bonus = judge_hp_bonus(run_type)
+    hp_bonus = await judge_hp_bonus(run_type)
     # 力量补正
-    power_patch = judge_power(power, site_type, feeling, situation)
+    power_patch = await judge_power(power, site_type, feeling, situation)
     # 根性补正
-    determination_patch = judge_determination(determination, feeling)
+    determination_patch = await judge_determination(determination, feeling)
     # 智力补正
-    intelligence_patch = judge_intelligence(intelligence, feeling, run_adaptability)
+    intelligence_patch = await judge_intelligence(intelligence, feeling, run_adaptability)
     # 基准速度
-    speed_standard_patch = speed_standard(track_length)
+    speed_standard_patch = await speed_standard(track_length)
     # 终盘体力消耗比
     end_endurance_bonus = 1 + 200 / ((600 * determination_patch) ** 0.5)
     # 序盘体力需求
-    endurance_begin, uniform_speed_begin = cacul_begin_endurance(speed_standard_patch, run_type, intelligence_patch, power_patch, \
+    endurance_begin, uniform_speed_begin = await cacul_begin_endurance(speed_standard_patch, run_type, intelligence_patch, power_patch, 
         site_adaptability, track_length, track_adaptability, site_type, situation)
     # 中盘体力需求
-    endurance_middle, uniform_speed_middle = cacul_middle_endurance(uniform_speed_begin, speed_standard_patch, run_type, \
+    endurance_middle, uniform_speed_middle = await cacul_middle_endurance(uniform_speed_begin, speed_standard_patch, run_type, 
         intelligence_patch, power_patch, site_adaptability, track_length, track_adaptability, site_type, situation)
     # 终盘体力需求
-    endurance_end = cacul_end_endurance(speed_limit_patch, uniform_speed_middle, speed_standard_patch, run_type, intelligence_patch, \
-        power_patch, site_adaptability, track_length, track_adaptability, site_type, situation, end_endurance_bonus)
+    endurance_end = await cacul_end_endurance(speed_limit_patch, uniform_speed_middle, speed_standard_patch, run_type, 
+        intelligence_patch, power_patch, site_adaptability, track_length, track_adaptability, site_type, situation, end_endurance_bonus)
     # 理论总体力需求
     hp = endurance_begin + endurance_middle + endurance_end
     # 理论总耐力需求
-    endurance = cacul_endurance(endurance_begin, endurance_middle, endurance_end, track_length, run_type)
+    endurance = await cacul_endurance(endurance_begin, endurance_middle, endurance_end, track_length, run_type)
     # 理论
     # 理论体力
-    theoretical_hp = theoretical_endurance(track_length, endurance_tmp, run_type)
+    theoretical_hp = await theoretical_endurance(track_length, endurance_tmp, run_type)
     # 回体技能折算耐力
-    stable_recover_endu, common_recover_endu, upper_recover_endu = cacul_skill_endu(stable_recover_level, hp, run_type)
+    stable_recover_endu, common_recover_endu, upper_recover_endu = await cacul_skill_endu(stable_recover_level, hp, run_type)
     # 回体技能折算体力
-    stable_recover, common_recover_single, common_recover, upper_recover_single, upper_recover = cacul_skill(stable_recover_level, \
-        common_recover_num, upper_recover_num, theoretical_hp)
+    stable_recover, common_recover_single, common_recover, upper_recover_single, upper_recover = await cacul_skill(
+        stable_recover_level, common_recover_num, upper_recover_num, theoretical_hp)
     # 算上技能后的总体力
     end_hp = theoretical_hp + stable_recover + common_recover + upper_recover
     # 算上技能后的总耐力
-    end_endurance = get_end_endurance(end_hp, track_length, run_type)
+    end_endurance = await get_end_endurance(end_hp, track_length, run_type)
     msg = f'''
 速度上限：{speed_limit}
 耐力：{endurance_tmp}

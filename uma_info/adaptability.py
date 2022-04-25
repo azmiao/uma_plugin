@@ -1,6 +1,7 @@
 from PIL import Image
 import os
 
+# 获取适应性图片
 async def get_adaptability(uma_name, f_data):
     grass = str(f_data[uma_name]['grass'])
     mud = str(f_data[uma_name]['mud'])
@@ -17,6 +18,7 @@ async def get_adaptability(uma_name, f_data):
     img = await generate_img(grass, mud, short, mile, middle, long, run_away, first, center, chase)
     return img
 
+# 合成图片
 async def generate_img(grass, mud, short, mile, middle, long, run_away, first, center, chase):
     img_path = os.path.join(os.path.dirname(__file__), 'img_raw/adaptability.png')
     grass_path = os.path.join(os.path.dirname(__file__), f'img_raw/{grass}.png')

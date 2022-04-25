@@ -1,27 +1,5 @@
 from .pretty_handle import update_pretty_info, pretty_draw, reload_pretty_pool, get_gacha_pool
-import hoshino
-import asyncio
-import os
-import json
-import re
-import datetime
-from hoshino import Service, priv, log, R
-from .config import check_config
-from .async_update_game_info import async_update_game
-from .util import _check_dir
-
-logger = log.new_logger('announcement', hoshino.config.DEBUG)
-
-check_config()
-loop = asyncio.get_event_loop()
-loop.run_until_complete(async_update_game())
-_check_dir()
-if not os.path.exists(os.path.join(os.path.dirname(__file__), 'char_atlas.txt')):
-    logger.info('检测到本地图鉴信息不存在，即将开始创建...')
-    try:
-        loop.run_until_complete(update_pretty_info())
-    except Exception as e:
-        logger.info(f'马娘信息更新失败：{e}')
+from hoshino import Service, priv
 
 sv_help = '''=====功能=====
 （@bot就是@机器人）
@@ -122,32 +100,3 @@ async def uma_gacha_reload(bot, ev):
     msg = f'马娘卡池重载成功！'
     await bot.send(ev, msg)
     await bot.send(ev, text)
-
-# 自动检测是否有更新，若有则自动更新赛马娘up卡池
-@sv.scheduled_job('cron', hour='4', minute='00')
-async def auto_update():
-    sv.logger.info('开始检测马娘卡池是否有更新')
-    draw_path = os.path.join(R.img('umamusume').path, 'uma_gacha/')
-    with open(f'{draw_path}/draw_card_up/pretty_up_char.json', encoding='UTF-8') as f:
-        data = json.load(f)
-    up_time = str(data['char']['time'])
-    end_time = re.search(r'- (\d{1,2})月(\d{1,2})日', up_time)
-    now_time = datetime.datetime.now()
-    startTime = datetime.datetime(int(now_time.year), int(end_time.group(1)), int(end_time.group(2))+1, 4, 00, 0)
-    if now_time < startTime:
-        sv.logger.info(f'未检测到更新！当前池子结束时间：{str(now_time.year)}年{str(end_time.group(1))}月{str(end_time.group(2))}日 11:00')
-        return
-    bot = hoshino.get_bot()
-    superid = hoshino.config.SUPERUSERS[0]
-    sv.logger.info('检测到更新！正在更新赛马娘信息和up卡池')
-    try:
-        await update_pretty_info()
-    except Exception as e:
-        sv.logger.info(f'自动更新赛马娘信息和up卡池失败，{e}')
-        msg = f'自动更新赛马娘信息和up卡池失败，{e}'
-        msg = msg + '\n可能是公告界面布局变动导致，请先使用命令“更新马娘信息”手动更新查看报错日志然后反馈，或等待插件更新，一般来说插件更新的还是蛮勤快的'
-        await bot.send_private_msg(user_id=superid, message=msg)
-        return
-    sv.logger.info('自动更新赛马娘信息和up卡池成功')
-    msg = '自动更新赛马娘信息和up卡池成功'
-    await bot.send_private_msg(user_id=superid, message=msg)# 若不想要自动更新成功的提醒，吧这整行注释了就行

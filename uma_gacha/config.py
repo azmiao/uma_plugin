@@ -1,21 +1,13 @@
 import os
-import hoshino
 from pathlib import Path
-from hoshino import R, log
+from hoshino import R, logger
 try:
     import ujson as json
 except ModuleNotFoundError:
     import json
 
-logger = log.new_logger('config', hoshino.config.DEBUG)
+# 路径
 DRAW_PATH = os.path.join(R.img('umamusume').path, 'uma_gacha/')
-
-if not os.path.exists(DRAW_PATH):
-    os.mkdir(f'{DRAW_PATH}')
-    os.mkdir(f'{DRAW_PATH}/draw_card')
-    os.mkdir(f'{DRAW_PATH}/draw_card/pretty')
-    os.mkdir(f'{DRAW_PATH}/draw_card_up')
-
 _draw_config = Path(rf"{DRAW_PATH}/draw_card_config/draw_card_config.json")
 
 # 赛马娘概率
@@ -60,8 +52,3 @@ def check_config():
             data['pretty']['PRETTY_TWO_P'] = config_default_data['pretty']['PRETTY_TWO_P']
             data['pretty']['PRETTY_ONE_P'] = config_default_data['pretty']['PRETTY_ONE_P']
         json.dump(data, open(_draw_config, 'w', encoding='utf8'), indent=4, ensure_ascii=False)
-
-
-
-
-

@@ -24,8 +24,8 @@ if os.path.exists(dir_path):
 else:
     os.mkdir(dir_path)
 
-sv = Service('umamusume_news', help_=sv_help, enable_on_default=True, bundle='马娘新闻订阅')
-svuma = Service('umamusume-news-poller', enable_on_default=False, help_='马娘新闻播报')
+sv = Service('umamusume_news', enable_on_default=True)
+svuma = Service('umamusume-news-poller', enable_on_default=False)
 
 # 帮助界面
 @sv.on_fullmatch("马娘新闻帮助")

@@ -8,10 +8,7 @@ from datetime import datetime
 from .config import DRAW_PATH
 from pathlib import Path
 from asyncio.exceptions import TimeoutError
-import hoshino
-from hoshino import log
-
-logger = log.new_logger('announcement', hoshino.config.DEBUG)
+from hoshino import logger
 
 try:
     import ujson as json

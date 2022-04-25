@@ -2,7 +2,6 @@ from PIL import Image, ImageDraw
 import base64
 from io import BytesIO
 
-
 class CreateImg:
     def __init__(self,
                  w,

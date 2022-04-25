@@ -1,27 +1,11 @@
 import os
 import json
-import asyncio
 
-from hoshino import Service, priv, logger, R
-from .update_skills import del_img, update_info, judge_update, del_img
+from hoshino import Service, priv, R
+from .update_skills import del_img, update_info, del_img
 from .generate import get_skill_list, get_skill_info
 
-# 启动时自动更新至最新版马娘技能信息
 current_dir = os.path.join(os.path.dirname(__file__), f'skills_config.json')
-if not os.path.exists(current_dir):
-    logger.info('未检测到马娘技能信息文件，正在开始创建文件和更新信息')
-    img_path = os.path.join(R.img('umamusume').path, f'uma_skills/')
-    if not os.path.exists(img_path):
-        os.mkdir(img_path)
-    init_data = {}
-    with open(current_dir, 'w', encoding='UTF-8') as f:
-        json.dump(init_data, f, indent=4, ensure_ascii=False)
-    loop = asyncio.get_event_loop()
-    try:
-        loop.run_until_complete(update_info())
-        logger.info('马娘技能信息更新完成')
-    except Exception as e:
-        logger.info(f'马娘技能信息更新失败：{e}')
 
 # 分类
 rarity = ['普通', '传说', '独特', '普通·继承', '独特·继承', '剧情', '活动']
@@ -110,18 +94,3 @@ async def force_update(bot, ev):
         await bot.send(ev, '马娘技能信息刷新完成')
     except Exception as e:
         await bot.send(ev, f'马娘技能信息刷新失败：{e}')
-
-# 每小时自动对比是否有更新，有更新就更新，没有就跳过，cron表达式：0 0 */1 * * ?
-@sv.scheduled_job('cron', hour='0-23', minute='00')
-async def auto_update():
-    flag = await judge_update()
-    if not flag:
-        sv.logger.info('马娘技能没有更新')
-        return
-    sv.logger.info('马娘技能检测到更新，正在开始更新')
-    try:
-        await update_info()
-        await del_img(R.img('umamusume').path)
-        sv.logger.info('马娘技能信息刷新完成')
-    except Exception as e:
-        sv.logger.error(f'马娘技能信息刷新失败：{e}')
