@@ -18,7 +18,7 @@ async def get_msg(group_id, user_id):
         config = json.load(f)
     # 生成消息
     fortune = random.choice(config['fortune'])
-    now_time = await str(get_time())
+    now_time = str(await get_time())
     characters = await get_chara()
     suitable_key = random.choice(list(config['suitable'].keys()))
     suitable_value = config['suitable'][suitable_key]
