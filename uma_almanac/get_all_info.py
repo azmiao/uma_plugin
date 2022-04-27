@@ -79,6 +79,7 @@ async def get_almanac_info(group_id, user_id):
     current_dir = os.path.join(os.path.dirname(__file__), f'data\{group_id}.json')
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         config = json.load(f)
+    user_id = str(user_id)
     msg = f'''
 [CQ:at,qq={user_id}]您今天已经签到过了哟，之前的签到结果如下
 今日运势：{config[user_id]['fortune']}
