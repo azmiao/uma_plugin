@@ -83,7 +83,6 @@ async def get_almanac_info(group_id, user_id):
     msg = f'''
 [CQ:at,qq={user_id}]您今天已经签到过了哟，之前的签到结果如下
 今日运势：{config[user_id]['fortune']}
-当前时间：{config[user_id]['now_time']}
 今日幸运角色：{config[user_id]['characters']}
 宜：{config[user_id]['suitable'][0]}：{config[user_id]['suitable'][1]}
 忌：{config[user_id]['unsuitable'][0]}：{config[user_id]['unsuitable'][1]}
