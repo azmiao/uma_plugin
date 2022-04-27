@@ -330,7 +330,7 @@ git pull
 <details>
 <summary>点我展开</summary>
 
-1. git clone本插件：
+1. git clone本插件（注：一定要git clone，不要下载压缩包，另外请确保git环境变量正常）：
 
     在 HoshinoBot\hoshino\modules 目录下使用以下命令拉取本项目
     ```
