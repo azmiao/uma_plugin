@@ -12,3 +12,4 @@ ujson==5.1.0
 prettytable==3.2.0
 GitPython==3.1.27
 fuzzywuzzy==0.18.0
+python-Levenshtein==0.12.2
