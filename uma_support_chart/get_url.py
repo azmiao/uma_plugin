@@ -32,6 +32,9 @@ async def generate_url(sup_type):
     current_dir = os.path.join(os.path.dirname(__file__), 'sup_config.json')
     with open(current_dir, 'r', encoding='UTF-8') as f:
         img_dict = json.load(f)
+    img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
+    if not os.path.exists(img_path):
+        os.mkdir(img_path)
     # 获取存储的链接
     if img_dict.get(sup_type, None):
         old_url = img_dict[sup_type]['chart_url']
@@ -39,9 +42,6 @@ async def generate_url(sup_type):
         if old_url != chart_url:
             img_dict[sup_type]['chart_url'] = chart_url
     # 不存在就通过 旧链接 获取 新链接
-    img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
-    if not os.path.exists(img_path):
-        os.mkdir(img_path)
     else:
         logger.info(f'配置文件内未找到{sup_type}卡节奏榜相关配置，现已成功创建')
         if sup_type == '速':
