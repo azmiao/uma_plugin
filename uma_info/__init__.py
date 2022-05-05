@@ -260,6 +260,7 @@ async def update_info(bot, ev):
     if not priv.check_priv(ev, priv.SUPERUSER):
         msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
         await bot.finish(ev, msg)
+    await bot.send(ev, '正在更新数据，请耐心等待...')
     try:
         await uma_update(current_dir)
         msg = '马娘数据更新完成'

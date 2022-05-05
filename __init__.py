@@ -2,7 +2,7 @@ import os
 import shutil
 import asyncio
 
-from hoshino import Service, R
+from hoshino import Service, R, logger
 
 from .uma_comic.update_init import update as comic_update, auto_update as comic_auto
 from .uma_compatibility.update_init import update as com_update, auto_update as com_auto
@@ -55,7 +55,10 @@ move_dir('uma_gacha')
 
 # v1.8将首次启动事件合并到一块，防止首次启动时过多线程同时工作导致触发反爬虫
 async def update():
-    await info_update()
+    flag = await info_update()
+    if not flag:
+        logger.info('马娘基础数据库更新失败，后续更新操作已停止，请重新启动Bot更新')
+        return
     await asyncio.sleep(0.1)
     await comic_update()
     await asyncio.sleep(0.1)
@@ -77,7 +80,7 @@ loop.run_until_complete(update())
 # 部分统一自动更新时间点
 @sv.scheduled_job('cron', hour='2', minute='30')
 async def auto_update():
-    await info_auto()
+    flag = await info_auto()
     await asyncio.sleep(0.1)
     await comic_auto()
     await asyncio.sleep(0.1)
