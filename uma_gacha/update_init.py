@@ -4,7 +4,7 @@ import re
 import datetime
 
 from .config import check_config
-from .pretty_handle import update_pretty_info
+from .pretty_handle import update_pretty_info, reload_pretty_pool
 from .async_update_game_info import async_update_game
 from .util import _check_dir
 
@@ -50,6 +50,7 @@ async def auto_update():
     logger.info('检测到更新！正在更新赛马娘信息和up卡池')
     try:
         await update_pretty_info()
+        _ = await reload_pretty_pool()
     except Exception as e:
         logger.info(f'自动更新赛马娘信息和up卡池失败，{e}')
         msg = f'自动更新赛马娘信息和up卡池失败，{e}'
