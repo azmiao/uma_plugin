@@ -1,28 +1,19 @@
 import os
-import shutil
 import asyncio
-from hoshino import Service, R
-from hoshino.util import FreqLimiter
-from .news_spider import *
+
+from hoshino import Service, priv
+from .news_spider import get_news, judge, news_broadcast, sort_news, translate_news
 
 sv_help = '''=====功能=====
 [马娘新闻] 查看最近五条新闻
 
 [新闻翻译] 查看翻译命令和新闻编号（限近5条）
 
-[新闻翻译 1] 翻译第1条新闻，编号可选值(1/2/3/4/5)
+[新闻翻译1] 翻译第1条新闻，编号可选值(1/2/3/4/5)
+
+[马娘新闻翻译转发模式on/off] 开/关翻译的转发模式，限维护组
 
 （自动推送） 该功能没有命令'''.strip()
-
-_limtime = 20    # 单个人翻译冷却时间（单位：喵）
-_flmt = FreqLimiter(_limtime)
-
-dir_path = os.path.join(R.img('umamusume').path, 'umamusume_news/')
-if os.path.exists(dir_path):
-    shutil.rmtree(dir_path)  #删除目录，包括目录下的所有文件
-    os.mkdir(dir_path)
-else:
-    os.mkdir(dir_path)
 
 sv = Service('umamusume_news', enable_on_default=True)
 svuma = Service('umamusume-news-poller', enable_on_default=False)
@@ -58,10 +49,8 @@ async def uma_news_poller():
 # 选择翻译新闻
 @sv.on_prefix('新闻翻译')
 async def select_source(bot, ev):
-    uid = ev['user_id']
-    if not _flmt.check(uid):
-        await bot.send(ev, f'请勿频繁操作，冷却时间为{_limtime}秒！', at_sender=True)
-        return
+    group_id = ev['group_id']
+    self_id = ev['self_id']
     try:
         news_list = await sort_news()
     except Exception as e:
@@ -74,23 +63,69 @@ async def select_source(bot, ev):
         num_i += 1
         msg_c = msg_c + f'\n{num_i}. ' + news.news_title
     alltext = ev.message.extract_plain_text()
-    if alltext != '1' and alltext != '2' and alltext != '3' and alltext != '4'and alltext != '5':
+    if alltext not in ['1', '2', '3', '4', '5']:
         msg = '新闻编号错误！(可选值有：1/2/3/4/5)' + '\n\n' + msg_c
         await bot.send(ev, msg)
         return
-    num_j = 0
-    for news in news_list:
-        num_j += 1
-        if str(num_j) == alltext:
-            msg = '正在龟速翻译，请耐心等待...'
-            await bot.send(ev, msg)
-            msg = f'马娘新闻《{news.news_title}》翻译内容如下：\n\n'
-            news_url_tmp = news.news_url
-            news_id = int(news_url_tmp.replace('▲https://umamusume.jp/news/detail.php?id=', ''))
-            await asyncio.sleep(0.5)
-            msg += await translate_news(news_id)
-            try:
-                await bot.send(ev, msg)
-            except Exception as err:
-                if err == '<ActionFailed, retcode=100>':
-                    await bot.send(ev, "翻译内容被风控，发送失败！请稍后尝试！")
+    news = news_list[int(alltext)-1]
+    msg = '正在龟速翻译，请耐心等待...'
+    await bot.send(ev, msg)
+    news_id = int(news.news_url.replace('▲https://umamusume.jp/news/detail.php?id=', ''))
+    await asyncio.sleep(0.5)
+    head_img, msg = await translate_news(news_id)
+    if msg == '错误！马娘官网连接失败':
+        await bot.send(ev, '翻译失败，马娘官网连接失败')
+        return
+    current_dir = os.path.join(os.path.dirname(__file__), 'mode.txt')
+    with open(current_dir, 'r', encoding='utf-8') as f:
+        mode = f.read().strip()
+    if mode == 'off':
+        await bot.send(ev, head_img + msg)
+        return
+    forward_msg = [
+        {
+            "type": "node",
+            "data": {
+                "name": "马娘新闻翻译",
+                "uin": self_id,
+                "content": f'标题：\n{news.news_title}'
+            }
+        }
+    ]
+    if head_img:
+        forward_msg.append({
+            "type": "node",
+            "data": {
+                "name": "马娘BOT",
+                "uin": self_id,
+                "content": head_img
+            }
+        })
+    msg_list = [msg[i:i+1000].strip() for i in range(0, len(msg), 1000)]
+    for msg_i in msg_list:
+        forward_msg.append({
+            "type": "node",
+            "data": {
+                "name": "马娘BOT",
+                "uin": self_id,
+                "content": msg_i
+            }
+        })
+    await bot.send_group_forward_msg(group_id=group_id, messages=forward_msg)
+
+# 选择模式
+@sv.on_prefix('马娘新闻翻译转发模式')
+async def change_mode(bot, ev):
+    if not priv.check_priv(ev, priv.SUPERUSER):
+        msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
+        await bot.finish(ev, msg)
+    mode = ev.message.extract_plain_text()
+    current_dir = os.path.join(os.path.dirname(__file__), 'mode.txt')
+    with open(current_dir, 'r', encoding='utf-8') as f:
+        mode_tmp = f.read().strip()
+    if mode not in ['on', 'off']:
+        msg = f'模式选择错误(on/off)，默认on，当前{mode_tmp}'
+        await bot.finish(ev, msg)
+    with open(current_dir, 'w', encoding='utf-8') as f:
+        f.write(mode)
+    await bot.send(ev, f'已更换转发模式为{mode}')

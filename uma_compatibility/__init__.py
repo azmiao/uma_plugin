@@ -40,6 +40,8 @@ async def help(bot, ev):
 @sv.on_prefix('查相性')
 async def caculate(bot, ev):
     alltext = ev.message.extract_plain_text()
+    if not alltext:
+        await bot.finish(ev, '格式错误，请参考“马娘相性帮助”')
     text_list = alltext.split(' ')
     with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r', encoding = 'UTF-8') as f:
         f_data = json.load(f)

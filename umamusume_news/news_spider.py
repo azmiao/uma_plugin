@@ -1,19 +1,19 @@
-# -*- coding: UTF-8 -*-
-import requests
-import os,base64
+import os
 import re
 import json
-import datetime
-from datetime import timedelta
+import requests
 import operator
-from .translator_lite.apis import youdao
-from io import BytesIO
 import random
 import asyncio
+import datetime
+from datetime import timedelta
+
 from hoshino import R
+from .translator_lite.apis import youdao
 
 # 随机挑选一个小可爱作为header
-user_agent_list = ["Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36",
+user_agent_list = [
+    "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36",
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36",
@@ -33,24 +33,17 @@ class news_class:
 async def get_item():
     await asyncio.sleep(0.5)
     url = 'https://umamusume.jp/api/ajax/pr_info_index?format=json'
-    data = {}
-    data['announce_label'] = 0
-    data['limit'] = 10
-    data['offset'] = 0
+    data = {
+        'announce_label': 0,
+        'limit': 10,
+        'offset': 0
+    }
     headers = {
-        'Accept': 'application/json, text/plain, */*',
         'User-Agent': random.choice(user_agent_list),
-        'Connection': 'close',
         'origin': 'https://umamusume.jp',
         'referer': 'https://umamusume.jp/news',
-        'accept': 'application/json, text/plain, */*',
-        'accept-encoding': 'gzip, deflate, br',
-        'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-        'content-type': 'application/json;charset=UTF-8'
     }
-    with requests.post(url = url, data = json.dumps(data), headers = headers, timeout=(5,10), stream = True) as res:
-        res_dict = res.json()
-        res.close()
+    res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15).json()
     return res_dict
 
 # 调整新闻列表
@@ -58,9 +51,9 @@ async def sort_news():
     res_dict = await get_item()
     news_list = []
     for n in range(0, 5):
-        if (res_dict['information_list'][n]['update_at'] == None):
+        if not res_dict['information_list'][n]['update_at']:
             news_time = res_dict['information_list'][n]['post_at']
-        else :
+        else:
             news_time = res_dict['information_list'][n]['update_at']
 
         news_id = res_dict['information_list'][n]['announce_id']
@@ -79,7 +72,7 @@ async def get_news():
     for news in news_list:
         time_tmp = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
         news_time = time_tmp - timedelta(hours=1)
-        msg = msg + '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.news_url + '\n'
+        msg += '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.news_url + '\n'
     current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
     prev_time = news_list[0].news_time
     with open(current_dir, 'w', encoding="UTF-8") as f:
@@ -101,7 +94,7 @@ async def news_broadcast():
         else:
             time_tmp = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
             news_time = time_tmp - timedelta(hours=1)
-            msg = msg + '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.news_url + '\n'
+            msg += '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.news_url + '\n'
 
     for news in news_list:
         set_time = news.news_time
@@ -181,57 +174,40 @@ async def second_replace(news_text):
 async def translate_news(news_id):
     await asyncio.sleep(0.5)
     url = 'https://umamusume.jp/api/ajax/pr_info_detail?format=json'
-    data = {}
-    data['announce_id'] = news_id
+    data = {'announce_id': news_id}
     headers = {
-        'Accept': 'application/json, text/plain, */*',
         'User-Agent': random.choice(user_agent_list),
-        'Connection': 'close',
         'origin': 'https://umamusume.jp',
         'referer': 'https://umamusume.jp/news',
-        'accept': 'application/json, text/plain, */*',
-        'accept-encoding': 'gzip, deflate, br',
-        'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-        'content-type': 'application/json;charset=UTF-8'
     }
-    flag = 0
     try:
-        with requests.post(url=url,data=json.dumps(data),headers=headers, timeout=(5,10), stream = True) as res:
-            res_dict = res.json()
-            res.close()
+        res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15).json()
         if res_dict['detail']['title'] == '現在確認している不具合について':
-            news_msg = res_dict['detail']['message'][:1000] + '...'
-            flag = 1
+            news_msg = re.match(r'(\S+【\S+)?【', res_dict['detail']['message']).group(1)
         else:
             news_msg = res_dict['detail']['message']
         news_msg = await replace_text(news_msg)
     except:
         news_text = '错误！马娘官网连接失败'
-        return news_text
+        return '', news_text
     try:
         news_text = youdao(news_msg, 'ja', 'zh')
         news_text = await second_replace(news_text)
-        if flag == 1:
-            news_text = '(该新闻特别长，因此只显示前1000个字符)\n\n' + news_text
-        if res_dict['detail']['image_big'] != '':
+        head_img = ''
+        if res_dict['detail']['image_big']:
             img_url = res_dict['detail']['image_big']
-            response = requests.get(img_url)
-            ls_f = base64.b64encode(BytesIO(response.content).read())
-            imgdata = base64.b64decode(ls_f)
-            save_dir = os.path.join(R.img('umamusume').path, 'umamusume_news/')
-            path_dir = os.path.join(save_dir,'news_img.jpg')
-            file = open(path_dir,'wb')
-            file.write(imgdata)
-            file.close()
-            news_img = ' '.join(map(str, [
-                R.img(f'umamusume/umamusume_news/news_img.jpg').cqcode,
-            ]))
-            news_text = f'{news_img}' + news_text
+            dir_path = os.path.join(R.img('umamusume').path, 'umamusume_news/')
+            if not os.path.exists(dir_path):
+                os.mkdir(dir_path)
+            save_dir = os.path.join(R.img('umamusume').path, f'umamusume_news/news_img_{news_id}.jpg')
+            if not os.path.exists(save_dir):
+                response = requests.get(img_url)
+                with open(save_dir, 'wb') as f:
+                    f.write(response.content)
+            head_img = str(R.img(f'umamusume/umamusume_news/news_img_{news_id}.jpg').cqcode)
     except Exception as e:
-        # 用于检查错误
-        # print('error_check --> news_msg: ' + news_msg)
         e_msg = e
         if str(e) == 'The length of the text to be translated exceeds the limit.':
-            e_msg = '详细原因：文章长度过长，禁止翻译！请移步马娘官网查看！'
+            e_msg = '文章长度超过5000字符无法翻译！'
         news_text = f'错误！翻译失败！{e_msg}'
-    return news_text
+    return head_img, news_text
