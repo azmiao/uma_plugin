@@ -11,6 +11,9 @@ from datetime import timedelta
 from hoshino import R
 from .translator_lite.apis import youdao
 
+# 代理
+proxy = {}
+
 # 随机挑选一个小可爱作为header
 user_agent_list = [
     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36",
@@ -43,7 +46,7 @@ async def get_item():
         'origin': 'https://umamusume.jp',
         'referer': 'https://umamusume.jp/news',
     }
-    res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15).json()
+    res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=proxy).json()
     return res_dict
 
 # 调整新闻列表
@@ -180,20 +183,20 @@ async def translate_news(news_id):
         'origin': 'https://umamusume.jp',
         'referer': 'https://umamusume.jp/news',
     }
+    head_img = ''
     try:
-        res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15).json()
+        res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=proxy).json()
         if res_dict['detail']['title'] == '現在確認している不具合について':
-            news_msg = re.match(r'(\S+【\S+)?【', res_dict['detail']['message']).group(1)
+            news_msg = re.match(r'([\s\S]+?【[\s\S]+?)【', res_dict['detail']['message']).group(1)
         else:
             news_msg = res_dict['detail']['message']
         news_msg = await replace_text(news_msg)
     except:
         news_text = '错误！马娘官网连接失败'
-        return '', news_text
+        return head_img, news_text
     try:
         news_text = youdao(news_msg, 'ja', 'zh')
         news_text = await second_replace(news_text)
-        head_img = ''
         if res_dict['detail']['image_big']:
             img_url = res_dict['detail']['image_big']
             dir_path = os.path.join(R.img('umamusume').path, 'umamusume_news/')
@@ -201,7 +204,7 @@ async def translate_news(news_id):
                 os.mkdir(dir_path)
             save_dir = os.path.join(R.img('umamusume').path, f'umamusume_news/news_img_{news_id}.jpg')
             if not os.path.exists(save_dir):
-                response = requests.get(img_url)
+                response = requests.get(url=img_url, proxies=proxy)
                 with open(save_dir, 'wb') as f:
                     f.write(response.content)
             head_img = str(R.img(f'umamusume/umamusume_news/news_img_{news_id}.jpg').cqcode)

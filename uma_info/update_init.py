@@ -23,7 +23,7 @@ async def update():
             download_path = os.path.join(R.img('umamusume').path, f'base_data/')
             if os.path.exists(download_path):
                 shutil.rmtree(download_path)
-            logger.info(f'====马娘数据库更新失败：{e}。已回退====')
+            logger.error(f'====马娘数据库更新失败：{e}。已回退====')
             return False
     return True
 
