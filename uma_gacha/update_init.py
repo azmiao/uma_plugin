@@ -41,8 +41,9 @@ async def auto_update():
     up_time = str(data['char']['time'])
     end_time = re.search(r'- (\d{1,2})月(\d{1,2})日', up_time)
     now_time = datetime.datetime.now()
-    startTime = datetime.datetime(int(now_time.year), int(end_time.group(1)), int(end_time.group(2))+1, 2, 30, 0)
-    if now_time < startTime:
+    endtime = datetime.datetime(int(now_time.year), int(end_time.group(1)), int(end_time.group(2)), 2, 30, 0)
+    updatetime = endtime + datetime.timedelta(days=1)
+    if now_time < updatetime:
         logger.info(f'未检测到更新！当前池子结束时间：{str(now_time.year)}年{str(end_time.group(1))}月{str(end_time.group(2))}日 11:00')
         return
     bot = hoshino.get_bot()
