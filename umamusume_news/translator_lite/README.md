@@ -13,3 +13,7 @@ https://github.com/azmiao/translator_lite
 强烈建议使用原版：`pip install tanslators`
 
 另外，请勿将本精简版用于任何商业用途
+
+# 本精简版需要的依赖
+
+`pathos` `lxml` `requests`
