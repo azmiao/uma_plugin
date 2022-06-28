@@ -7,7 +7,7 @@ from hoshino import R, logger
 
 # 由于数据量不小，因此采用clone形式下载数据，预计用时1分钟
 async def download_info_data():
-    data_url = 'https://hub.fastgit.xyz/azmiao/uma_plugin.git'
+    data_url = 'https://hub.fastgit.xyz/azmiao/uma_info_data.git'
     download_path = os.path.join(R.img('umamusume').path, f'base_data/')
     logger.info('正在更新数据至最新，请耐心等待，预计用时1分钟')
     # 没有就下载
