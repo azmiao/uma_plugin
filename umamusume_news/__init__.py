@@ -3,9 +3,14 @@ import asyncio
 
 from hoshino import Service, priv
 from .news_spider import get_news, judge, news_broadcast, sort_news, translate_news
+from .news_spider_tw import get_news_tw, judge_tw, news_broadcast_tw
 
 sv_help = '''=====功能=====
 [马娘新闻] 查看最近五条新闻
+
+[台服马娘新闻] 查看最近五条台服新闻
+
+仅适用日服的翻译功能：
 
 [新闻翻译] 查看翻译命令和新闻编号（限近5条）
 
@@ -13,10 +18,11 @@ sv_help = '''=====功能=====
 
 [马娘新闻翻译转发模式on/off] 开/关翻译的转发模式，限维护组
 
-（自动推送） 该功能没有命令'''.strip()
+（自动推送功能）需群管理在群里开启推送功能，可推日服和台服新闻'''.strip()
 
 sv = Service('umamusume_news', enable_on_default=True)
 svuma = Service('umamusume-news-poller', enable_on_default=False)
+svumatw = Service('umamusume-news-poller-tw', enable_on_default=False)
 
 # 帮助界面
 @sv.on_fullmatch("马娘新闻帮助")
@@ -24,10 +30,13 @@ async def help(bot, ev):
     await bot.send(ev, sv_help)
 
 # 主动获取新闻功能
-@sv.on_fullmatch(('马娘新闻', '赛马娘新闻'))
+@sv.on_rex(r'^(台服)?马娘新闻$')
 async def uma_news(bot, ev):
     try:
-        msg = await get_news()
+        if not ev['match'].group(1):
+            msg = await get_news()
+        else:
+            msg = await get_news_tw()
     except:
         msg = '获取新闻失败，请等5分钟后再次尝试'
     await bot.send(ev, msg)
@@ -45,6 +54,20 @@ async def uma_news_poller():
             return
     except Exception as e:
         svuma.logger.info(f'马娘官网连接失败，具体原因：{e}')
+
+# 台服马娘新闻播报
+@svumatw.scheduled_job('cron', minute='*/5')
+async def uma_news_poller_tw():
+    try:
+        flag = await judge_tw()
+        if flag:
+            svumatw.logger.info('检测到台服马娘新闻更新！')
+            await svumatw.broadcast(await news_broadcast_tw(), 'umamusume-news-poller-tw', 0.2)
+        else:
+            svumatw.logger.info('暂未检测到台服马娘新闻更新')
+            return
+    except Exception as e:
+        svumatw.logger.info(f'台服马娘官网连接失败，具体原因：{e}')
 
 # 选择翻译新闻
 @sv.on_prefix('新闻翻译')

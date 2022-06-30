@@ -117,12 +117,9 @@ async def judge() -> bool:
         with open(current_dir, 'r', encoding="UTF-8") as f:
             init_time = str(f.read())
     else:
-        for news in news_list:
-            init_time = news.news_time
-            break
-        current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
         with open(current_dir, 'w', encoding="UTF-8") as f:
-            f.write(str(init_time))
+            f.write('2022-01-01 00:00:00')
+        return True
     for news in news_list:
         prev_time = news.news_time
         break
