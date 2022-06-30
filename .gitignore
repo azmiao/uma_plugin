@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 # uma_plugin 特有的自动生成的文件，防止git pull异常
+# 每个都单独写出来了，方便弄乱时排错
 
 # 所有文件夹下自动生成的data文件夹
 data/*
@@ -19,6 +20,7 @@ data/*
 
 # umamusume_news文件夹下的记录最新时间的文件和转发模式保存文件
 /umamusume_news/prev_time.yml
+/umamusume_news/prev_time_tw.yml
 /umamusume_news/mode.txt
 
 # uma_face文件夹下的自动生成的表情包配置文件
@@ -29,6 +31,7 @@ data/*
 
 # uma_support_chart文件夹下的自动生成的节奏榜配置文件
 /uma_support_chart/sup_config.json
+/uma_support_chart/sup_config_tw.json
 
 # uma_tasks文件夹下的自动生成的马娘限时任务信息文件
 /uma_tasks/tasks_config.json
