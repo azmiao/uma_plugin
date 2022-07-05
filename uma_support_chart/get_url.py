@@ -45,17 +45,17 @@ async def generate_url(sup_type):
     else:
         logger.info(f'配置文件内未找到{sup_type}卡节奏榜相关配置，现已成功创建')
         if sup_type == '速':
-            old_url = 'https://wiki.biligame.com/umamusume/SSR速卡节奏榜（Ver.1.15.2）已更新成田路'
+            old_url = 'https://wiki.biligame.com/umamusume/SSR速卡节奏榜（Ver.1.19.1）至大树快车'
         elif sup_type == '耐':
-            old_url = 'https://wiki.biligame.com/umamusume/SSR耐卡节奏榜（Ver.1.16.0）已更新目白光明'
+            old_url = 'https://wiki.biligame.com/umamusume/SSR耐卡节奏榜（Ver.1.19.0）至花嫁狄杜斯'
         elif sup_type == '力':
-            old_url = 'https://wiki.biligame.com/umamusume/SSR力卡节奏榜（Ver.1.13.2）已更新爱丽数码'
+            old_url = 'https://wiki.biligame.com/umamusume/SSR力卡节奏榜（Ver.1.19.0）已更新花嫁乌拉拉'
         elif sup_type == '根':
-            old_url = 'https://wiki.biligame.com/umamusume/SSR根卡节奏榜（Ver.1.15.2）已更新SR织姬'
+            old_url = 'https://wiki.biligame.com/umamusume/SSR根卡节奏榜（Ver.1.19.5）至夏夜神鹰'
         elif sup_type == '智':
-            old_url = 'https://wiki.biligame.com/umamusume/SSR智卡节奏榜（Ver.1.15.2）已更新周年光钻'
+            old_url = 'https://wiki.biligame.com/umamusume/SSR智卡节奏榜（Ver.1.19.5）至夏日诗歌剧'
         elif sup_type == '友人':
-            old_url = 'https://wiki.biligame.com/umamusume/友人卡节奏榜（Ver.1.16.6）至天狼星小队'
+            old_url = 'https://wiki.biligame.com/umamusume/友人卡节奏榜（Ver.1.19.0）至天狼星小队'
         chart_url = await get_true_url(old_url)
         img_dict[sup_type] = {}
         img_dict[sup_type]['chart_url'] = chart_url
@@ -92,7 +92,7 @@ async def get_img(img_dict, sup_type, chart_url):
         await del_img(sup_type)
         # 获取新图片
         img_dict = await get_image(img_dict, sup_type, chart_url, ver_body)
-        # 如果img_data是空就说明网页更新但图片未上传，恢复旧版本号
+        # 如果img_data是空就说明虽然版本更新，但一图流未更新，恢复旧版本号
         if not img_dict[sup_type]['img_data']:
             img_dict[sup_type]['version'] = ver_old
     return img_dict, is_update
@@ -102,7 +102,7 @@ async def get_image(img_dict, sup_type, chart_url, ver_body):
     # 真实的页面
     res = httpx.get(chart_url, timeout=10)
     soup = BeautifulSoup(res.text, 'lxml')
-    name_pattern = re.compile(f'{sup_type}{ver_body}\.\d\.\d[\.\(\d\)]?\.png')
+    name_pattern = re.compile(f'{sup_type}[0-9]\.[0-9][0-9]\.[0-9]\.[0-9]\.png')
     img_soup_list = soup.find_all('img', {"decoding": "async"})
     for img_soup in img_soup_list:
         file_name = re.match(name_pattern, img_soup.get('alt'))
