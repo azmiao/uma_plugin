@@ -4,27 +4,17 @@ import os
 from PIL import Image
 from bs4 import BeautifulSoup
 import json
-import asyncio
 from hoshino import R, logger
 
-# 获取真实的url链接
-async def get_true_url(old_url):
-    await asyncio.sleep(0.5)
-    res = httpx.get(old_url, timeout=10)
+# 获取各个节奏榜的链接
+async def get_title_url(sup_type):
+    url_header = 'https://wiki.biligame.com/umamusume/'
+    url_region = 'https://wiki.biligame.com/umamusume/攻略'
+    sup_name = sup_type if sup_type == '友人' else 'SSR' + sup_type
+    res = httpx.get(url_region, timeout=10)
     soup = BeautifulSoup(res.text, 'lxml')
-    redirect = soup.find('div', {"class": "redirectMsg"})
-    if redirect:
-        # 下一级url的标题
-        title = redirect.find('ul').find('li').find('a').text
-        # 拼接出新的url链接
-        next_url = 'https://wiki.biligame.com/umamusume/' + str(title)
-        true_url = await get_true_url(next_url)
-    # 不点击重定向了就对获取本链接重定向的链接
-    else:
-        title= re.findall('<title>(.+)</title>', res.text)[0]
-        title = title.replace(' - 赛马娘WIKI_BWIKI_哔哩哔哩', '')
-        true_url = 'https://wiki.biligame.com/umamusume/' + str(title)
-    return true_url
+    title = soup.find('a', {"title": re.compile(fr"{sup_name}卡节奏榜\S+")}).text
+    return url_header + title
 
 # 生成字典
 async def generate_url(sup_type):
@@ -36,29 +26,11 @@ async def generate_url(sup_type):
     if not os.path.exists(img_path):
         os.mkdir(img_path)
     # 获取存储的链接
-    if img_dict.get(sup_type, None):
-        old_url = img_dict[sup_type]['chart_url']
-        chart_url = await get_true_url(old_url)
-        if old_url != chart_url:
-            img_dict[sup_type]['chart_url'] = chart_url
-    # 不存在就通过 旧链接 获取 新链接
-    else:
+    chart_url = await get_title_url(sup_type)
+    if not img_dict.get(sup_type, None):
         logger.info(f'配置文件内未找到{sup_type}卡节奏榜相关配置，现已成功创建')
-        if sup_type == '速':
-            old_url = 'https://wiki.biligame.com/umamusume/SSR速卡节奏榜（Ver.1.19.1）至大树快车'
-        elif sup_type == '耐':
-            old_url = 'https://wiki.biligame.com/umamusume/SSR耐卡节奏榜（Ver.1.19.0）至花嫁狄杜斯'
-        elif sup_type == '力':
-            old_url = 'https://wiki.biligame.com/umamusume/SSR力卡节奏榜（Ver.1.19.0）已更新花嫁乌拉拉'
-        elif sup_type == '根':
-            old_url = 'https://wiki.biligame.com/umamusume/SSR根卡节奏榜（Ver.1.19.5）至夏夜神鹰'
-        elif sup_type == '智':
-            old_url = 'https://wiki.biligame.com/umamusume/SSR智卡节奏榜（Ver.1.19.5）至夏日诗歌剧'
-        elif sup_type == '友人':
-            old_url = 'https://wiki.biligame.com/umamusume/友人卡节奏榜（Ver.1.19.0）至天狼星小队'
-        chart_url = await get_true_url(old_url)
         img_dict[sup_type] = {}
-        img_dict[sup_type]['chart_url'] = chart_url
+    img_dict[sup_type]['chart_url'] = chart_url
     img_dict, is_update = await get_img(img_dict, sup_type, chart_url)
     # 写入新的信息
     with open(current_dir, 'w', encoding='UTF-8') as f:
