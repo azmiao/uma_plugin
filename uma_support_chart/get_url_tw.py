@@ -4,27 +4,7 @@ import os
 from PIL import Image
 from bs4 import BeautifulSoup
 import json
-import asyncio
 from hoshino import R, logger
-
-# 获取真实的url链接
-async def get_true_url(old_url):
-    await asyncio.sleep(0.5)
-    res = httpx.get(old_url, timeout=10)
-    soup = BeautifulSoup(res.text, 'lxml')
-    redirect = soup.find('div', {"class": "redirectMsg"})
-    if redirect:
-        # 下一级url的标题
-        title = redirect.find('ul').find('li').find('a').text
-        # 拼接出新的url链接
-        next_url = 'https://wiki.biligame.com/umamusume/' + str(title)
-        true_url = await get_true_url(next_url)
-    # 不点击重定向了就对获取本链接重定向的链接
-    else:
-        title= re.findall('<title>(.+)</title>', res.text)[0]
-        title = title.replace(' - 赛马娘WIKI_BWIKI_哔哩哔哩', '')
-        true_url = 'https://wiki.biligame.com/umamusume/' + str(title)
-    return true_url
 
 # 生成字典
 async def generate_url(sup_type):
@@ -35,19 +15,11 @@ async def generate_url(sup_type):
     img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
     if not os.path.exists(img_path):
         os.mkdir(img_path)
-    # 获取存储的链接
-    if img_dict.get(sup_type, None):
-        old_url = img_dict[sup_type]['chart_url']
-        chart_url = await get_true_url(old_url)
-        if old_url != chart_url:
-            img_dict[sup_type]['chart_url'] = chart_url
-    # 不存在就通过 旧链接 获取 新链接
-    else:
+    chart_url = f'https://wiki.biligame.com/umamusume/{sup_type}卡节奏榜（繁中服）'
+    if not img_dict.get(sup_type, None):
         logger.info(f'配置文件内未找到台服{sup_type}卡节奏榜相关配置，现已成功创建')
-        old_url = f'https://wiki.biligame.com/umamusume/{sup_type}卡节奏榜（繁中服）'
-        chart_url = await get_true_url(old_url)
         img_dict[sup_type] = {}
-        img_dict[sup_type]['chart_url'] = chart_url
+    img_dict[sup_type]['chart_url'] = chart_url
     img_dict, is_update = await get_img(img_dict, sup_type, chart_url)
     # 写入新的信息
     with open(current_dir, 'w', encoding='UTF-8') as f:
@@ -61,11 +33,9 @@ async def get_img(img_dict, sup_type, chart_url):
     soup = BeautifulSoup(res.text, 'lxml')
     img_soup_list = soup.find_all('img', {"decoding": "async"})
     # 获取第一个作为版本号
-    ver_tmp = re.match(fr'繁中服{sup_type}([0-9]+)\.([0-9]+)\.([0-9]+)\.png', img_soup_list[0].get('alt'))
+    ver_tmp = re.match(fr'(台|繁中)服{sup_type}([0-9]+)\.([0-9]+)\.([0-9]+)榜?\.png', img_soup_list[0].get('alt'))
     # 精确版本
-    ver = ver_tmp.group(1) + '.' + ver_tmp.group(2) + '.' + ver_tmp.group(3)
-    # 大版本
-    ver_body = ver_tmp.group(1) + '.' + ver_tmp.group(2)
+    ver = ver_tmp.group(2) + '.' + ver_tmp.group(3) + '.' + ver_tmp.group(4)
     # 比较版本号
     ver_int = int(ver.replace('.', ''))
     ver_old_int = 0
@@ -75,7 +45,7 @@ async def get_img(img_dict, sup_type, chart_url):
         ver_old_int = int(ver_old.replace('.', ''))
     # 如果获取到的版本大于当前版本，就说明表格更新了
     is_update = False
-    if ver_int > ver_old_int:
+    if ver_int != ver_old_int:
         logger.info(f'台服{sup_type}卡节奏榜有更新，正在替换旧版文件')
         is_update = True
         ver_now = ver 
@@ -93,7 +63,7 @@ async def get_img(img_dict, sup_type, chart_url):
 # 获取详细图片数据
 async def get_image(img_dict, sup_type, img_soup_list):
     for img_soup in img_soup_list:
-        file_name = re.match(fr'繁中服{sup_type}([0-9]+)\.([0-9]+)\.([0-9]+)\.png', img_soup.get('alt'))
+        file_name = re.match(fr'(台|繁中)服{sup_type}([0-9]+)\.([0-9]+)\.([0-9]+)榜?\.png', img_soup.get('alt'))
         if file_name:
             file_name = file_name.group(0)
             img_dict[sup_type]['img_data'][file_name] = img_soup.get('src')

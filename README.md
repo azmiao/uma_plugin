@@ -53,18 +53,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+22-07-06    v2.2.2  修复台服支援卡命名方式变化后的BUG，更新后请务必手动删除uma_support_chart文件夹下的`sup_config_tw.json`再重启hoshino
+
 22-07-05    v2.2.1  修复支援卡节奏榜网页更新后的BUG，更新后请务必手动删除uma_support_chart文件夹下的`sup_config.json`再重启hoshino，[issue #24](https://github.com/azmiao/uma_plugin/issues/24)
 
 22-06-30    v2.2.0  新增台服马娘新闻功能，整进了“马娘新闻帮助”里
 
 22-06-30    v2.1.0  新增台服支援卡节奏榜功能，整进了“支援卡节奏榜帮助”里
 
-22-06-24    v2.0.4  请务必更新！同步translators更新，以便修复马娘新闻翻译显示不全的BUG
-
 </details>
 
 <details>
 <summary>更以前的更新日志</summary>
+
+22-06-24    v2.0.4  请务必更新！同步translators更新，以便修复马娘新闻翻译显示不全的BUG
 
 22-06-23    v2.0.3  马娘新闻修复不具合翻译不了的BUG和其他遇不到的BUG，且现在支持配置代理，已添加进本文档的食用教程里
 
