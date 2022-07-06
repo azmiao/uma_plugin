@@ -64,7 +64,7 @@ async def get_chara():
 
 # 判断是否已经签到过
 async def judge(group_id, user_id):
-    current_dir = os.path.join(os.path.dirname(__file__), f'data\{group_id}.json')
+    current_dir = os.path.join(os.path.dirname(__file__), f'data/{group_id}.json')
     if not os.path.exists(os.path.join(os.path.dirname(__file__), f'data/')):
         os.mkdir(os.path.join(os.path.dirname(__file__), f'data/'))
     if os.path.exists(current_dir):
@@ -76,7 +76,7 @@ async def judge(group_id, user_id):
 
 # 若签到过就获取已经签到过的信息
 async def get_almanac_info(group_id, user_id):
-    current_dir = os.path.join(os.path.dirname(__file__), f'data\{group_id}.json')
+    current_dir = os.path.join(os.path.dirname(__file__), f'data/{group_id}.json')
     with open(current_dir, 'r', encoding = 'UTF-8') as f:
         config = json.load(f)
     user_id = str(user_id)
