@@ -7,7 +7,9 @@ from .generate import get_title, get_task_info
 
 current_dir = os.path.join(os.path.dirname(__file__), f'tasks_config.json')
 
-sv_help = '''=====功能=====
+sv_help = '''
+=====功能=====
+
 [限时任务列表] 查看所有的限定任务标题对应编号
 
 [限时任务x] x为列表中的编号，查看限时任务的内容
@@ -15,7 +17,7 @@ sv_help = '''=====功能=====
 [手动更新限时任务] 强制刷新列表，限维护组
 '''.strip()
 
-sv = Service('uma_tasks')
+sv = Service('uma_tasks', help_=sv_help)
 
 @sv.on_fullmatch('马娘限时任务帮助')
 async def get_help(bot, ev):

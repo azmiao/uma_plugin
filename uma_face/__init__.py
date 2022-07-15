@@ -1,7 +1,9 @@
 from hoshino import Service, priv
 from .face import update_info, get_face_uma, get_face_id, get_face_random, get_mean_id, get_mean_uma
 
-sv_help = '''=====功能=====
+sv_help = '''
+=====功能=====
+
 [马娘表情包] 随机一张马娘游戏内的表情包
 
 [xxx表情包] xxx为角色名字，没有该角色的表情包就不会有反应

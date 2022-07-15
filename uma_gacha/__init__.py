@@ -1,17 +1,21 @@
 from .pretty_handle import update_pretty_info, pretty_draw, reload_pretty_pool, get_gacha_pool
 from hoshino import Service, priv
 
-sv_help = '''=====功能=====
-（@bot就是@机器人）
+sv_help = '''
+=====功能=====
 
 [查看马娘卡池] 看马娘当前的池子
 
 [@bot马娘单抽] 马娘池子单抽
+
 [@bot马娘十连] 马娘池子十连
+
 [@bot马之井] 马娘池子抽一井
 
 [@bot育成卡单抽] 育成卡池子单抽
+
 [@bot育成卡十连] 育成卡池子十连
+
 [@bot育成卡井] 育成卡池子抽一井'''.strip()
 
 sv = Service('uma_gacha', help_=sv_help, enable_on_default=True, bundle='马娘抽卡')

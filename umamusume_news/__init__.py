@@ -5,7 +5,9 @@ from hoshino import Service, priv
 from .news_spider import get_news, judge, news_broadcast, sort_news, translate_news
 from .news_spider_tw import get_news_tw, judge_tw, news_broadcast_tw
 
-sv_help = '''=====功能=====
+sv_help = '''
+=====功能=====
+
 [马娘新闻] 查看最近五条新闻
 
 [台服马娘新闻] 查看最近五条台服新闻
@@ -18,9 +20,10 @@ sv_help = '''=====功能=====
 
 [马娘新闻翻译转发模式on/off] 开/关翻译的转发模式，限维护组
 
-（自动推送功能）需群管理在群里开启推送功能，可推日服和台服新闻'''.strip()
+（自动推送功能）需群管理在群里开启推送功能，可推日服和台服新闻
+'''.strip()
 
-sv = Service('umamusume_news', enable_on_default=True)
+sv = Service('umamusume_news', enable_on_default=True, help_=sv_help)
 svuma = Service('umamusume-news-poller', enable_on_default=False)
 svumatw = Service('umamusume-news-poller-tw', enable_on_default=False)
 

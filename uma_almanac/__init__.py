@@ -4,7 +4,7 @@ import os
 from .get_all_info import judge, get_msg, get_almanac_info
 from hoshino import Service
 
-sv = Service('uma_almanac', bundle='马娘黄历')
+sv = Service('uma_almanac', bundle='马娘黄历', help_='[马娘签到] 查看今日马娘运势')
 
 @sv.on_fullmatch('马娘签到')
 async def get_calendar(bot, ev):

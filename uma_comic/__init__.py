@@ -1,7 +1,9 @@
 from hoshino import Service, priv
 from .comic import update_info, get_comic_random, get_comic_id, get_comic_uma
 
-sv_help = '''=====功能=====
+sv_help = '''
+=====功能=====
+
 [马娘漫画] 随机一张马娘游戏内的一格漫画
 
 [马娘漫画 xxx] xxx为角色名字，没有该角色的一格漫画就不会有反应

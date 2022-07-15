@@ -6,7 +6,9 @@ from .get_target import get_tar
 
 sv_help = '''
 注：xxx是指要查的马娘名
+
 [查目标 xxx] 查询该马娘的育成目标
+
 [查目标 xxx-f] 某尾加上-f为强制重新生成图片
 '''.strip()
 
