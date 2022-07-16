@@ -55,18 +55,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+22-07-16    v2.4.0  美化帮助界面，同时方便autohelp服务模式显示，详情本文末尾
+
 22-07-16    v2.3.1  修复技能查询BUG同时新增繁中技能查询 by[@Yui-xy](https://github.com/Yui-xy)，[issue #28](https://github.com/azmiao/uma_plugin/issues/28)
 
 22-07-08    v2.3.0  新增查询赛程的育成目标功能，使用命令 “查目标 角色名” 即可，结果图片仿自bwiki，[issue #25](https://github.com/azmiao/uma_plugin/issues/25)
 
 22-07-06    v2.2.2  修复台服支援卡命名方式变化后的BUG，更新后请务必手动删除uma_support_chart文件夹下的`sup_config_tw.json`再重启hoshino
 
-22-07-05    v2.2.1  修复支援卡节奏榜网页更新后的BUG，更新后请务必手动删除uma_support_chart文件夹下的`sup_config.json`再重启hoshino，[issue #24](https://github.com/azmiao/uma_plugin/issues/24)
-
 </details>
 
 <details>
 <summary>更以前的更新日志</summary>
+
+22-07-05    v2.2.1  修复支援卡节奏榜网页更新后的BUG，更新后请务必手动删除uma_support_chart文件夹下的`sup_config.json`再重启hoshino，[issue #24](https://github.com/azmiao/uma_plugin/issues/24)
 
 22-06-30    v2.2.0  新增台服马娘新闻功能，整进了“马娘新闻帮助”里
 
@@ -132,10 +134,8 @@ git pull
 
 ## 功能命令和描述
 
-### 注：群内查看功能帮助可以发送：“马娘帮助”
-
 <details>
-<summary><font size = 4>维护组的所有命令</font></summary>
+<summary><font size = 4>点我展开维护组的所有命令</font></summary>
 
 马娘数据库的：
 
@@ -169,182 +169,28 @@ git pull
 
 </details>
 
-<details>
-<summary><font size = 4>马娘基础数据库模块</font></summary>
+### 注：发送“马娘帮助”可以查看马娘插件所有的帮助汇总
 
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 查今天生日马娘 | 看看今天哪只马娘生日(仅限马娘) |
-| 查马娘生日 xx | xx为马娘名字，查询这只马娘是哪天生日(仅限马娘) |
-| 查生日马娘 m-d | m-d就是 m月d日 ，查询这天有哪些马娘生日(仅限马娘) |
-| 查角色id xx | xx为角色名字 |
-| 查角色日文名 xx | xx为角色名字 |
-| 查角色中文名 xx | xx为角色名字 |
-| 查角色英文名 xx | xx为角色名字 |
-| 查角色分类 xx | xx为角色名字 |
-| 查角色语音 xx | xx为角色名字 |
-| 查角色头像 xx | xx为角色名字 |
-| 查角色cv xx | xx为角色名字 |
-| 查角色身高 xx | xx为角色名字 |
-| 查角色体重 xx | xx为角色名字 |
-| 查角色三围 xx | xx为角色名字 |
-| 查角色制服 xx | xx为角色名字 |
-| 查角色决胜服 xx | xx为角色名字 |
-| 查角色原案 xx | xx为角色名字 |
-| 查角色适应性 xx | xx为角色名字 |
-| 查角色详细信息 xx | xx为角色名字(显示全部信息) |
-| 手动更新马娘数据 | 功能限维护组 |
-| (每天1:31自动更新马娘数据) | 该功能没有命令 |
-| (每天9:31自动推送该日生日的马娘) | 该功能没有命令，且本功能需额外开启 |
+![](https://img.gejiba.com/images/6f9a66ec3de739417cd3ba9003162fcc.png)
+
+没有图片版的【马娘黄历】只有一个命令：马娘签到
+
+<details>
+<summary><font size = 4>其他功能的图片版帮助</font></summary>
+
+![](https://img.gejiba.com/images/14656fafe6c33ac7f0429c572a251808.png)
+![](https://img.gejiba.com/images/3aff9b9882954e3f8206328444627a93.png)
+![](https://img.gejiba.com/images/9b012de7f710229bea2fa7e867b031bc.png)
+![](https://img.gejiba.com/images/ca1e78b1faf8a2a58bfbe62d04cff247.png)
+![](https://img.gejiba.com/images/b7fe400d61fbefc8cfa52f87683ce507.png)
+![](https://img.gejiba.com/images/63c84910b6117c7eb5d8f7a706f2ff9a.png)
+![](https://img.gejiba.com/images/90d76cb9ac80c7cbe0d01e0403954a29.png)
+![](https://img.gejiba.com/images/881d1f7010c79b8cfcc6b3dad8c17028.png)
+![](https://img.gejiba.com/images/2bef2337722582aa066899258c8c94c0.png)
+![](https://img.gejiba.com/images/9c429aa7be4a6f997b22c54f11eda3c6.png)
+![](https://img.gejiba.com/images/58fadc7fba87e876ea67c4c9e89c4668.png)
 
 </details>
-
-<details>
-<summary><font size = 4>相性计算器</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 马娘相性帮助 | 看看详细帮助内容 |
-| 查相性 本体 父母1 祖父母1 祖父母2 父母2 祖父母3 祖父母4 胜鞍数 | 1.直接按照下面的指令写马名即可，请按顺序写，注意空格别漏<br>2.胜鞍数为胜鞍+金牌的总个数，类型为整数，且可写可不写<br>3.判断胜鞍：(父母1和祖父母1相同的重赏胜场数)+(父母1和祖父母2相同的重赏胜场数)+(父母2和祖父母3相同的重赏胜场数)+(父母2和祖父母4相同的重赏胜场数) |
-| 查相性 本体 父母1 祖父母1 祖父母2 父母2 祖父母3 祖父母4 | 同上，表示可以不加胜鞍 |
-| 查相性 马娘1 马娘2 | 查两只马娘之间的相性，这里不可以加胜鞍 |
-| 相性榜 马娘 | 相性榜是指生成对这只马娘相性最好的马娘排行榜 |
-
-</details>
-
-<details>
-<summary><font size = 4>支援卡节奏榜</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 速卡节奏榜 | 对应速度卡 |
-| 耐卡节奏榜 | 对应耐力卡 |
-| 力卡节奏榜 | 对应力量卡 |
-| 根卡节奏榜 | 对应根性卡 |
-| 智卡节奏榜 | 对应智力卡 |
-| 友人卡节奏榜 | 对应友人卡 |
-| 台服速卡节奏榜 | 对应台服的速度卡 |
-| 台服耐卡节奏榜 | 对应台服的耐力卡 |
-| 台服力卡节奏榜 | 对应台服的力量卡 |
-| 台服根卡节奏榜 | 对应台服的根性卡 |
-| 台服智卡节奏榜 | 对应台服的智力卡 |
-| 台服友人卡节奏榜 | 对应台服的友人卡 |
-
-</details>
-
-<details>
-<summary><font size = 4>马娘新闻播报</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 马娘新闻 | 查看最近五条日服马娘新闻 |
-| 台服马娘新闻 | 查看最近五条台服马娘新闻 |
-| 新闻翻译 | 查看翻译命令和新闻编号（限近5条） |
-| 新闻翻译 1 | 翻译第1条新闻，编号可选值(1/2/3/4/5) |
-| 马娘新闻翻译转发模式on | 开启翻译的转发模式以防刷屏，限维护组，默认即是开启 |
-| 马娘新闻翻译转发模式off | 关闭翻译的转发模式，限维护组 |
-| (马娘新闻推送) | 该功能没有命令，且本功能需额外开启 |
-
-</details>
-
-<details>
-<summary><font size = 4>马娘模拟抽卡</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 查看马娘卡池 | 看马娘当前的池子 |
-| @bot马娘单抽 | 马娘池子单抽 |
-| @bot马娘十连 | 马娘池子十连 |
-| @bot马之井 | 马娘池子抽一井 |
-| @bot育成卡单抽 | 育成卡池子单抽 |
-| @bot育成卡十连 | 育成卡池子十连 |
-| @bot育成卡井 | 育成卡池子抽一井 |
-| 更新马娘信息 | 更新图片数据等并自动重载赛马娘卡池，功能限维护组 |
-| 重载赛马娘卡池 | 仅刷新马娘当前UP卡池的信息（不含图片数据），功能限维护组 |
-| (每天4点自动更新马娘信息) | 该功能没有命令 |
-
-</details>
-
-<details>
-<summary><font size = 4>马娘黄历</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 马娘签到 | 看看今日的黄历？ |
-
-</details>
-
-<details>
-<summary><font size = 4>马娘耐力计算器</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 马娘耐力帮助 | 看看详细帮助内容 |
-| 举个例子： |  |
-| 算耐力<br>属性:1200 600 1200 600 700<br>适应性:逃马-A 芝-A 1600-A<br>干劲:绝好调 状况:良<br>固回:0 普回:0 金回:1 | 计算最低耐力需求 |
-
-</details>
-
-<details>
-<summary><font size = 4>马娘表情包</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 马娘表情包帮助 | 看看详细帮助内容 |
-| 马娘表情包 | 随机一张马娘游戏内的表情包 |
-| xxx表情包 | xxx为角色名字，没有该角色的表情包就不会有反应 |
-| x号表情包 | x为数字，是表情包的编号，编号不是整数就不会有反应 |
-| 查表情包含义 xxx | xxx为角色名字，没有该角色的表情包就不会有反应 |
-| 查表情包含义 x号 | x为数字，是表情包的编号，编号不是整数就不会有反应 |
-
-</details>
-
-<details>
-<summary><font size = 4>马娘漫画</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 马娘漫画帮助 | 看看详细帮助内容 |
-| 马娘漫画 | 随机一张马娘游戏内的一格漫画 |
-| 马娘漫画 xxx | xxx为角色名字，没有该角色的一格漫画就不会有反应 |
-| 马娘漫画 x号 | x为数字，是一格漫画的编号，编号不是整数就不会有反应 |
-
-</details>
-
-<details>
-<summary><font size = 4>马娘限时任务</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 马娘限时任务帮助 | 看看详细帮助内容 |
-| 限时任务列表 | 查看所有的限定任务标题对应编号 |
-| 限时任务x | x为列表中的编号，查看限时任务的内容 |
-
-</details>
-
-<details>
-<summary><font size = 4>马娘技能查询</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 马娘技能帮助 | 看看详细帮助内容 |
-| 查技能 xxx | xxx为中/日文技能名<br>注意继承后的固有名为 "继承技/(固有名)"<br>例如"继承技/113転び114起き" |
-| 查技能 (条件1) (条件2)... | 查技能后面可以加任意1个或多个条件，用空格隔开<br>例如"查技能 通用 妨害（速度）"，条件可选项如下 |
-| ===↓条件可选项↓=== | 注：不需要的可不选，另外由于存在复合技能，因此技能类型可多选 |
-| 稀有度可选 | ['普通', '传说', '独特', '普通·继承', '独特·继承', '剧情', '活动'] |
-| 条件限制可选 | ['通用', '短距离', '英里', '中距离', '长距离', '泥地', '逃马', '先行', '差行', '追马'] |
-| 技能颜色可选 | ['绿色', '紫色', '黄色', '蓝色', '红色'] |
-| 技能类型可多选 | ['被动（速度）', '被动（耐力）', '被动（力量）', '被动（毅力）', '被动（智力）',<br>'耐力恢复', '速度', '加速度', '出闸', '视野', '切换跑道',<br>'妨害（速度）', '妨害（加速度）', '妨害（心态）', '妨害（智力）', '妨害（耐力恢复）', '妨害（视野）',<br>'(未知)'] |
-
-</details>
-
-<details>
-<summary><font size = 4>马娘育成目标</font></summary>
-
-| 功能命令 | 介绍 |
-| :---- | :---- |
-| 查目标 xxx | xxx是指要查的马娘名，查询该马娘的育成目标 |
-| 查目标 xxx-f | 某尾加上-f为强制重新生成图片，不使用缓存，默认情况下生成一次后续就一直用缓存 |
 
 </details>
 
@@ -382,9 +228,12 @@ git pull
     开启 uma_bir_push
     ```
 
-    在某个群里发消息输入下文以开启马娘新闻播报
+    在某个群里发消息输入下文以开启马娘新闻播报，一个日服，一个台服
     ```
     开启 umamusume-news-poller
+    ```
+    ```
+    开启 umamusume-news-poller-tw
     ```
 
     可以通过发消息输入"lssv"查看这个功能前面是不是⚪来确认是否开启成功
@@ -407,8 +256,48 @@ git pull
     proxy = {}
     ```
 
+8. 更好看的帮助界面，见本文末尾（可选）
+
 </details>
 
 ## 另有图片预览，请看：
 
 https://www.594594.xyz/2022/03/04/uma_plugin/
+
+## 支持[autohelp](https://github.com/SonderXiaoming/autohelp)
+
+<details>
+<summary>点我展开</summary>
+
+可显示更好看的帮助界面
+
+推荐添加的`black.json`：
+
+```
+{
+    "uma_bir_push",
+    "umamusume-news-poller",
+    "umamusume-news-poller-tw",
+}
+```
+
+推荐添加的`replace.json`：
+
+```
+{
+    "uma_almanac": "马娘黄历",
+    "uma_comic": "马娘漫画",
+    "uma_compatibility": "马娘相性",
+    "uma_endurance": "马娘耐力",
+    "uma_face": "马娘表情包",
+    "uma_gacha": "马娘抽卡",
+    "uma_info": "马娘基础数据查询",
+    "uma_skills": "马娘技能查询",
+    "uma_support_chart": "马娘支援卡节奏榜",
+    "uma_target": "马娘育成目标查询",
+    "uma_tasks": "马娘限时任务查询",
+    "umamusume_news": "马娘新闻",
+    "uma_help": "马娘帮助汇总",
+}
+```
+</details>

@@ -18,30 +18,12 @@ skill_type = ['被动（速度）', '被动（耐力）', '被动（力量）', 
 ]
 params = rarity + limit + color + skill_type
 
-sv_help = f'''
-=====命令=====
-
-[查技能 xxx] xxx为中/日文技能名，技能名中的空格请替换为下划线"_"。注意继承后的固有名为 "继承技/(固有名)"，例如"继承技/113転び114起き"
-
-[查技能 (条件1) (条件2)...] 查技能后面可以加任意1个或多个条件，用空格隔开，例如"查技能 通用 妨害（速度）"，条件可选项如下
-
-=====注意=====
-
-TIP：不需要的可不选，另外由于存在复合技能，因此技能类型可多选。
-
-稀有度可选：{rarity}
-
-条件限制可选：{limit}
-
-技能颜色可选：{color}
-
-技能类型可多选：{skill_type}
-'''.strip()
-
-sv = Service('uma_skills', help_=sv_help)
+sv = Service('uma_skills', help_='![](https://img.gejiba.com/images/90d76cb9ac80c7cbe0d01e0403954a29.png)')
 
 @sv.on_fullmatch('马娘技能帮助')
 async def get_help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 @sv.on_prefix('查技能')

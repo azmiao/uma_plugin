@@ -1,28 +1,15 @@
+import os
+
 from .pretty_handle import update_pretty_info, pretty_draw, reload_pretty_pool, get_gacha_pool
 from hoshino import Service, priv
 
-sv_help = '''
-=====功能=====
-
-[查看马娘卡池] 看马娘当前的池子
-
-[@bot马娘单抽] 马娘池子单抽
-
-[@bot马娘十连] 马娘池子十连
-
-[@bot马之井] 马娘池子抽一井
-
-[@bot育成卡单抽] 育成卡池子单抽
-
-[@bot育成卡十连] 育成卡池子十连
-
-[@bot育成卡井] 育成卡池子抽一井'''.strip()
-
-sv = Service('uma_gacha', help_=sv_help, enable_on_default=True, bundle='马娘抽卡')
+sv = Service('uma_gacha', help_='![](https://img.gejiba.com/images/b7fe400d61fbefc8cfa52f87683ce507.png)', enable_on_default=True, bundle='马娘抽卡')
 
 # 帮助界面
 @sv.on_fullmatch("马娘抽卡帮助")
 async def help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 # 马娘单抽

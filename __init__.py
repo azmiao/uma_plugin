@@ -13,40 +13,12 @@ from .uma_tasks.update_init import update as tasks_update, auto_update as tasks_
 from .uma_gacha.update_init import update as gacha_update, auto_update as gacha_auto
 from .uma_support_chart.update_init import update as sup_update
 
-sv_help = '''
-马娘相关功能命令列表：
-
-马娘签到
-
-马娘数据帮助
-
-支援卡节奏榜帮助
-
-马娘新闻帮助
-
-马娘抽卡帮助
-
-马娘耐力帮助
-
-马娘相性帮助
-
-马娘表情包帮助
-
-马娘漫画帮助
-
-马娘限时任务帮助
-
-马娘技能帮助
-
-育成目标帮助
-
-注：数据来自马娘官网和Bwiki
-'''.strip()
-
-sv = Service('uma_help', help_ = sv_help)
+sv = Service('uma_help', help_='![](https://img.gejiba.com/images/6f9a66ec3de739417cd3ba9003162fcc.png)')
 
 @sv.on_fullmatch('马娘帮助')
 async def get_help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 # v1.5.2将图片文件夹合并至一个文件夹

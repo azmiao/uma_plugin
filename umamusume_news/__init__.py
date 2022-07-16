@@ -5,31 +5,15 @@ from hoshino import Service, priv
 from .news_spider import get_news, judge, news_broadcast, sort_news, translate_news
 from .news_spider_tw import get_news_tw, judge_tw, news_broadcast_tw
 
-sv_help = '''
-=====功能=====
-
-[马娘新闻] 查看最近五条新闻
-
-[台服马娘新闻] 查看最近五条台服新闻
-
-仅适用日服的翻译功能：
-
-[新闻翻译] 查看翻译命令和新闻编号（限近5条）
-
-[新闻翻译1] 翻译第1条新闻，编号可选值(1/2/3/4/5)
-
-[马娘新闻翻译转发模式on/off] 开/关翻译的转发模式，限维护组
-
-（自动推送功能）需群管理在群里开启推送功能，可推日服和台服新闻
-'''.strip()
-
-sv = Service('umamusume_news', enable_on_default=True, help_=sv_help)
+sv = Service('umamusume_news', enable_on_default=True, help_='![](https://img.gejiba.com/images/58fadc7fba87e876ea67c4c9e89c4668.png)')
 svuma = Service('umamusume-news-poller', enable_on_default=False)
 svumatw = Service('umamusume-news-poller-tw', enable_on_default=False)
 
 # 帮助界面
 @sv.on_fullmatch("马娘新闻帮助")
 async def help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 # 主动获取新闻功能

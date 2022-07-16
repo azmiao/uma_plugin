@@ -1,20 +1,14 @@
+import os
+
 from hoshino import Service, priv
 from .comic import update_info, get_comic_random, get_comic_id, get_comic_uma
 
-sv_help = '''
-=====功能=====
-
-[马娘漫画] 随机一张马娘游戏内的一格漫画
-
-[马娘漫画 xxx] xxx为角色名字，没有该角色的一格漫画就不会有反应
-
-[马娘漫画 x号] x为数字，是一格漫画的编号，编号不是整数就不会有反应
-'''.strip()
-
-sv = Service('uma_comic', help_ = sv_help)
+sv = Service('uma_comic', help_='![](https://img.gejiba.com/images/14656fafe6c33ac7f0429c572a251808.png)')
 
 @sv.on_fullmatch('马娘漫画帮助')
 async def get_help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 @sv.on_prefix('马娘漫画')

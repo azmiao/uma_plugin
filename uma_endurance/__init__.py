@@ -1,49 +1,15 @@
+import os
+
 from hoshino import Service
 from .caculate import *
 
-sv_help = '''
-==注意==
-
-下方指令可以直接复制修改
-中英文冒号均可
-适应性大小写均可
-空格别漏，记得换行
-没反应 应该是你指令错了
-
-跑法可选：逃马、先马、差马、追马
-
-跑场可选：芝、泥地
-
-跑道长度：1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2500, 3000, 3200, 3400, 3600
-
-干劲可选：绝好调、好调、普通、不调、绝不掉
-
-场况可选：良、稍重、重、不良
-
-固回：固有回体技能等级，没有就0
-
-普回：普通回体技能 的个数
-
-金回：金回体技能 的个数
-
-==指令(下方为一个例子)==
-
-算耐力
-
-属性:1200 600 1200 600 700
-
-适应性:逃马-A 芝-A 1600-A
-
-干劲:绝好调 状况:良
-
-固回:0 普回:0 金回:1
-'''.strip()
-
-sv = Service('uma_endurance', help_=sv_help)
+sv = Service('uma_endurance', help_='![](https://img.gejiba.com/images/9b012de7f710229bea2fa7e867b031bc.png)')
 
 # 帮助界面
 @sv.on_fullmatch("马娘耐力帮助")
 async def help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 @sv.on_rex(r'''

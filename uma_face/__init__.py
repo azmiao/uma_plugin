@@ -1,24 +1,14 @@
+import os
+
 from hoshino import Service, priv
 from .face import update_info, get_face_uma, get_face_id, get_face_random, get_mean_id, get_mean_uma
 
-sv_help = '''
-=====功能=====
-
-[马娘表情包] 随机一张马娘游戏内的表情包
-
-[xxx表情包] xxx为角色名字，没有该角色的表情包就不会有反应
-
-[x号表情包] x为数字，是表情包的编号，编号不是整数就不会有反应
-
-[查表情包含义 xxx] xxx为角色名字，没有该角色的表情包就不会有反应
-
-[查表情包含义 x号] x为数字，是表情包的编号，编号不是整数就不会有反应
-'''.strip()
-
-sv = Service('uma_face', help_ = sv_help)
+sv = Service('uma_face', help_='![](https://img.gejiba.com/images/ca1e78b1faf8a2a58bfbe62d04cff247.png)')
 
 @sv.on_fullmatch('马娘表情包帮助')
 async def get_help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 # 支持1到10个字符的马娘名字

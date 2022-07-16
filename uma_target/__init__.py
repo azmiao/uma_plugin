@@ -4,18 +4,12 @@ import json
 from hoshino import Service
 from .get_target import get_tar
 
-sv_help = '''
-注：xxx是指要查的马娘名
-
-[查目标 xxx] 查询该马娘的育成目标
-
-[查目标 xxx-f] 某尾加上-f为强制重新生成图片
-'''.strip()
-
-sv = Service('uma_target', help_ = sv_help)
+sv = Service('uma_target', help_='![](https://img.gejiba.com/images/2bef2337722582aa066899258c8c94c0.png)')
 
 @sv.on_fullmatch('育成目标帮助')
 async def get_help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 @sv.on_prefix('查目标')

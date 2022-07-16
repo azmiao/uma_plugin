@@ -5,49 +5,13 @@ from hoshino import Service, priv
 from .caculate import judge_name, get_relation
 from .update_type import update as com_update
 
-sv_help = '''
-==注意==
-
-    1.直接按照下面的指令写马名即可，请按顺序写，注意空格别漏
-
-    2.胜鞍数为胜鞍+金牌的总个数，类型为整数，且可写可不写
-
-    3.判断胜鞍：(父母1和祖父母1相同的重赏胜场数)+(父母1和祖父母2相同的重赏胜场数)+(父母2和祖父母3相同的重赏胜场数)+(父母2和祖父母4相同的重赏胜场数)
-    
-    4.相性榜是指生成对这只马娘相性最好的马娘排行榜
-
-==指令==
-
-指令1：
-
-查相性 本体 父母1 祖父母1 祖父母2 父母2 祖父母3 祖父母4 胜鞍数
-
-(例如：查相性 特别周 内恰 黄金船 小栗帽 好歌剧 北黑 玉藻 32)
-
-指令2：
-
-查相性 本体 父母1 祖父母1 祖父母2 父母2 祖父母3 祖父母4
-
-(例如：查相性 特别周 内恰 黄金船 小栗帽 好歌剧 北黑 玉藻)
-
-指令3：
-
-查相性 马娘1 马娘2
-
-(例如：查相性 特别周 内恰)
-
-指令4：
-
-相性榜 马娘
-
-(例如：相性榜 特别周)
-'''.strip()
-
-sv = Service('uma_compatibility', help_=sv_help)
+sv = Service('uma_compatibility', help_='![](https://img.gejiba.com/images/3aff9b9882954e3f8206328444627a93.png)')
 
 # 帮助界面
 @sv.on_fullmatch("马娘相性帮助")
 async def help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 @sv.on_prefix('查相性')

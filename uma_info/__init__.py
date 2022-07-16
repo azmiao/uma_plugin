@@ -10,59 +10,13 @@ from hoshino.util import pic2b64
 
 current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
 
-sv_help = '''
-== 仅支持马娘 ==
-
-[查今天生日马娘] 看看今天哪只马娘生日
-
-[查马娘生日 xx] xx为马娘名字
-
-[查生日马娘 m-d] m-d就是 m月d日
-
-== 支持全部角色 ==
-
-[查角色id xx] xx为角色名字
-
-[查角色日文名 xx] xx为角色名字
-
-[查角色中文名 xx] xx为角色名字
-
-[查角色英文名 xx] xx为角色名字
-
-[查角色分类 xx] xx为角色名字
-
-[查角色语音 xx] xx为角色名字
-
-[查角色头像 xx] xx为角色名字
-
-[查角色cv xx] xx为角色名字
-
-[查角色身高 xx] xx为角色名字
-
-[查角色体重 xx] xx为角色名字
-
-[查角色三围 xx] xx为角色名字
-
-[查角色制服 xx] xx为角色名字
-
-[查角色决胜服 xx] xx为角色名字
-
-[查角色原案 xx] xx为角色名字
-
-[查角色适应性 xx] xx为角色名字
-
-[查角色详细信息 xx] xx为角色名字(显示全部信息)
-
-== 维护组功能 ==
-
-[手动更新马娘数据] 功能限维护组
-'''.strip()
-
-sv = Service('uma_info', help_ = sv_help, enable_on_default = True)
+sv = Service('uma_info', help_='![](https://img.gejiba.com/images/63c84910b6117c7eb5d8f7a706f2ff9a.png)', enable_on_default = True)
 svbr = Service('uma_bir_push', enable_on_default = False)
 
 @sv.on_fullmatch('马娘数据帮助')
 async def get_help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 @sv.on_fullmatch('查今天生日马娘')

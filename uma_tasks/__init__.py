@@ -7,20 +7,12 @@ from .generate import get_title, get_task_info
 
 current_dir = os.path.join(os.path.dirname(__file__), f'tasks_config.json')
 
-sv_help = '''
-=====功能=====
-
-[限时任务列表] 查看所有的限定任务标题对应编号
-
-[限时任务x] x为列表中的编号，查看限时任务的内容
-
-[手动更新限时任务] 强制刷新列表，限维护组
-'''.strip()
-
-sv = Service('uma_tasks', help_=sv_help)
+sv = Service('uma_tasks', help_='![](https://img.gejiba.com/images/9c429aa7be4a6f997b22c54f11eda3c6.png)')
 
 @sv.on_fullmatch('马娘限时任务帮助')
 async def get_help(bot, ev):
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
 @sv.on_rex(r'^限时任务(\S{1,3})$')
