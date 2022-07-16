@@ -30,12 +30,13 @@ async def update_info():
     last_time = await get_update_time()
     f_data['last_time'] = str(last_time)
     f_data['cn_name_dict'] = {}
+    f_data['tw_name_dict'] = {}
     # 获取所有技能
     f_data['skills'] = {}
     res_tag = soup.find('table', {'class': 'CardSelect wikitable sortable'})
     # 删除影响查找的多余标签
     res_tag.find('tr', {'id': 'CardSelectTabHeader'}).decompose()
-    # 这样就全部都市谷有咲的标签
+    # 这样就全部都是有效的标签
     tr_list = res_tag.find_all('tr', {'class': 'divsort'})
     for each_tr in tr_list:
         rarity = each_tr.get('data-param1')
@@ -46,28 +47,32 @@ async def update_info():
             each_tr_list.append(each_td)
         skill_name_jp = each_tr_list[1].replace(' ', '_')
         skill_name_cn = each_tr_list[2].replace(' ', '_')
+        skill_name_tw = each_tr_list[3].replace(' ', '_')
         # 额外处理一下继承技能
         if rarity == '普通·继承':
             skill_name_jp = '继承技/' + skill_name_jp
             skill_name_cn = '继承技/' + skill_name_cn
+            skill_name_tw = '继承技/' + skill_name_tw
         # 对异常的结果修改
-        skill_type = '条件1: 速度条件2: 速度、加速度' if each_tr_list[11] == '加速度条件2: 速度、条件1: 速度' else each_tr_list[11]
+        skill_type = '条件1: 速度条件2: 速度、加速度' if each_tr_list[12] == '加速度条件2: 速度、条件1: 速度' else each_tr_list[12]
         # 注：嘉年华活动技能就不做额外处理了，仅保留最新的
         each_tr_dict = {
             '中文名': skill_name_cn,
             '稀有度': rarity,
             '颜色': color,
-            '条件限制': each_tr_list[3],
-            '技能描述': each_tr_list[4],
-            '技能数值': each_tr_list[5],
-            '持续时间': each_tr_list[6],
-            '评价分': each_tr_list[7],
-            '需要PT': each_tr_list[8],
-            'PT评价比': each_tr_list[9],
-            '触发条件': each_tr_list[10],
+            '繁中译名': skill_name_tw,
+            '条件限制': each_tr_list[4],
+            '技能描述': each_tr_list[5],
+            '技能数值': each_tr_list[6],
+            '持续时间': each_tr_list[7],
+            '评价分': each_tr_list[8],
+            '需要PT': each_tr_list[9],
+            'PT评价比': each_tr_list[10],
+            '触发条件': each_tr_list[11],
             '技能类型': skill_type
         }
         f_data['cn_name_dict'][skill_name_cn] = skill_name_jp
+        f_data['tw_name_dict'][skill_name_tw] = skill_name_jp
         f_data['skills'][skill_name_jp] = each_tr_dict
     # 都做完了再写入
     with open(current_dir, 'w', encoding='UTF-8') as f:

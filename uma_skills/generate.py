@@ -11,6 +11,7 @@ async def create_msg(skill_name: str, f_data):
 中文名：{f_data['skills'][skill_name]['中文名']}
 稀有度：{f_data['skills'][skill_name]['稀有度']}
 颜色：{f_data['skills'][skill_name]['颜色']}
+繁中译名：{f_data['skills'][skill_name]['繁中译名']}
 条件限制：{f_data['skills'][skill_name]['条件限制']}
 技能描述：{f_data['skills'][skill_name]['技能描述']}
 技能数值：{f_data['skills'][skill_name]['技能数值']}
@@ -31,14 +32,21 @@ async def get_skill_info(skill_name: str, f_data):
         msg = await create_msg(skill_name, f_data)
         return msg
     cn_name_dict = f_data['cn_name_dict']
+    tw_name_dict = f_data['tw_name_dict']
     cn_name_list = list(cn_name_dict.keys())
+    tw_name_list = list(tw_name_dict.keys())
     # 若名字在中文名里
     if skill_name in cn_name_list:
         jp_name_tmp = cn_name_dict[skill_name]
         msg = await create_msg(jp_name_tmp, f_data)
         return msg
+    # 若名字在繁中文名里
+    if skill_name in tw_name_list:
+        jp_name_tmp = tw_name_dict[skill_name]
+        msg = await create_msg(jp_name_tmp, f_data)
+        return msg
     # 全部中日名字的列表
-    all_name_list = jp_name_list + cn_name_list
+    all_name_list = jp_name_list + cn_name_list + tw_name_list
     # 去重
     all_name_list = list(set(all_name_list))
     # 如果都不在，就进行相似度检测
@@ -102,7 +110,7 @@ async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list:li
 # 生成图片
 async def create_img(info_data, filename_tmp):
     field_names = (
-        '技能名', '中文名', '稀有度', '颜色', '条件限制',
+        '技能名', '中文名', '稀有度', '颜色', '繁中译名', '条件限制',
         '技能描述', '技能数值', '持续时间', '评价分',
         '需要PT', 'PT评价比', '触发条件', '技能类型'
     )
@@ -113,6 +121,7 @@ async def create_img(info_data, filename_tmp):
         cn_name = info_data['info'][skill_name]['中文名']
         rarity = info_data['info'][skill_name]['稀有度'].replace('·', '')
         color = info_data['info'][skill_name]['颜色']
+        tw_name = info_data['info'][skill_name]['繁中译名']
         limit = info_data['info'][skill_name]['条件限制']
         intro = info_data['info'][skill_name]['技能描述']
         value = info_data['info'][skill_name]['技能数值']
@@ -123,7 +132,7 @@ async def create_img(info_data, filename_tmp):
         condition = info_data['info'][skill_name]['触发条件']
         skill_type = info_data['info'][skill_name]['技能类型']
         table.add_row([
-            skill_name, cn_name, rarity, color, limit, intro,
+            skill_name, cn_name, rarity, color, tw_name, limit, intro,
             value, time, point, pt, pt_per_point, condition, skill_type
         ])
 
