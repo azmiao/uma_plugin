@@ -17,7 +17,7 @@ sv = Service('uma_help', help_='![](https://img.gejiba.com/images/6f9a66ec3de739
 
 @sv.on_fullmatch('马娘帮助')
 async def get_help(bot, ev):
-    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
+    img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}.png')
     sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
 
