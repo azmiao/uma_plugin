@@ -26,7 +26,7 @@ async def get_help(bot, ev):
 @sv.on_fullmatch('马娘速查')
 async def uma_query(bot, ev):
     query_path = os.path.join(os.path.dirname(__file__), 'query_data.json')
-    with open(query_path, 'w', encoding='UTF-8') as f:
+    with open(query_path, 'r', encoding='UTF-8') as f:
         query_data = json.load(f)
     msg = '◎赛马娘常用网站◎'
     for title in list(query_data.keys()):
