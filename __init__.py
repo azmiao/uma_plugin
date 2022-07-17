@@ -1,6 +1,7 @@
 import os
 import shutil
 import asyncio
+import json
 
 from hoshino import Service, R, logger
 
@@ -13,13 +14,24 @@ from .uma_tasks.update_init import update as tasks_update, auto_update as tasks_
 from .uma_gacha.update_init import update as gacha_update, auto_update as gacha_auto
 from .uma_support_chart.update_init import update as sup_update
 
-sv = Service('uma_help', help_='![](https://img.gejiba.com/images/6f9a66ec3de739417cd3ba9003162fcc.png)')
+sv = Service('uma_help', help_='![](https://img.gejiba.com/images/1d987330ad0a9e041321cdf433e5c7c4.png)')
 
 @sv.on_fullmatch('马娘帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}.png')
     sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
     await bot.send(ev, sv_help)
+
+# 马娘速查，一些支援卡对比的子网站就不列举了，去百科里找就行了
+@sv.on_fullmatch('马娘速查')
+async def uma_query(bot, ev):
+    query_path = os.path.join(os.path.dirname(__file__), 'query_data.json')
+    with open(query_path, 'w', encoding='UTF-8') as f:
+        query_data = json.load(f)
+    msg = '◎赛马娘常用网站◎'
+    for title in list(query_data.keys()):
+        msg += '\n' + title + '：' + query_data[title]
+    await bot.send(ev, msg)
 
 # v1.5.2将图片文件夹合并至一个文件夹
 root_path = R.img('umamusume').path

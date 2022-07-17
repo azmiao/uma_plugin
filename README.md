@@ -55,18 +55,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+22-07-17    v2.5.0  新增一个小功能“马娘速查”，方便萌新
+
 22-07-16    v2.4.0  美化帮助界面，同时方便autohelp服务模式显示，详情本文末尾
 
 22-07-16    v2.3.1  修复技能查询BUG同时新增繁中技能查询 by[@Yui-xy](https://github.com/Yui-xy)，[issue #28](https://github.com/azmiao/uma_plugin/issues/28)
 
 22-07-08    v2.3.0  新增查询赛程的育成目标功能，使用命令 “查目标 角色名” 即可，结果图片仿自bwiki，[issue #25](https://github.com/azmiao/uma_plugin/issues/25)
 
-22-07-06    v2.2.2  修复台服支援卡命名方式变化后的BUG，更新后请务必手动删除uma_support_chart文件夹下的`sup_config_tw.json`再重启hoshino
-
 </details>
 
 <details>
 <summary>更以前的更新日志</summary>
+
+22-07-06    v2.2.2  修复台服支援卡命名方式变化后的BUG，更新后请务必手动删除uma_support_chart文件夹下的`sup_config_tw.json`再重启hoshino
 
 22-07-05    v2.2.1  修复支援卡节奏榜网页更新后的BUG，更新后请务必手动删除uma_support_chart文件夹下的`sup_config.json`再重启hoshino，[issue #24](https://github.com/azmiao/uma_plugin/issues/24)
 
@@ -127,6 +129,7 @@ https://github.com/azmiao/uma_plugin/
 ```
 git pull
 ```
+git pull不成功的请自行百度解决，一般是有文件冲突导致的，删了那个文件再git pull就好了
 
 > 若是从 v1.2 版本之前(不包括 v1.2)的版本更新到最新版，建议直接把 `uma_plugin` 文件夹删了，再按照本页面最底下的安装教程重新安装一遍。并且建议删除前，把文件 `/uma_info/config.json` 备份出来，这样重新安装完就不用再手动更新马娘数据了。否则重装后需要重新使用群命令："手动更新马娘数据" 更新基础数据
 
@@ -134,8 +137,10 @@ git pull
 
 ## 功能命令和描述
 
+### 维护组的命令
+
 <details>
-<summary><font size = 4>点我展开维护组的所有命令</font></summary>
+<summary><font size = 4>点我展开</font></summary>
 
 马娘数据库的：
 
@@ -167,13 +172,17 @@ git pull
 
  - 手动更新马娘技能
 
+马娘新闻的：
+
+ - 马娘新闻翻译转发模式on/off
+
 </details>
 
 ### 注：发送“马娘帮助”可以查看马娘插件所有的帮助汇总
 
-![](https://img.gejiba.com/images/6f9a66ec3de739417cd3ba9003162fcc.png)
+### 没有图片版的【马娘黄历】只有一个命令：马娘签到
 
-没有图片版的【马娘黄历】只有一个命令：马娘签到
+![](https://img.gejiba.com/images/1d987330ad0a9e041321cdf433e5c7c4.png)
 
 <details>
 <summary><font size = 4>其他功能的图片版帮助</font></summary>
