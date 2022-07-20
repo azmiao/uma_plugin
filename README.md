@@ -55,18 +55,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+22-07-20    v2.5.1  临时兼容一下最新的卡池，有BUG讲究一下吧，后续打算重写，不然实在不好整
+
 22-07-17    v2.5.0  新增一个小功能“马娘速查”，方便萌新
 
 22-07-16    v2.4.0  美化帮助界面，同时方便autohelp服务模式显示，详情本文末尾
 
 22-07-16    v2.3.1  修复技能查询BUG同时新增繁中技能查询 by[@Yui-xy](https://github.com/Yui-xy)，[issue #28](https://github.com/azmiao/uma_plugin/issues/28)
 
-22-07-08    v2.3.0  新增查询赛程的育成目标功能，使用命令 “查目标 角色名” 即可，结果图片仿自bwiki，[issue #25](https://github.com/azmiao/uma_plugin/issues/25)
-
 </details>
 
 <details>
 <summary>更以前的更新日志</summary>
+
+22-07-08    v2.3.0  新增查询赛程的育成目标功能，使用命令 “查目标 角色名” 即可，结果图片仿自bwiki，[issue #25](https://github.com/azmiao/uma_plugin/issues/25)
 
 22-07-06    v2.2.2  修复台服支援卡命名方式变化后的BUG，更新后请务必手动删除uma_support_chart文件夹下的`sup_config_tw.json`再重启hoshino
 

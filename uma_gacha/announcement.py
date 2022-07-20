@@ -76,6 +76,9 @@ class PrettyAnnouncement:
                     elif title.find('支援卡登场') != -1:
                         url = a['href']
                         break
+                    elif title.find('新团队卡') != -1:
+                        url = a['href']
+                        break
             # async with session.get(f'https://wiki.biligame.com/{url}', timeout=7) as res:
             #     return await res.text()
             text = requests.get(f'https://wiki.biligame.com/{url}', timeout=7)
@@ -98,6 +101,11 @@ class PrettyAnnouncement:
                     if r:
                         time = str(big.text)
                         break
+                    else:
+                        r = re.search(r'\d{1,2}月\d{1,2}日 \d{1,2}:\d{1,2} ～', str(big.text))
+                        if r:
+                            time = str(big.text)
+                            break
             else:
                 for p in context.find_all('p'):
                     r = re.search(r'\d{1,2}/\d{1,2} \d{1,2}:\d{1,2} ～', str(p.text))
