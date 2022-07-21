@@ -64,19 +64,14 @@ class PrettyAnnouncement:
             async with session.get(pretty_url, timeout=7) as res:
                 soup = BeautifulSoup(await res.text(), 'lxml')
                 divs = soup.find('div', {'id': 'mw-content-text'}).find('div').find_all('div')
+                re_str = ".*&.*\d+"
                 for div in divs:
                     a = div.find('a')
                     try:
                         title = a['title']
                     except (KeyError, TypeError):
                         continue
-                    if title.find('支援卡卡池') != -1:
-                        url = a['href']
-                        break
-                    elif title.find('支援卡登场') != -1:
-                        url = a['href']
-                        break
-                    elif title.find('新团队卡') != -1:
+                    if re.search(re_str,title) != None:
                         url = a['href']
                         break
             # async with session.get(f'https://wiki.biligame.com/{url}', timeout=7) as res:
