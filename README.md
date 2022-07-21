@@ -223,7 +223,7 @@ git pull不成功的请自行百度解决，一般是有文件冲突导致的，
 
     到HoshinoBot\hoshino\modules\uma_plugin目录下，管理员方式打开powershell
     ```
-    pip install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple --user
+    pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --user
     ```
 
 4. 在 HoshinoBot\hoshino\config\ `__bot__.py` 文件的 MODULES_ON 加入 'uma_plugin'
