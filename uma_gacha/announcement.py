@@ -118,8 +118,8 @@ class PrettyAnnouncement:
             data['card']['time'] = time
             flag = 0
             for p in context.find_all('p'):
-                if str(p).find('当期UP赛马娘') != -1 and str(p).find('■') != -1:
-                    r = re.findall(r'.*?当期UP赛马娘([\s\S]*)＜奖励内容＞.*?', str(p))
+                if (str(p).find('当期UP赛马娘') or str(p).find('当期UP育成赛马娘')) and str(p).find('■'):
+                    r = re.findall(r'.*?当期UP育?成?赛马娘([\s\S]*)＜奖励内容＞.*?', str(p))
                     if r:
                         for x in r:
                             x = str(x).split('\n')
