@@ -11,7 +11,7 @@ from .uma_face.update_init import update as face_update, auto_update as face_aut
 from .uma_info.update_init import update as info_update, update_info_auto as info_auto
 from .uma_skills.update_init import update as skills_update, auto_update as skills_auto
 from .uma_tasks.update_init import update as tasks_update, auto_update as tasks_auto
-from .uma_gacha.update_init import update as gacha_update, auto_update as gacha_auto
+from .uma_gacha_v2.update_init import update as gacha_update, auto_update as gacha_auto
 from .uma_support_chart.update_init import update as sup_update
 
 sv = Service('uma_help', help_='![](https://img.gejiba.com/images/1d987330ad0a9e041321cdf433e5c7c4.png)')

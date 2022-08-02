@@ -1,6 +1,6 @@
 ## uma_info
 
-这是一个适用hoshinobot的赛马娘功能插件，数据来自马娘官网和bwiki，所有功能的数据均可自动更新
+这是一个适用hoshinobot的赛马娘功能插件，功能超多哦，还支持自动生成帮助，数据来自马娘官网和bwiki，所有功能的数据均可自动更新
 
 这里包含了之前开源了的功能以及新开发的一大堆功能，其他功能仍在锐意开发中，有问题请在本仓库提交issue，请务必带上报错的日志完整截图，并说明清楚即可
 
@@ -9,15 +9,15 @@
 ### ★ 纯粹用爱发电，如果你喜欢的话，请给仓库点一个star支持一下23333 ★
 
 <details>
-<summary>点我查看主要的几个功能模块</summary>
+<summary>▼点我查看主要功能模块列表 和 支持的服务器▼</summary>
 
 （具体命令请看本页面下方功能命令和描述）
 
-+ [马娘新闻播报](https://github.com/azmiao/umamusume_news) 【已支持台/日服】
++ 马娘新闻播报【已支持台/日服】
 
-+ [马娘模拟抽卡](https://github.com/azmiao/uma_gacha)
++ 马娘模拟抽卡v2【已支持台/日/韩/B服】
 
-+ 马娘基础数据库
++ 马娘基础数据库【台/日通用】
 
 + 支援卡节奏榜【已支持台/日服】
 
@@ -33,20 +33,9 @@
 
 + 马娘限时任务
 
-+ 马娘技能查询
++ 马娘技能查询【已支持台/日服】
 
 + 育成目标查询【台/日差不多通用】
-
-</details>
-
-<details>
-<summary>点我查看独立版和整合版的区别</summary>
-
-+ 图片文件夹目录不一致，因此和独立版的马娘抽卡稍有不一致，但是删除独立版马娘抽卡后再装本整合版插件，理论上可以直接使用之前的图片文件，反之需重新下载数据
-
-+ [马娘新闻播报](https://github.com/azmiao/umamusume_news) 和 [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 的代码以及功能性均与本整合版不同，后续将仅维护本整合版
-
-+ 其他所有整合版里功能都不能单独拿出来直接用，不然必报错
 
 </details>
 
@@ -55,18 +44,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+22-08-02    v2.6.0  完全重写马娘抽卡功能，减少人为BUG率，且能切换服务器支持日台韩B服，且能切换卡池，缩减抽卡结果长度防刷屏，[issue #27](https://github.com/azmiao/uma_plugin/issues/27)，[issue #32](https://github.com/azmiao/uma_plugin/issues/32)
+
 22-07-27    v2.5.2  同步官网更新马娘：谋勇兼备，敏锐奇才，北港火山，更新完插件后请使用命令“手动更新马娘数据”
 
 22-07-20    v2.5.1  临时兼容一下最新的卡池，有BUG讲究一下吧，后续打算重写，不然实在不好整
 
 22-07-17    v2.5.0  新增一个小功能“马娘速查”，方便萌新
 
-22-07-16    v2.4.0  美化帮助界面，同时方便autohelp服务模式显示，详情本文末尾
-
 </details>
 
 <details>
 <summary>更以前的更新日志</summary>
+
+22-07-16    v2.4.0  美化帮助界面，同时方便autohelp服务模式显示，详情本文末尾
 
 22-07-16    v2.3.1  修复技能查询BUG同时新增繁中技能查询 by[@Yui-xy](https://github.com/Yui-xy)，[issue #28](https://github.com/azmiao/uma_plugin/issues/28)
 
@@ -156,9 +147,7 @@ git pull不成功的请自行百度解决，一般是有文件冲突导致的，
 
 马娘抽卡的：
 
- - 更新马娘信息
-
- - 重载赛马娘卡池
+ - 更新马娘卡池
 
 马娘表情包的：
 
@@ -189,13 +178,13 @@ git pull不成功的请自行百度解决，一般是有文件冲突导致的，
 ![](https://img.gejiba.com/images/1d987330ad0a9e041321cdf433e5c7c4.png)
 
 <details>
-<summary><font size = 4>其他功能的图片版帮助</font></summary>
+<summary><font size = 4>其他所有功能的图片版帮助</font></summary>
 
 ![](https://img.gejiba.com/images/14656fafe6c33ac7f0429c572a251808.png)
 ![](https://img.gejiba.com/images/3aff9b9882954e3f8206328444627a93.png)
 ![](https://img.gejiba.com/images/9b012de7f710229bea2fa7e867b031bc.png)
 ![](https://img.gejiba.com/images/ca1e78b1faf8a2a58bfbe62d04cff247.png)
-![](https://img.gejiba.com/images/b7fe400d61fbefc8cfa52f87683ce507.png)
+![](https://img.gejiba.com/images/4d0aa3a260363002bb4edabb689c141e.png)
 ![](https://img.gejiba.com/images/63c84910b6117c7eb5d8f7a706f2ff9a.png)
 ![](https://img.gejiba.com/images/90d76cb9ac80c7cbe0d01e0403954a29.png)
 ![](https://img.gejiba.com/images/881d1f7010c79b8cfcc6b3dad8c17028.png)
