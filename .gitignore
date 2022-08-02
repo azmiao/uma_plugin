@@ -12,9 +12,6 @@ data/*
 # uma_compatibility文件夹下自动生成的相性组文件
 /uma_compatibility/relation_type.json
 
-# uma_gacha文件夹下的储存当前全部角色的pickle
-/uma_gacha/char_atlas.txt
-
 # uma_info文件夹下的全部角色的基础数据文件
 /uma_info/config.json
 
