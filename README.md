@@ -1,12 +1,12 @@
-## uma_info
-
-这是一个适用hoshinobot的赛马娘功能插件，功能超多哦，还支持自动生成帮助，数据来自马娘官网和bwiki，所有功能的数据均可自动更新
-
-这里包含了之前开源了的功能以及新开发的一大堆功能，其他功能仍在锐意开发中，有问题请在本仓库提交issue，请务必带上报错的日志完整截图，并说明清楚即可
-
-如遇问题可以先看看已关闭的历史issue有没有类似的参考一下。
+## 赛马娘QQ机器人插件
 
 ### ★ 纯粹用爱发电，如果你喜欢的话，请给仓库点一个star支持一下23333 ★
+
+这是一个适用[hoshinobot](https://github.com/Ice-Cirno/HoshinoBot)的赛马娘功能插件，数据来自马娘官网和bwiki，所有功能的数据均可自动更新
+
+有问题可以先看看已关闭的历史issue有没有类似的参考一下，也可直接请在本仓库提交issue，请务必带上报错的日志完整截图，并说明清楚即可
+
+PS. 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 <details>
 <summary>▼点我查看主要功能模块列表 和 支持的服务器▼</summary>
@@ -39,10 +39,25 @@
 
 </details>
 
-## 本项目地址：
+## 本仓库链接：
 https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
+
+<details>
+<summary>想知道版本号的编号方式吗？</summary>
+
+v2.5.1为例：
+
+v2为大版本号，除非有超级有益的重构类大更新，一般不会更新
+
+5为功能迭代版本号，有新功能或者某一功能重写了就会更新
+
+1为BUG修复/数据更新版本号，有关键性的BUG修复或者重要的数据更新就更新
+
+其余不刷版本号的更新，一般来说为不影响大局的BUG修复或小数据更新
+
+</details>
 
 22-08-02    v2.6.0  完全重写马娘抽卡功能，减少人为BUG率，且能切换服务器支持日台韩B服，且能切换卡池，缩减抽卡结果长度防刷屏，[issue #27](https://github.com/azmiao/uma_plugin/issues/27)，[issue #32](https://github.com/azmiao/uma_plugin/issues/32)
 
@@ -115,18 +130,16 @@ https://github.com/azmiao/uma_plugin/
 
 ### 如何更新
 
-#### 如何监控更新：建议使用 RSS 或者我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加[本仓库链接](https://github.com/azmiao/uma_plugin/)监控本仓库commit，以便跟随功能更新和BUG修复
+#### 如何监控更新：可以使用我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加 本仓库链接 监控本仓库commit，以便跟随功能更新和BUG修复
 
-> 若是从 v1.2 版本之后(包括 v1.2)的版本更新到最新版，直接在你的 `hoshino/modules/uma_plugin文件夹里，打开powershell输入下方命令，运行完重启hoshinobot即可：
+> 在你的 `hoshino/modules/uma_plugin` 文件夹里，打开powershell输入 `git pull` ，运行完重启hoshinobot即可
 
-（注：v2.0开始请删除您的APIKEY.txt后再使用命令）
-
+如果提示如下：
 ```
-git pull
+error: Your local changes to the following files would be overwritten by merge: 
+Please, commit your changes or stash them before you can merge
 ```
-git pull不成功的请自行百度解决，一般是有文件冲突导致的，删了那个文件再git pull就好了
-
-> 若是从 v1.2 版本之前(不包括 v1.2)的版本更新到最新版，建议直接把 `uma_plugin` 文件夹删了，再按照本页面最底下的安装教程重新安装一遍。并且建议删除前，把文件 `/uma_info/config.json` 备份出来，这样重新安装完就不用再手动更新马娘数据了。否则重装后需要重新使用群命令："手动更新马娘数据" 更新基础数据
+一般是有因为你修改了部分代码导致的，删了它提示的那些文件再`git pull`就好了
 
 </details>
 
@@ -196,7 +209,7 @@ git pull不成功的请自行百度解决，一般是有文件冲突导致的，
 
 </details>
 
-## 食用教程：
+## 插件安装教程：
 
 <details>
 <summary>点我展开</summary>
@@ -208,29 +221,27 @@ git pull不成功的请自行百度解决，一般是有文件冲突导致的，
     git clone https://github.com/azmiao/uma_plugin
     ```
 
-2. 如果之前装过独立版的 [马娘新闻播报](https://github.com/azmiao/umamusume_news) 和 [马娘模拟抽卡](https://github.com/azmiao/uma_gacha) 的，请先删除那两个文件夹，没有就跳过这一步
-
-3. 安装依赖：
+2. 安装依赖：
 
     到HoshinoBot\hoshino\modules\uma_plugin目录下，管理员方式打开powershell
     ```
     pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --user
     ```
 
-4. 在 HoshinoBot\hoshino\config\ `__bot__.py` 文件的 MODULES_ON 加入 'uma_plugin'
+3. 在 HoshinoBot\hoshino\config\ `__bot__.py` 文件的 MODULES_ON 加入 'uma_plugin'
 
     然后重启 HoshinoBot
 
-    装完插件后首次启动时会更新马娘各种数据，按带宽的大小可能需要3-10分钟不等，请耐心等待，您可以看着控制台看他有没有报错，除了在首次启动本插件的时候会在更新马娘基础数据库（要下好多语音文件和图片）的时候更新一段时间和马娘抽卡（要下好多图片）的时候更新一段时间，其他和再次启动的时候都会很快的。
+    装完插件后首次启动时会更新马娘各种数据，按带宽的大小可能需要3-10分钟不等，请耐心等待，您可以看着控制台看他有没有报错。
 
-6. 额外功能：（自动提醒）
+4. 额外功能：（自动提醒）
 
-    在某个群里发消息输入下文以开启马娘生日提醒
+    在某个群里发消息输入下文以开启马娘生日提醒（提醒当天哪知马娘生日）
     ```
     开启 uma_bir_push
     ```
 
-    在某个群里发消息输入下文以开启马娘新闻播报，一个日服，一个台服
+    在某个群里发消息输入下文以开启马娘新闻播报，一个日服，一个台服（推送新闻更新）
     ```
     开启 umamusume-news-poller
     ```
@@ -240,7 +251,7 @@ git pull不成功的请自行百度解决，一般是有文件冲突导致的，
 
     可以通过发消息输入"lssv"查看这个功能前面是不是⚪来确认是否开启成功
 
-7. 马娘新闻配置代理（可选）
+5. 马娘新闻配置代理（可选）
 
     > Q经常连不上马娘官网咋办：
 
@@ -258,22 +269,16 @@ git pull不成功的请自行百度解决，一般是有文件冲突导致的，
     proxy = {}
     ```
 
-8. 更好看的帮助界面，见本文末尾（可选）
-
 </details>
 
-## 另有图片预览，请看：
-
-https://www.594594.xyz/2022/03/04/uma_plugin/
-
-## 支持[autohelp](https://github.com/SonderXiaoming/autohelp)
+## 现已支持[autohelp](https://github.com/SonderXiaoming/autohelp) (可选)
 
 <details>
 <summary>点我展开</summary>
 
-可显示更好看的帮助界面
+安装 [autohelp](https://github.com/SonderXiaoming/autohelp) 即可，可显示更好看的帮助界面
 
-推荐添加的`black.json`：
+关于本马娘插件推荐添加的`black.json`：
 
 ```
 {
