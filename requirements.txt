@@ -5,10 +5,7 @@ httpx==0.22.0
 lxml==4.7.1
 pathos==0.2.8
 Pillow==9.0.1
-pypinyin==0.46.0
-PyYAML==6.0
 requests==2.27.1
-ujson==5.1.0
 prettytable==3.2.0
 GitPython==3.1.27
 fuzzywuzzy==0.18.0
