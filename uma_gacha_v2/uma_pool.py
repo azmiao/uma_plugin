@@ -126,6 +126,7 @@ async def get_pool_data():
     pool_url = 'https://wiki.biligame.com/umamusume/卡池'
     res = httpx.get(pool_url, timeout=15)
     soup = BeautifulSoup(res.text, 'lxml')
+    soup = soup.find('table', {"style": "width:100%;text-align:center"})
     tr_all = [tr for tr in soup.find_all('tr') if tr.find('tr') or tr.find('td', {"rowspan": "2"})]
     pool_list = [(tr_all[i], tr_all[i+1]) for i in range(0, len(tr_all), 2)]
     pool_data, now = {}, datetime.datetime.now()
