@@ -29,8 +29,11 @@ async def caculate(bot, ev):
     with open(os.path.join(os.path.dirname(__file__), 'relation_type.json'), 'r', encoding = 'UTF-8') as sf:
         r_data_list = json.load(sf)
         sf.close()
-    self = judge_name(text_list[0], f_data, replace_data)
-    mother = judge_name(text_list[1], f_data, replace_data)
+    try:
+        self = judge_name(text_list[0], f_data, replace_data)
+        mother = judge_name(text_list[1], f_data, replace_data)
+    except IndexError:
+        return
     # 仅查两者之间的相性
     try:
         grandmother = text_list[2]
