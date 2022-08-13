@@ -1,63 +1,89 @@
-## 赛马娘QQ机器人插件
+<p align="center">
+  <a href="https://github.com/azmiao/uma_plugin/">
+    <img src="https://img.gejiba.com/images/dab0cfe092c1f5f77ae54cd3b488a0d4.png" width="200" height="200" alt="uma_plugin">
+  </a>
+</p>
 
-### ★ 纯粹用爱发电，如果你喜欢的话，请给仓库点一个star支持一下23333 ★
+<div align="center">
 
-这是一个适用[hoshinobot](https://github.com/Ice-Cirno/HoshinoBot)的赛马娘功能插件，数据来自马娘官网和bwiki，所有功能的数据均可自动更新
+# 赛马娘QQ机器人插件
 
-有问题可以先看看已关闭的历史issue有没有类似的参考一下，也可直接请在本仓库提交issue，请务必带上报错的日志完整截图，并说明清楚即可
+### ★ 纯粹用爱发电，如果你喜欢的话，请给仓库点一个star支持一下2333 ★
 
-### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
+#### 如有魔改版请遵守本插件的GPL3.0开源协议，并注明来源等
 
-PS. 有相关问题可以前往仓库的 [Discussions](https://github.com/azmiao/uma_plugin/discussions) 进行讨论
+#### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
+
+[![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
+[![image](https://img.shields.io/badge/release-2.6.1-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
+
+</div>
+
+<p align="center">
+  <a href="https://github.com/azmiao/uma_plugin/blob/main/README.md">文档</a>
+  ·
+  <a href="https://github.com/azmiao/uma_plugin/discussions">讨论</a>
+  ·
+  <a href="https://github.com/azmiao/uma_info_data">基础数据库</a>
+</p>
 
 <details>
-<summary>▼点我查看主要功能模块列表 和 支持的服务器▼</summary>
+<summary>插件说明</summary>
+
+这是一个适用[hoshinobot](https://github.com/Ice-Cirno/HoshinoBot)的赛马娘功能插件，数据来自：
+
+ + [马娘官网](https://github.com/azmiao/uma_info_data)
+ + [bwiki](https://wiki.biligame.com/umamusume)
+ + [马娘基础数据库](https://github.com/azmiao/uma_info_data)
+ + [台服马娘官网](https://uma.komoejoy.com/)
+ + [乌拉拉大胜利](https://urarawin.com/#/)
+
+</details>
+
+<details>
+<summary>反馈说明</summary>
+
+ + 有空的话建议先看看已关闭的历史issue有没有类似的参考一下
+ + 可直接在本仓库提交issue，但请带上报错的日志完整截图，并说明清楚哦
+ + 如果按照我的教程搭建机器人遇到的问题可以前往 [Discussions](https://github.com/azmiao/uma_plugin/discussions) 进行讨论
+
+</details>
+
+<details>
+<summary>当前支持的功能 和 支持的服务器</summary>
 
 （具体命令请看本页面下方功能命令和描述）
 
 + 马娘新闻播报【已支持台/日服】
-
 + 马娘模拟抽卡v2【已支持台/日/韩/B服】
-
 + 马娘基础数据库【台/日通用】
-
 + 支援卡节奏榜【已支持台/日服】
-
 + 相性计算器【台/日通用】
-
 + 马娘黄历【台/日通用】
-
 + 马娘耐力计算器【台/日通用】
-
 + 马娘表情包【台/日通用】
-
 + 马娘漫画【台/日通用】
-
 + 马娘限时任务
-
 + 马娘技能查询【已支持台/日服】
-
 + 育成目标查询【台/日差不多通用】
 
 </details>
 
-## 本仓库链接：
-https://github.com/azmiao/uma_plugin/
-
 <details>
-<summary>- 想知道版本号的编号方式吗？-</summary>
+<summary>版本号的编号方式</summary>
 
-v2.5.1为例：
-
-v2为大版本号，除非有超级有益的重构类大更新，一般不会更新
-
-5为功能迭代版本号，有新功能或者某一功能重写了就会更新
-
-1为BUG修复/数据更新版本号，有关键性的BUG修复或者重要的数据更新就更新
-
-其余不刷版本号的更新，一般来说为不影响大局的BUG修复或小数据更新
+ + v2.5.1为例：
+ + v2为大版本号，除非有超级有益的重构类大更新，一般不会更新
+ + 5为功能迭代版本号，有新功能或者某一功能重写了就会更新
+ + 1为BUG修复/数据更新版本号，有关键性的BUG修复或者重要的数据更新就更新
+ + 其余不刷版本号的更新，一般来说为不影响大局的BUG修复或小数据更新
 
 </details>
+
+## 本仓库链接
+
+https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
@@ -69,12 +95,12 @@ v2为大版本号，除非有超级有益的重构类大更新，一般不会更
 
  + 22-07-20    v2.5.1  临时兼容一下最新的卡池，有BUG讲究一下吧，后续打算重写，不然实在不好整
 
- + 22-07-17    v2.5.0  新增一个小功能“马娘速查”，方便萌新
-
 </details>
 
 <details>
-<summary>更以前的更新日志</summary>
+<summary>◆ 更以前的更新日志</summary>
+
+ + 22-07-17    v2.5.0  新增一个小功能“马娘速查”，方便萌新
 
  + 22-07-16    v2.4.0  美化帮助界面，同时方便autohelp服务模式显示，详情本文末尾
 
@@ -130,72 +156,46 @@ v2为大版本号，除非有超级有益的重构类大更新，一般不会更
 
 </details>
 
-## 注意事项
+## 更新
 
-### 如何更新
-
-#### 如何监控更新：可以使用我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加 本仓库链接 监控本仓库commit，以便跟随功能更新和BUG修复
+### 1.如何更新
 
 > 在你的 `hoshino/modules/uma_plugin` 文件夹里，打开powershell输入 `git pull` ，运行完重启hoshinobot即可
 
-如果提示如下：
+如果报错如下：
 ```
 error: Your local changes to the following files would be overwritten by merge: 
 Please, commit your changes or stash them before you can merge
 ```
 一般是有因为你修改了部分代码导致的，删了它提示的那些文件再`git pull`就好了
 
+### 2.想要推送更新提醒？
+
+可以使用我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加 本仓库网址 即可监控本仓库commit，以便跟随功能更新和BUG修复
+
 </details>
 
 ## 功能命令和描述
 
-### 维护组的命令
-
 <details>
-<summary><font size = 4>点我展开</font></summary>
+<summary><font size = 4>维护组的命令</font></summary>
 
-马娘数据库的：
-
- - 手动更新马娘数据
-
-马娘相性的：
-
- - 手动更新相性信息
-
-马娘抽卡的：
-
- - 更新马娘卡池
-
-马娘表情包的：
-
- - 手动更新马娘表情包
-
-马娘漫画的：
-
- - 手动更新马娘漫画
-
-马娘限时任务的：
-
- - 手动更新限时任务
-
-马娘技能的：
-
- - 手动更新马娘技能
-
-马娘新闻的：
-
- - 马娘新闻翻译转发模式on/off
+| 子模块 | 命令 |
+|  ----  | ----  |
+| 马娘数据库 | 手动更新马娘数据 |
+| 马娘相性 | 手动更新相性信息 |
+| 马娘抽卡 | 更新马娘卡池 |
+| 马娘表情包 | 手动更新马娘表情包 |
+| 马娘漫画 | 手动更新马娘漫画 |
+| 马娘限时任务 | 手动更新限时任务 |
+| 马娘技能 | 手动更新马娘技能 |
+| 马娘新闻 | 马娘新闻翻译转发模式on |
+| 马娘新闻 | 马娘新闻翻译转发模式off |
 
 </details>
 
-### 注：发送“马娘帮助”可以查看马娘插件所有的帮助汇总
-
-### 没有图片版的【马娘黄历】只有一个命令：马娘签到
-
-![](https://img.gejiba.com/images/1d987330ad0a9e041321cdf433e5c7c4.png)
-
 <details>
-<summary><font size = 4>其他所有功能的图片版帮助</font></summary>
+<summary><font size = 4>子模块的图片版帮助</font></summary>
 
 ![](https://img.gejiba.com/images/14656fafe6c33ac7f0429c572a251808.png)
 ![](https://img.gejiba.com/images/3aff9b9882954e3f8206328444627a93.png)
@@ -211,9 +211,11 @@ Please, commit your changes or stash them before you can merge
 
 </details>
 
-</details>
+### 汇总命令 (群里发送“马娘帮助”也可查看)
 
-## 插件安装教程：
+![汇总命令](https://img.gejiba.com/images/1d987330ad0a9e041321cdf433e5c7c4.png)
+
+## 插件安装
 
 <details>
 <summary>点我展开</summary>
@@ -275,7 +277,7 @@ Please, commit your changes or stash them before you can merge
 
 </details>
 
-## 现已支持[autohelp](https://github.com/SonderXiaoming/autohelp) (可选)
+## [Autohelp](https://github.com/SonderXiaoming/autohelp)推荐配置(可选)
 
 <details>
 <summary>点我展开</summary>

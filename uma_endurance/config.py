@@ -133,7 +133,7 @@ track_adaptability_bonus = {
     },
     'F': {
         'speed_limit': 0.2,
-        'acceleration': 10.5
+        'acceleration': 0.5
     },
     'G': {
         'speed_limit': 0.1,
