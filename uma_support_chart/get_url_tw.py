@@ -6,6 +6,15 @@ from bs4 import BeautifulSoup
 import json
 from hoshino import R, logger
 
+# 获取各个节奏榜的链接
+async def get_title_url(sup_type):
+    url_header = 'https://wiki.biligame.com/umamusume/'
+    url_region = 'https://wiki.biligame.com/umamusume/攻略（繁中服）'
+    res = httpx.get(url_region, timeout=10)
+    soup = BeautifulSoup(res.text, 'lxml')
+    title = soup.find('a', {"title": re.compile(fr"{sup_type}卡节奏榜\S+")}).text
+    return url_header + title
+
 # 生成字典
 async def generate_url(sup_type):
     # 获取配置
@@ -15,7 +24,8 @@ async def generate_url(sup_type):
     img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
     if not os.path.exists(img_path):
         os.mkdir(img_path)
-    chart_url = f'https://wiki.biligame.com/umamusume/{sup_type}卡节奏榜（繁中服）'
+    # 获取存储的链接
+    chart_url = await get_title_url(sup_type)
     if not img_dict.get(sup_type, None):
         logger.info(f'配置文件内未找到台服{sup_type}卡节奏榜相关配置，现已成功创建')
         img_dict[sup_type] = {}
@@ -33,7 +43,7 @@ async def get_img(img_dict, sup_type, chart_url):
     soup = BeautifulSoup(res.text, 'lxml')
     img_soup_list = soup.find_all('img', {"decoding": "async"})
     # 获取第一个作为版本号
-    ver_tmp = re.match(fr'(台|繁中)服{sup_type}([0-9]+)\.([0-9]+)\.([0-9]+)榜?\.png', img_soup_list[0].get('alt'))
+    ver_tmp = re.match(fr'(台|繁中)服?{sup_type}([0-9]+)\.([0-9]+)\.([0-9]+)榜?\.png', img_soup_list[0].get('alt'))
     # 精确版本
     ver = ver_tmp.group(2) + '.' + ver_tmp.group(3) + '.' + ver_tmp.group(4)
     # 比较版本号
@@ -63,7 +73,7 @@ async def get_img(img_dict, sup_type, chart_url):
 # 获取详细图片数据
 async def get_image(img_dict, sup_type, img_soup_list):
     for img_soup in img_soup_list:
-        file_name = re.match(fr'(台|繁中)服{sup_type}([0-9]+)\.([0-9]+)\.([0-9]+)榜?\.png', img_soup.get('alt'))
+        file_name = re.match(fr'(台|繁中)服?{sup_type}([0-9]+)\.([0-9]+)\.([0-9]+)榜?\.png', img_soup.get('alt'))
         if file_name:
             file_name = file_name.group(0)
             img_dict[sup_type]['img_data'][file_name] = img_soup.get('src')
