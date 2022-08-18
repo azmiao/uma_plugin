@@ -4,7 +4,7 @@ import base64
 
 # 生成图片结果
 async def get_img_cq(img_path):
-    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'properties.json'), 'r') as f:
+    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'properties.json'), 'r', encoding='utf-8') as f:
         config = json.load(f)
     if config['image_send_form']['current'] == 'file':
         return f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
