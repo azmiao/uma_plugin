@@ -20,14 +20,14 @@ async def help(bot, ev):
 @sv.on_fullmatch(('马娘单抽', '单抽马娘'), only_to_me=True)
 async def one_gacha_uma(bot, ev):
     group_id, user_id = str(ev.group_id), str(ev.user_id)
-    msg = await one_gacha(group_id, 'uma')
+    msg = await one_gacha(group_id, user_id, 'uma')
     await bot.send(ev, msg)
 
 # 支援卡单抽
 @sv.on_fullmatch(('育成卡单抽', '支援卡单抽','s卡单抽','S卡单抽'), only_to_me=True)
 async def one_gacha_chart(bot, ev):
     group_id, user_id = str(ev.group_id), str(ev.user_id)
-    msg = await one_gacha(group_id, 'chart')
+    msg = await one_gacha(group_id, user_id, 'chart')
     await bot.send(ev, msg)
 
 # 马娘十连
