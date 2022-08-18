@@ -7,6 +7,7 @@ from .adaptability import get_adaptability
 from .detail_info import get_detail
 from hoshino import Service, priv, R
 from hoshino.util import pic2b64
+from ..plugin_utils.send_img import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
 
@@ -16,7 +17,7 @@ svbr = Service('uma_bir_push', enable_on_default = False)
 @sv.on_fullmatch('马娘数据帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 @sv.on_fullmatch('查今天生日马娘')

@@ -2,13 +2,14 @@ import os
 
 from hoshino import Service, priv
 from .comic import update_info, get_comic_random, get_comic_id, get_comic_uma
+from ..plugin_utils.send_img import get_img_cq
 
 sv = Service('uma_comic', help_='![](https://img.gejiba.com/images/14656fafe6c33ac7f0429c572a251808.png)')
 
 @sv.on_fullmatch('马娘漫画帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 @sv.on_prefix('马娘漫画')

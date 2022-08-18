@@ -4,6 +4,7 @@ import asyncio
 import json
 
 from hoshino import Service, R, logger
+from .plugin_utils.send_img import get_img_cq
 
 from .uma_comic.update_init import update as comic_update, auto_update as comic_auto
 from .uma_compatibility.update_init import update as com_update, auto_update as com_auto
@@ -19,7 +20,7 @@ sv = Service('uma_help', help_='![](https://img.gejiba.com/images/1d987330ad0a9e
 @sv.on_fullmatch('马娘帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 # 马娘速查，一些支援卡对比的子网站就不列举了，去百科里找就行了

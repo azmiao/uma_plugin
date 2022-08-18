@@ -3,6 +3,7 @@ import os
 from .get_url import generate_img
 from .get_url_tw import generate_img_tw
 from hoshino import Service
+from ..plugin_utils.send_img import get_img_cq
 
 sv = Service('uma_support_chart', help_='![](https://img.gejiba.com/images/881d1f7010c79b8cfcc6b3dad8c17028.png)')
 
@@ -10,7 +11,7 @@ sv = Service('uma_support_chart', help_='![](https://img.gejiba.com/images/881d1
 @sv.on_fullmatch("支援卡节奏榜帮助")
 async def help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 @sv.on_rex(r'^(台服)?(\S{1,2})卡节奏榜$')

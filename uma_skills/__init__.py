@@ -4,6 +4,7 @@ import json
 from hoshino import Service, priv, R
 from .update_skills import del_img, update_info, del_img
 from .generate import get_skill_list, get_skill_info
+from ..plugin_utils.send_img import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), f'skills_config.json')
 
@@ -23,7 +24,7 @@ sv = Service('uma_skills', help_='![](https://img.gejiba.com/images/90d76cb9ac80
 @sv.on_fullmatch('马娘技能帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 @sv.on_prefix('查技能')

@@ -4,6 +4,7 @@ import os
 from hoshino import Service, priv
 from .caculate import judge_name, get_relation
 from .update_type import update as com_update
+from ..plugin_utils.send_img import get_img_cq
 
 sv = Service('uma_compatibility', help_='![](https://img.gejiba.com/images/3aff9b9882954e3f8206328444627a93.png)')
 
@@ -11,7 +12,7 @@ sv = Service('uma_compatibility', help_='![](https://img.gejiba.com/images/3aff9
 @sv.on_fullmatch("马娘相性帮助")
 async def help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 @sv.on_prefix('查相性')

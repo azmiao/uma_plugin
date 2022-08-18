@@ -6,6 +6,9 @@ __pycache__/
 # uma_plugin 特有的自动生成的文件，防止git pull异常
 # 每个都单独写出来了，方便弄乱时排错
 
+# 根目录下的插件属性配置文件
+/properties.json
+
 # 所有文件夹下自动生成的data文件夹
 data/*
 

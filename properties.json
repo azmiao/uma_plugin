@@ -1,0 +1,18 @@
+{
+    "image_send_form": {
+        "notes": "图片发送形式，可选值有 [ file | base64 ]",
+        "current": "file"
+    },
+    "code_auto_update": {
+        "notes": "【画饼中未完成】插件代码自动更新，可选自动更新无需确认、提醒确认后才更新、不自动更新，对应的可选值是 [ auto | confirm | no ]",
+        "current": "confirm"
+    },
+    "code_update_remind": {
+        "notes": "【画饼中未完成】一键切换所有子的模块的服务器，可选值有 [ jp | tw | ko | bili ]",
+        "current": "jp"
+    },
+    "res_update_cycle": {
+        "notes": "【画饼中未完成】调整图片等资源的数据更新周期，单位：天，可选值 [ 1 | 2 | 3 | 4 | 5| 6 | 7 ]",
+        "current": "1"
+    }
+}

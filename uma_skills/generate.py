@@ -4,6 +4,7 @@ import os
 from fuzzywuzzy import process
 
 from hoshino import R, logger
+from ..plugin_utils.send_img import get_img_cq
 
 async def create_msg(skill_name: str, f_data):
     msg = f'''
@@ -104,7 +105,7 @@ async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list:li
         logger.info(f'检测到{filename_tmp}图片生成完成，即将发送图片')
     else:
         logger.info(f'{filename_tmp}图片本地已存在，即将发送图片')
-    msg = f'[CQ:image,file=file:///{os.path.abspath(img_dir)}]'
+    msg = await get_img_cq(img_dir)
     return msg
 
 # 生成图片

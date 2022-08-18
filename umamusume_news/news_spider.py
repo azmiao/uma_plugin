@@ -10,6 +10,7 @@ from datetime import timedelta
 
 from hoshino import R
 from .translator_lite.apis import youdao
+from ..plugin_utils.send_img import get_img_cq
 
 # 代理
 proxy = {}
@@ -156,7 +157,6 @@ async def replace_text(text_tmp):
     # 替换马娘名字，来自马娘基础数据库
     with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r', encoding = 'UTF-8') as f:
         f_data = json.load(f)
-        f.close()
     name_list = list(f_data.keys())
     name_list.remove('current_chara')
     for uma_name in name_list:
@@ -204,7 +204,8 @@ async def translate_news(news_id):
                 response = requests.get(url=img_url, proxies=proxy)
                 with open(save_dir, 'wb') as f:
                     f.write(response.content)
-            head_img = str(R.img(f'umamusume/umamusume_news/news_img_{news_id}.jpg').cqcode)
+            img_path = R.img(f'umamusume/umamusume_news/news_img_{news_id}.jpg').path
+            head_img = await get_img_cq(img_path)
     except Exception as e:
         e_msg = e
         if str(e) == 'The length of the text to be translated exceeds the limit.':

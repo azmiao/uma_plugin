@@ -4,7 +4,9 @@ import os
 from PIL import Image
 from bs4 import BeautifulSoup
 import json
+
 from hoshino import R, logger
+from ..plugin_utils.send_img import get_img_cq
 
 # 获取各个节奏榜的链接
 async def get_title_url(sup_type):
@@ -158,15 +160,15 @@ async def generate_img_tw(sup_type):
                 logger.info(msg_)
                 return msg_
             end_img.save(end_img_path, 'PNG')
-        msg = f'[CQ:image,file=file:///{os.path.abspath(end_img_path)}]'
+        msg = await get_img_cq(end_img_path)
         return msg
     # 检测到更新，但是图片还没上传
     if not img_dict[sup_type]['img_data']:
         logger.info(f'{sup_type}卡节奏榜有更新，但未获取到图片，将发送旧版图片')
-        msg = f'[CQ:image,file=file:///{os.path.abspath(end_img_path)}]'
+        msg = await get_img_cq(end_img_path)
         return msg
     # 有更新就先合成完整图片
     end_img = await fix_img(img_dict, sup_type)
     end_img.save(end_img_path, 'PNG')
-    msg = f'[CQ:image,file=file:///{os.path.abspath(end_img_path)}]'
+    msg = await get_img_cq(end_img_path)
     return msg

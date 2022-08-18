@@ -4,6 +4,7 @@ import json
 from hoshino import Service, priv, R
 from .update_tasks import del_img, update_info, del_img
 from .generate import get_title, get_task_info
+from ..plugin_utils.send_img import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), f'tasks_config.json')
 
@@ -12,7 +13,7 @@ sv = Service('uma_tasks', help_='![](https://img.gejiba.com/images/9c429aa7be4a6
 @sv.on_fullmatch('马娘限时任务帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 @sv.on_rex(r'^限时任务(\S{1,3})$')

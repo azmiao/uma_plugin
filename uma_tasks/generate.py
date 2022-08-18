@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 
 from hoshino import R, logger
+from ..plugin_utils.send_img import get_img_cq
 
 # 获取限时任务列表
 async def get_title(f_data):
@@ -21,7 +22,7 @@ async def get_title(f_data):
         logger.info(f'检测到限时任务列表图片生成完成，即将发送图片')
     else:
         logger.info(f'限时任务列表图片本地已存在，即将发送图片')
-    msg = f'[CQ:image,file=file:///{os.path.abspath(img_dir)}]'
+    msg = await get_img_cq(img_dir)
     return msg
 
 # 获取限时任务内容
@@ -47,7 +48,7 @@ async def get_task_info(task_id, f_data):
         logger.info(f'检测到{title}图片生成完成，即将发送图片')
     else:
         logger.info(f'{title}图片本地已存在，即将发送图片')
-    msg = f'[CQ:image,file=file:///{os.path.abspath(img_dir)}]'
+    msg = await get_img_cq(img_dir)
     return msg
 
 # 生成图片

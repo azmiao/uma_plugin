@@ -2,13 +2,14 @@ import os
 
 from hoshino import Service, priv
 from .face import update_info, get_face_uma, get_face_id, get_face_random, get_mean_id, get_mean_uma
+from ..plugin_utils.send_img import get_img_cq
 
 sv = Service('uma_face', help_='![](https://img.gejiba.com/images/ca1e78b1faf8a2a58bfbe62d04cff247.png)')
 
 @sv.on_fullmatch('马娘表情包帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 # 支持1到10个字符的马娘名字

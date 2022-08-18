@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 
 from hoshino import R, logger
+from ..plugin_utils.send_img import get_img_cq
 
 # 获取育成目标的数据
 async def get_tar_data(uma_name):
@@ -65,4 +66,5 @@ async def get_tar(uma_name, is_force):
         img.save(img_path, 'PNG')
         logger.info(f'{uma_name}的育成目标图片不存在，现已成功生成！')
     logger.info(f'{uma_name}的育成目标图片已存在，即将发送图片！')
-    return f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    img_ = await get_img_cq(img_path)
+    return img_

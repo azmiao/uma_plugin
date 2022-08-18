@@ -3,13 +3,14 @@ import json
 
 from hoshino import Service
 from .get_target import get_tar
+from ..plugin_utils.send_img import get_img_cq
 
 sv = Service('uma_target', help_='![](https://img.gejiba.com/images/2bef2337722582aa066899258c8c94c0.png)')
 
 @sv.on_fullmatch('育成目标帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 @sv.on_prefix('查目标')

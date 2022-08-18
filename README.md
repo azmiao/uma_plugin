@@ -87,18 +87,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+ + 22-08-18     v2.6.3  新增图片可选发送形式`properties.json`，配置方法在本文末, [issue #37](https://github.com/azmiao/uma_plugin/issues/37)
+
  + 22-08-15     v2.6.2  修复台服节奏命名规则修改后产生的BUG
 
  + 22-08-08     v2.6.1  修复卡池界面更新的BUG
 
  + 22-08-02     v2.6.0  完全重写马娘抽卡功能，减少人为BUG率，且能切换服务器支持日台韩B服，且能切换卡池，缩减抽卡结果长度防刷屏，[issue #27](https://github.com/azmiao/uma_plugin/issues/27)，[issue #32](https://github.com/azmiao/uma_plugin/issues/32)
 
- + 22-07-27     v2.5.2  同步官网更新马娘：谋勇兼备，敏锐奇才，北港火山，更新完插件后请使用命令“手动更新马娘数据”
-
 </details>
 
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 22-07-27     v2.5.2  同步官网更新马娘：谋勇兼备，敏锐奇才，北港火山，更新完插件后请使用命令“手动更新马娘数据”
 
  + 22-07-20     v2.5.1  临时兼容一下最新的卡池，有BUG讲究一下吧，后续打算重写，不然实在不好整
 
@@ -276,6 +278,27 @@ Please, commit your changes or stash them before you can merge
     ```
     proxy = {}
     ```
+
+</details>
+
+## 额外配置（可选）
+
+<details>
+<summary>点我展开</summary>
+
+### 该功能的所有配置均在插件目录下的 `properties.json` 里
+
+> 可选图片发送形式：
+
+如果你使用docker，且hoshino和gocqhttp不在一个容器里，可选base64，默认file
+```
+    "image_send_form": {
+        "notes": "图片发送形式，可选值有 [ file | base64 ]",
+        "current": "file"
+    },
+```
+
+> 其他定制功能还在画饼阶段
 
 </details>
 

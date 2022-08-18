@@ -2,6 +2,7 @@ import os
 
 from hoshino import Service
 from .caculate import *
+from ..plugin_utils.send_img import get_img_cq
 
 sv = Service('uma_endurance', help_='![](https://img.gejiba.com/images/9b012de7f710229bea2fa7e867b031bc.png)')
 
@@ -9,7 +10,7 @@ sv = Service('uma_endurance', help_='![](https://img.gejiba.com/images/9b012de7f
 @sv.on_fullmatch("马娘耐力帮助")
 async def help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 @sv.on_rex(r'''

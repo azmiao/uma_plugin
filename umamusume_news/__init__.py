@@ -4,6 +4,7 @@ import asyncio
 from hoshino import Service, priv
 from .news_spider import get_news, judge, news_broadcast, sort_news, translate_news
 from .news_spider_tw import get_news_tw, judge_tw, news_broadcast_tw
+from ..plugin_utils.send_img import get_img_cq
 
 sv = Service('umamusume_news', enable_on_default=True, help_='![](https://img.gejiba.com/images/58fadc7fba87e876ea67c4c9e89c4668.png)')
 svuma = Service('umamusume-news-poller', enable_on_default=False)
@@ -13,7 +14,7 @@ svumatw = Service('umamusume-news-poller-tw', enable_on_default=False)
 @sv.on_fullmatch("马娘新闻帮助")
 async def help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 # 主动获取新闻功能

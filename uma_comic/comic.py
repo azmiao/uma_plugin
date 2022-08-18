@@ -8,6 +8,7 @@ import re
 import hoshino
 from hoshino import R
 from hoshino.typing import MessageSegment
+from ..plugin_utils.send_img import get_img_cq
 
 async def update_info():
     img_dict = await get_imgurl()
@@ -98,7 +99,8 @@ async def get_comic_uma(uma_name_tmp):
             if not os.path.exists(img_path):
                 url = img_data[id]['url']
                 await download_img(id, url)
-            msg = f'id: {id}[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+            img = await get_img_cq(img_path)
+            msg = f'id: {id}{img}'
             flag = 1
             return msg
     if not flag:
@@ -111,7 +113,7 @@ async def get_comic_id(id):
     if not os.path.exists(img_path):
         lenth = len(os.listdir(path))
         return f'此编号的漫画不存在哦，目前有的编号范围为 1 到 {lenth}'
-    msg = MessageSegment.image(f'file:///{os.path.abspath(img_path)}')
+    msg = await get_img_cq(img_path)
     return msg
 
 # 随机漫画
@@ -122,5 +124,5 @@ async def get_comic_random():
     file_name = random.choice(os.listdir(path))
     img_path = os.path.join(path, file_name)
     id = file_name.replace('.jpg', '').replace('uma_comic_', '')
-    msg = f'id: {id}[CQ:image,file=file:///{os.path.abspath(img_path)}]'
-    return msg
+    img = await get_img_cq(img_path)
+    return f'id: {id}{img}'

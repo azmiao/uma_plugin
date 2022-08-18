@@ -5,6 +5,7 @@ from . update_init import auto_update
 from .util import get_pool, get_img_path, generate_img, random_comment, server_list, \
     switch_server, switch_pool_id, get_pool_detail
 from hoshino import Service, priv
+from ..plugin_utils.send_img import get_img_cq
 
 sv = Service('uma_gacha_v2', help_='![](https://img.gejiba.com/images/4d0aa3a260363002bb4edabb689c141e.png)')
 
@@ -12,7 +13,7 @@ sv = Service('uma_gacha_v2', help_='![](https://img.gejiba.com/images/4d0aa3a260
 @sv.on_fullmatch("马娘抽卡帮助")
 async def help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = f'[CQ:image,file=file:///{os.path.abspath(img_path)}]'
+    sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 # 马娘单抽
@@ -107,7 +108,8 @@ async def one_gacha(group_id, gacha_type):
     gacha = Gacha(pool_id, gacha_type, server)
     chara, res_type = gacha.gacha_one(gacha.up_prob, gacha.s3_prob, gacha.s2_prob, gacha.s1_prob)
     img_path = await get_img_path(chara, gacha_type)
-    msg = f'[CQ:image,file=file:///{img_path}]\n抽到了 {chara}'
+    img = await get_img_cq(img_path)
+    msg = f'{img}\n抽到了 {chara}'
     if res_type == 'up':
         msg += '\nPS.兄弟姐妹们，有挂！'
     elif res_type == 's3':
