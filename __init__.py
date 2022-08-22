@@ -77,7 +77,7 @@ loop.run_until_complete(update())
 # 部分统一自动更新时间点
 @sv.scheduled_job('cron', hour='2', minute='30')
 async def auto_update():
-    flag = await info_auto()
+    _ = await info_auto()
     await asyncio.sleep(0.1)
     await comic_auto()
     await asyncio.sleep(0.1)
