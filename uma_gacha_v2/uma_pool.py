@@ -63,6 +63,8 @@ async def sp_modify(uma_name_list):
         uma_name_list.append('【笹針師】安心沢刺々美')
     if '【トレセン学園】玉座に集いし者たち' in uma_name_list:
         uma_name_list.remove('【トレセン学園】玉座に集いし者たち')
+    if '【トレセン学園】ライトハロー' in uma_name_list:
+        uma_name_list.remove('【トレセン学園】ライトハロー')
     # 去重
     uma_name_list = list(set(uma_name_list))
     return uma_name_list
