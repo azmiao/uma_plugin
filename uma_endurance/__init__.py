@@ -84,9 +84,9 @@ async def get_endurance(bot, ev):
     endurance = await cacul_endurance(endurance_begin, endurance_middle, endurance_end, track_length, run_type)
     # 理论
     # 理论体力
-    theoretical_hp = await theoretical_endurance(track_length, endurance_tmp, run_type)
+    theoretical_hp = await theoretical_endurance(track_length, endurance_tmp * feeling_bonus[feeling], run_type)
     # 回体技能折算耐力
-    stable_recover_endu, common_recover_endu, upper_recover_endu = await cacul_skill_endu(stable_recover_level, hp, run_type)
+    stable_recover_endu, common_recover_endu, upper_recover_endu = await cacul_skill_endu(stable_recover_level, theoretical_hp, run_type)
     # 回体技能折算体力
     stable_recover, common_recover_single, common_recover, upper_recover_single, upper_recover = await cacul_skill(
         stable_recover_level, common_recover_num, upper_recover_num, theoretical_hp)

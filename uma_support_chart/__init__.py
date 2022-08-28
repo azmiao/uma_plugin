@@ -19,8 +19,11 @@ async def SSR_speed_chart(bot, ev):
     sup_type = ev['match'].group(2)
     if sup_type not in ['速', '耐', '力', '根', '智', '友人']:
         return
-    if not ev['match'].group(1):
-        msg = await generate_img(sup_type)
-    else:
-        msg = await generate_img_tw(sup_type)
+    try:
+        if not ev['match'].group(1):
+            msg = await generate_img(sup_type)
+        else:
+            msg = await generate_img_tw(sup_type)
+    except AttributeError:
+        msg = f'{sup_type}卡节奏榜获取失败!'
     await bot.send(ev, msg)

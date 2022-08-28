@@ -133,11 +133,11 @@ async def theoretical_endurance(track_length, endurance_tmp, run_type):
 # 回体技能折算耐力
 async def cacul_skill_endu(stable_recover_level, hp, run_type):
     # 固有回耐量
-    stable_recover_endu = 0.055 * stable_recover_bonus[stable_recover_level] * hp / run_type_bonus[run_type]['hp_bonus']
+    stable_recover_endu = 0.055 * stable_recover_bonus[stable_recover_level] * hp / (0.8 * run_type_bonus[run_type]['hp_bonus'])
     # 单个普通回耐量
-    common_recover_endu = 0.015 * hp / run_type_bonus[run_type]['hp_bonus']
+    common_recover_endu = 0.015 * hp / (0.8 * run_type_bonus[run_type]['hp_bonus'])
     # 单个金回耐量
-    upper_recover_endu = 0.055 * hp / run_type_bonus[run_type]['hp_bonus']
+    upper_recover_endu = 0.055 * hp / (0.8 * run_type_bonus[run_type]['hp_bonus'])
     return stable_recover_endu, common_recover_endu, upper_recover_endu
 
 # 回体技能折算体力
