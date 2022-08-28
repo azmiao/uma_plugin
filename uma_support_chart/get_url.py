@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import json
 
 from hoshino import R, logger
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq
 
 # 获取各个节奏榜的链接
 async def get_title_url(sup_type):
@@ -76,7 +76,8 @@ async def get_image(img_dict, sup_type, chart_url, ver_body):
     # 真实的页面
     res = httpx.get(chart_url, timeout=10)
     soup = BeautifulSoup(res.text, 'lxml')
-    name_pattern = re.compile(f'{sup_type}[0-9]\.[0-9][0-9]\.[0-9]\.[0-9]\.png')
+    # name_pattern = re.compile(f'{sup_type}[0-9]\.[0-9][0-9]\.[0-9]\.[0-9]\.png')
+    name_pattern = re.compile(f'(巅峰杯)?{sup_type}[0-9]\.[0-9][0-9]\.[0-9]榜\.png')
     img_soup_list = soup.find_all('img', {"decoding": "async"})
     for img_soup in img_soup_list:
         file_name = re.match(name_pattern, img_soup.get('alt'))
@@ -93,6 +94,12 @@ async def download_img(file_name, url):
     response = httpx.get(url, timeout=10)
     with open(current_dir, 'wb') as f:
         f.write(response.read())
+    # 压缩图片
+    im = Image.open(current_dir)
+    x, y = im.size
+    k = 900 / x
+    out = im.resize((int(x*k), int(y*k)))
+    out.save(current_dir, quality=80)
     logger.info(f'最新版节奏榜图片：{file_name}下载成功')
 
 # 删除旧版图片

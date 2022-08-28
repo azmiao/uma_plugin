@@ -4,7 +4,7 @@ import asyncio
 from hoshino import Service, priv
 from .news_spider import get_news, judge, news_broadcast, sort_news, translate_news
 from .news_spider_tw import get_news_tw, judge_tw, news_broadcast_tw
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq, get_server_default
 
 sv = Service('umamusume_news', enable_on_default=True, help_='![](https://img.gejiba.com/images/58fadc7fba87e876ea67c4c9e89c4668.png)')
 svuma = Service('umamusume-news-poller', enable_on_default=False)
@@ -18,13 +18,24 @@ async def help(bot, ev):
     await bot.send(ev, sv_help)
 
 # 主动获取新闻功能
-@sv.on_rex(r'^(台服)?马娘新闻$')
+@sv.on_rex(r'^(\S服)?马娘新闻$')
 async def uma_news(bot, ev):
+    default_server = await get_server_default()
     try:
         if not ev['match'].group(1):
-            msg = await get_news()
+            if default_server == 'jp':
+                msg = await get_news()
+            elif default_server == 'tw':
+                msg = await get_news_tw()
+            else:
+                msg = f'该服务器"{default_server}"暂未支持马娘新闻'
         else:
-            msg = await get_news_tw()
+            if ev['match'].group(1) == '日服':
+                msg = await get_news()
+            elif ev['match'].group(1) == '台服':
+                msg = await get_news_tw()
+            else:
+                msg = f'该服务器"{ev["match"].group(1)}"暂未支持马娘新闻'
     except:
         msg = '获取新闻失败，请等5分钟后再次尝试'
     await bot.send(ev, msg)

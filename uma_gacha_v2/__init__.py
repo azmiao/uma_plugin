@@ -5,7 +5,7 @@ from . update_init import auto_update
 from .util import get_pool, get_img_path, generate_img, random_comment, server_list, \
     switch_server, switch_pool_id, get_pool_detail
 from hoshino import Service, priv
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq
 
 sv = Service('uma_gacha_v2', help_='![](https://img.gejiba.com/images/4d0aa3a260363002bb4edabb689c141e.png)')
 

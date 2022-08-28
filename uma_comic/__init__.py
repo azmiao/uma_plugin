@@ -2,7 +2,7 @@ import os
 
 from hoshino import Service, priv
 from .comic import update_info, get_comic_random, get_comic_id, get_comic_uma
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq
 
 sv = Service('uma_comic', help_='![](https://img.gejiba.com/images/14656fafe6c33ac7f0429c572a251808.png)')
 

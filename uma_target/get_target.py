@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 
 from hoshino import R, logger
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq
 
 # 获取育成目标的数据
 async def get_tar_data(uma_name):

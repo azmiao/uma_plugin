@@ -15,7 +15,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.6.5-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.6.6-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -87,18 +87,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+ + 22-08-28     v2.6.6  临时改变节奏榜的内容为bwiki上巅峰杯歌姬杯分开的节奏榜，新增可选设置插件默认服务器，配置方法在本文末。注意：本次更新需要使用命令`git pull -f`来更新，并且`properties.json`的配置可能回到默认状态
+
  + 22-28-28     v2.6.5  修复耐力计算的BUG，修复方案来自[@aaaaaaria](https://github.com/aaaaaaria)，[issue #36](https://github.com/azmiao/uma_plugin/issues/36)
 
  + 22-08-22     v2.6.4  常规数据更新，新增红宝石和凯斯的别名，更新后记得“手动更新马娘数据”或者等半夜自动更新
 
  + 22-08-18     v2.6.3  新增图片可选发送形式`properties.json`，配置方法在本文末, [issue #37](https://github.com/azmiao/uma_plugin/issues/37)
 
- + 22-08-15     v2.6.2  修复台服节奏命名规则修改后产生的BUG
-
 </details>
 
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 22-08-15     v2.6.2  修复台服节奏命名规则修改后产生的BUG
 
  + 22-08-08     v2.6.1  修复卡池界面更新的BUG
 
@@ -285,7 +287,7 @@ Please, commit your changes or stash them before you can merge
 
 </details>
 
-## 额外配置（可选）
+## 额外定制配置（可选）
 
 <details>
 <summary>点我展开</summary>
@@ -299,6 +301,16 @@ Please, commit your changes or stash them before you can merge
     "image_send_form": {
         "notes": "图片发送形式，可选值有 [ file | base64 ]",
         "current": "file"
+    },
+```
+
+> 可选默认服务器
+
+如果你主要玩的不是日服，可以将所有子模块修改至你玩的服务器，可选[ jp | tw | ko | bili ]
+```
+    "default_server": {
+        "notes": "一键切换所有子的模块的服务器，可选值有 [ jp | tw | ko | bili ]",
+        "current": "jp"
     },
 ```
 

@@ -4,7 +4,7 @@ import os
 from fuzzywuzzy import process
 
 from hoshino import R, logger
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq
 
 async def create_msg(skill_name: str, f_data):
     msg = f'''

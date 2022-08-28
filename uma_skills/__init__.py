@@ -4,7 +4,7 @@ import json
 from hoshino import Service, priv, R
 from .update_skills import del_img, update_info, del_img
 from .generate import get_skill_list, get_skill_info
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), f'skills_config.json')
 

@@ -4,7 +4,7 @@ import os
 from hoshino import Service, priv
 from .caculate import judge_name, get_relation
 from .update_type import update as com_update
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq
 
 sv = Service('uma_compatibility', help_='![](https://img.gejiba.com/images/3aff9b9882954e3f8206328444627a93.png)')
 

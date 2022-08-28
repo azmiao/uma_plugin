@@ -12,3 +12,9 @@ async def get_img_cq(img_path):
         with open(img_path, 'rb') as imgf:
             img_base = str(base64.b64encode(imgf.read()), encoding='utf-8')
         return f'[CQ:image,file=base64://{img_base}]'
+
+# 获取当前默认服务器
+async def get_server_default():
+    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'properties.json'), 'r', encoding='utf-8') as f:
+        config = json.load(f)
+    return config['default_server']['current']

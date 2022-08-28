@@ -2,7 +2,7 @@ import os
 
 from hoshino import Service
 from .caculate import *
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq
 
 sv = Service('uma_endurance', help_='![](https://img.gejiba.com/images/9b012de7f710229bea2fa7e867b031bc.png)')
 

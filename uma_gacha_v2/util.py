@@ -1,10 +1,12 @@
+from email.policy import default
 import os
 import json
 import datetime
 
-from PIL import Image, ImageDraw, ImageFont, ImageColor
+from PIL import Image
 from hoshino import R
 from hoshino.util import pic2b64
+from ..plugin_utils.base_util import get_server_default
 
 # =====可调整数据=====
 
@@ -85,7 +87,8 @@ async def get_new_pool_id(server):
 # 文件已经存在的话会更新最新的池子ID，不会修改选择的服务器和默认服务器
 async def update_select_data():
     select_data_path = os.path.join(gacha_path, 'select_data.json')
-    pool_id_jp = await get_new_pool_id('jp')
+    default_server = await get_server_default()
+    pool_id_default = await get_new_pool_id(default_server)
     # 文件存在
     if os.path.exists(select_data_path):
         with open(select_data_path, 'r', encoding='utf-8') as f:
@@ -93,7 +96,7 @@ async def update_select_data():
         # 修改默认池子的ID
         server_defalut = select_data['default']['server']
         pool_id = await get_new_pool_id(server_defalut)
-        select_data['default']['pool_id'] = pool_id_jp
+        select_data['default']['pool_id'] = pool_id_default
         # 修改分群的池子的ID
         group_list = list(select_data['group'].keys())
         for group_id in group_list:
@@ -104,8 +107,8 @@ async def update_select_data():
     else:
         select_data = {
             'default': {
-                'server': 'jp',
-                'pool_id': pool_id_jp
+                'server': default_server,
+                'pool_id': pool_id_default
             },
             'group': {}
         }

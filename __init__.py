@@ -4,7 +4,7 @@ import asyncio
 import json
 
 from hoshino import Service, R, logger
-from .plugin_utils.send_img import get_img_cq
+from .plugin_utils.base_util import get_img_cq
 
 from .uma_comic.update_init import update as comic_update, auto_update as comic_auto
 from .uma_compatibility.update_init import update as com_update, auto_update as com_auto

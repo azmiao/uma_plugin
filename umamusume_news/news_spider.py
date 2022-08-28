@@ -10,7 +10,7 @@ from datetime import timedelta
 
 from hoshino import R
 from .translator_lite.apis import youdao
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq
 
 # 代理
 proxy = {}

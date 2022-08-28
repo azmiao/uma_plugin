@@ -7,7 +7,7 @@ import random
 import hoshino
 from hoshino import R
 from hoshino.typing import MessageSegment
-from ..plugin_utils.send_img import get_img_cq
+from ..plugin_utils.base_util import get_img_cq
 
 async def update_info():
     img_dict = await get_imgurl()
