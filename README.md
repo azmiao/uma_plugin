@@ -87,7 +87,7 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
- + 22-08-28     v2.6.6  临时改变节奏榜的内容为bwiki上巅峰杯歌姬杯分开的节奏榜，新增可选设置插件默认服务器，配置方法在本文末。注意：本次更新需要使用命令`git pull -f`来更新，并且`properties.json`的配置可能回到默认状态
+ + 22-08-28     v2.6.6  临时改变节奏榜的内容为bwiki上巅峰杯歌姬杯分开的节奏榜，新增可选设置插件默认服务器，配置方法在本文末。注意：本次更新需要使用命令`git pull -f`来更新，并且定制配置的`properties.json`的配置会回到默认状态须重新设置，另外节奏榜的uma_support_chart文件夹下的日服配置文件`sup_config.json`建议删一下并重启bot再使用。
 
  + 22-28-28     v2.6.5  修复耐力计算的BUG，修复方案来自[@aaaaaaria](https://github.com/aaaaaaria)，[issue #36](https://github.com/azmiao/uma_plugin/issues/36)
 
