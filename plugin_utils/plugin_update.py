@@ -69,6 +69,7 @@ async def judge_update(url):
             msg += f'\n▲{data["time"]} {data["author"]}提交了 "{data["title"]}"'
     # 替换监控信息的时间为最新commit时间
     version_data['commit_time'] = str(new_time)
+    version_data['version'] = version
     with open(version_path, 'w', encoding="UTF-8") as f:
         json.dump(version_data, f, indent=4, ensure_ascii=False)
     return True, msg
