@@ -10,10 +10,7 @@ from datetime import timedelta
 
 from hoshino import R
 from .translator_lite.apis import youdao
-from ..plugin_utils.base_util import get_img_cq
-
-# 代理
-proxy = {}
+from ..plugin_utils.base_util import get_img_cq, get_proxy
 
 # 随机挑选一个小可爱作为header
 user_agent_list = [
@@ -47,7 +44,7 @@ async def get_item():
         'origin': 'https://umamusume.jp',
         'referer': 'https://umamusume.jp/news',
     }
-    res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=proxy).json()
+    res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=get_proxy()).json()
     return res_dict
 
 # 调整新闻列表
@@ -182,7 +179,7 @@ async def translate_news(news_id):
     }
     head_img = ''
     try:
-        res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=proxy).json()
+        res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=get_proxy()).json()
         if res_dict['detail']['title'] == '現在確認している不具合について':
             news_msg = re.match(r'([\s\S]+?【[\s\S]+?)【', res_dict['detail']['message']).group(1)
         else:
@@ -201,7 +198,7 @@ async def translate_news(news_id):
                 os.mkdir(dir_path)
             save_dir = os.path.join(R.img('umamusume').path, f'umamusume_news/news_img_{news_id}.jpg')
             if not os.path.exists(save_dir):
-                response = requests.get(url=img_url, proxies=proxy)
+                response = requests.get(url=img_url, proxies=get_proxy())
                 with open(save_dir, 'wb') as f:
                     f.write(response.content)
             img_path = R.img(f'umamusume/umamusume_news/news_img_{news_id}.jpg').path

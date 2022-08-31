@@ -8,6 +8,8 @@ __pycache__/
 
 # 根目录下的插件属性配置文件
 /properties.json
+/proxy.json
+/version.json
 
 # 所有文件夹下自动生成的data文件夹
 data/*

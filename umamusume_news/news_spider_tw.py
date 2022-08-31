@@ -7,7 +7,7 @@ import asyncio
 import datetime
 from datetime import timedelta
 
-from .news_spider import proxy
+from ..plugin_utils.base_util import get_proxy
 
 # 随机挑选一个小可爱作为header
 user_agent_list = [
@@ -36,7 +36,7 @@ async def get_item():
         'origin': 'https://uma.komoejoy.com',
         'referer': 'https://uma.komoejoy.com',
     }
-    res_dict = requests.get(url=url, headers=headers, timeout=15, proxies=proxy).json()
+    res_dict = requests.get(url=url, headers=headers, timeout=15, proxies=get_proxy()).json()
     return res_dict
 
 # 调整新闻列表

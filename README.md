@@ -15,7 +15,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.6.6-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.7.0f-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -78,6 +78,7 @@
  + 5为功能迭代版本号，有新功能或者某一功能重写了就会更新
  + 1为BUG修复/数据更新版本号，有关键性的BUG修复或者重要的数据更新就更新
  + 其余不刷版本号的更新，一般来说为不影响大局的BUG修复或小数据更新
+ + 末尾带f标识的为强制更新版本，需要手动`git pull -f`来更新
 
 </details>
 
@@ -87,18 +88,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
- + 22-08-28     v2.6.6  临时改变节奏榜的内容为bwiki上巅峰杯歌姬杯分开的节奏榜，新增可选设置插件默认服务器，配置方法在本文末。注意：本次更新需要使用命令`git pull -f`来更新，并且定制配置的`properties.json`的配置会回到默认状态须重新设置，另外节奏榜的uma_support_chart文件夹下的日服配置文件`sup_config.json`建议删一下并重启bot再使用。
+ + 22-08-31		v2.7.0f	新增插件统一管理功能，具体配置方式请看本文末‘额外定制功能’，本次也需要`git pull -f`来更新
+
+ + 22-08-28     v2.6.6f  临时改变节奏榜的内容为bwiki上巅峰杯歌姬杯分开的节奏榜，新增可选设置插件默认服务器，配置方法在本文末。注意：本次更新需要使用命令`git pull -f`来更新，并且定制配置的`properties.json`的配置会回到默认状态须重新设置，另外节奏榜的uma_support_chart文件夹下的日服配置文件`sup_config.json`建议删一下并重启bot再使用。
 
  + 22-28-28     v2.6.5  修复耐力计算的BUG，修复方案来自[@aaaaaaria](https://github.com/aaaaaaria)，[issue #36](https://github.com/azmiao/uma_plugin/issues/36)
 
  + 22-08-22     v2.6.4  常规数据更新，新增红宝石和凯斯的别名，更新后记得“手动更新马娘数据”或者等半夜自动更新
 
- + 22-08-18     v2.6.3  新增图片可选发送形式`properties.json`，配置方法在本文末, [issue #37](https://github.com/azmiao/uma_plugin/issues/37)
-
 </details>
 
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 22-08-18     v2.6.3  新增图片可选发送形式`properties.json`，配置方法在本文末, [issue #37](https://github.com/azmiao/uma_plugin/issues/37)
 
  + 22-08-15     v2.6.2  修复台服节奏命名规则修改后产生的BUG
 
@@ -170,7 +173,13 @@ https://github.com/azmiao/uma_plugin/
 
 ### 1.如何更新
 
-> 在你的 `hoshino/modules/uma_plugin` 文件夹里，打开powershell输入 `git pull` ，运行完重启hoshinobot即可
+> 选择一：自动更新
+
+插件已自带更新功能，更新后会发私聊消息到维护者，之后会提醒您手动重启bot完成更新
+
+> 选择二：手动更新
+
+在你的 `hoshino/modules/uma_plugin` 文件夹里，打开powershell输入 `git pull` ，运行完重启hoshinobot即可
 
 如果报错如下：
 ```
@@ -179,9 +188,13 @@ Please, commit your changes or stash them before you can merge
 ```
 一般是有因为你修改了部分代码导致的，删了它提示的那些文件再`git pull`就好了
 
-### 2.想要推送更新提醒？
+### 2.如何查看版本
 
-可以使用我之前的插件 [github_reminder](https://github.com/azmiao/github_reminder) 添加 本仓库网址 即可监控本仓库commit，以便跟随功能更新和BUG修复
+使用命令：`马娘插件-v`即可查看
+
+### 3.如何跟踪新版
+
+现插件已自带，只要确保bot能访问Github即可，如不能访问请配置代理，方法在下面额外定制功能内
 
 </details>
 
@@ -269,21 +282,7 @@ Please, commit your changes or stash them before you can merge
 
 5. 马娘新闻配置代理（可选）
 
-    > Q经常连不上马娘官网咋办：
-
-    A：现在受各种影响导致的连不上马娘官网，建议配置代理，请先自购代理，然后吧umamusume_news文件夹里的 `news_spider.py` 的第15行换成：
-    (注意1081请换成你自己的代理端口号)
-    ```
-    proxy = {
-        "http": "http://localhost:1081",
-        "https": "http://localhost:1081"
-    }
-    ```
-    更换后台服和日服官网都会走代理。
-    如果不需要代理就换回原来默认的：
-    ```
-    proxy = {}
-    ```
+    配置代理方法已集成至统一配置里，请看下文额外定制配置
 
 </details>
 
@@ -304,9 +303,20 @@ Please, commit your changes or stash them before you can merge
     },
 ```
 
+
+> 可选是否自动更新插件代码：
+
+默认auto，自动更新，将会自动更新插件的代码，不会影响资源的更新，更新完会有私聊消息提醒。【注意】自动更新后也需要手动重启bot，因为插件内部没法实现自动重载
+```
+    "code_auto_update": {
+        "notes": "插件代码自动更新，默认auto，可选自动更新、不自动更新，对应的可选值是 [ auto | no ]",
+        "current": "auto"
+    },
+```
+
 > 可选默认服务器
 
-如果你主要玩的不是日服，可以将所有子模块修改至你玩的服务器，可选[ jp | tw | ko | bili ]
+如果你主要玩的不是日服，可以将所有子模块修改至你玩的服务器，可选[ jp | tw | ko | bili ]，切换之后节奏榜和马娘新闻等功能的命令前不加服务器名时，将回复所选的服务器内容
 ```
     "default_server": {
         "notes": "一键切换所有子的模块的服务器，可选值有 [ jp | tw | ko | bili ]",
@@ -314,7 +324,32 @@ Please, commit your changes or stash them before you can merge
     },
 ```
 
-> 其他定制功能还在画饼阶段
+> 可选资源更新周期
+
+默认每天更新一次，同时也会影响插件代码的更新周期
+```
+    "res_update_cycle": {
+        "notes": "调整图片等资源的数据更新周期，单位：天，默认1，可选值 [ 1 | 2 | 3 | 4 | 5| 6 | 7 ]",
+        "current": 1
+    },
+```
+
+> 可选是否全插件使用代理
+
+默认不使用，如果你检查马娘插件遇到链接不到Github或查马娘新闻链接官网失败等问题，可以尝试开启
+```
+    "if_use_proxy":{
+        "notes": "是否全插件均使用代理，默认false",
+        "current": false
+    }
+```
+附：代理的设置在插件目录下的`proxy.json`里，默认代理配置如下，1081记得改成你自己的代理端口
+```
+{
+    "http": "http://localhost:1081",
+    "https": "http://localhost:1081"
+}
+```
 
 </details>
 
