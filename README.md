@@ -88,18 +88,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+ + 22-09-01     v2.7.1  修复当前版本为f版本时，更新不迭代版本的更新，缺仍然提示须手动的BUG
+
  + 22-08-31		v2.7.0f	新增插件统一管理功能，具体配置方式请看本文末‘额外定制配置’，本次也需要`git pull -f`来更新，如果启动的时候获取马娘插件版本报错，请按照定制配置内方法添加代理后再重启bot
 
  + 22-08-28     v2.6.6f  临时改变节奏榜的内容为bwiki上巅峰杯歌姬杯分开的节奏榜，新增可选设置插件默认服务器，配置方法在本文末。注意：本次更新需要使用命令`git pull -f`来更新，并且定制配置的`properties.json`的配置会回到默认状态须重新设置，另外节奏榜的uma_support_chart文件夹下的日服配置文件`sup_config.json`建议删一下并重启bot再使用。
 
  + 22-28-28     v2.6.5  修复耐力计算的BUG，修复方案来自[@aaaaaaria](https://github.com/aaaaaaria)，[issue #36](https://github.com/azmiao/uma_plugin/issues/36)
 
- + 22-08-22     v2.6.4  常规数据更新，新增红宝石和凯斯的别名，更新后记得“手动更新马娘数据”或者等半夜自动更新
-
 </details>
 
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 22-08-22     v2.6.4  常规数据更新，新增红宝石和凯斯的别名，更新后记得“手动更新马娘数据”或者等半夜自动更新
 
  + 22-08-18     v2.6.3  新增图片可选发送形式`properties.json`，配置方法在本文末, [issue #37](https://github.com/azmiao/uma_plugin/issues/37)
 

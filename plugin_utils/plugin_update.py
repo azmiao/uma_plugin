@@ -34,18 +34,20 @@ async def init_plugin():
 async def plugin_update_auto():
     update_type = await get_update_type()
     if update_type == 'no': return
-    flag, msg = await judge_update(url)
+    flag, is_sup, msg = await judge_update(url)
     if not flag: return
-    git_url = f'https://ghproxy.com/{url}'
-    plugin_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'uma_plugin')
-    logger.info('【马娘插件】检测到插件更新，正在更新插件至最新...')
-    repo = Repo(plugin_path)
-    # 判断并更换镜像站
-    origin_url = repo.remote('origin').url
-    if origin_url != git_url:
-        repo.remote('origin').set_url(git_url)
-    repo.git.pull()
-    logger.info('【马娘插件】已更新至最新！')
+    # 如果不是强制更新的版本
+    if not is_sup:
+        git_url = f'https://ghproxy.com/{url}'
+        plugin_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'uma_plugin')
+        logger.info('【马娘插件】检测到插件更新，正在更新插件至最新...')
+        repo = Repo(plugin_path)
+        # 判断并更换镜像站
+        origin_url = repo.remote('origin').url
+        if origin_url != git_url:
+            repo.remote('origin').set_url(git_url)
+        repo.git.pull()
+        logger.info('【马娘插件】已更新至最新！')
     superid = config.SUPERUSERS[0]
     bot = get_bot()
     await bot.send_private_msg(user_id=superid, message=msg)
@@ -60,8 +62,8 @@ async def judge_update(url):
     new_time = data_list[0]['time']
     if new_time <= old_time:
         logger.info('【马娘插件】未检测到更新！')
-        return False, ''
-    msg_header = '【该版本为强制更新版，请手动使用git pull -f更新】\n' if version.endswith('f') else '已成功自动更新，请手动重启bot！\n'
+        return False, False, ''
+    msg_header = '【该版本为强制更新版，将不会自动更新，请手动使用git pull -f更新】\n' if version.endswith('f') and old_version != version else '已成功自动更新，请手动重启bot！\n'
     msg = f'【马娘插件】\n版本：{old_version} -> {version}\n{msg_header}更新细节：'
     for data in data_list:
         data_time = data['time']
@@ -72,7 +74,7 @@ async def judge_update(url):
     version_data['version'] = version
     with open(version_path, 'w', encoding="UTF-8") as f:
         json.dump(version_data, f, indent=4, ensure_ascii=False)
-    return True, msg
+    return True, version.endswith('f') and old_version != version, msg
 
 # 调整太平洋时间
 async def change_time(raw_time):
