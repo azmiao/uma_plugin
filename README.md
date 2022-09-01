@@ -15,7 +15,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.7.0f-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.7.1-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -181,7 +181,9 @@ https://github.com/azmiao/uma_plugin/
 
 > 选择二：手动更新
 
-在你的 `hoshino/modules/uma_plugin` 文件夹里，打开powershell输入 `git pull` ，运行完重启hoshinobot即可
+【注意】如果不想自动更新，请看下方额外定制功能修改配置。
+
+修改完配置后，如果需要手动更新的话，请在你的 `hoshino/modules/uma_plugin` 文件夹里，打开powershell输入 `git pull` ，运行完重启hoshinobot即可
 
 如果报错如下：
 ```
@@ -309,6 +311,10 @@ Please, commit your changes or stash them before you can merge
 > 可选是否自动更新插件代码：
 
 默认auto，自动更新，将会自动更新插件的代码，不会影响资源的更新，更新完会有私聊消息提醒。【注意】自动更新后也需要手动重启bot，因为插件内部没法实现自动重载
+
+如果想从默认的自动更新换为手动更新，需要更改下面的配置即可。
+
+但是，如果换成手动更新后，又想回自动更新了，那就需要先改下方配置，然后删除插件目录下的`version.json`，没有的话就不用删了，接着`git pull`手动更新一下，再重启bot方可恢复成自动更新
 ```
     "code_auto_update": {
         "notes": "插件代码自动更新，默认auto，可选自动更新、不自动更新，对应的可选值是 [ auto | no ]",
