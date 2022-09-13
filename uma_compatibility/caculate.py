@@ -6,7 +6,7 @@ def judge_name(name_tmp, f_data, replace_data):
         other_name_list = list(replace_data[uma_name])
         cn_name = f_data[uma_name]['cn_name']
         if str(name_tmp) == str(cn_name) or str(name_tmp) in other_name_list:
-            return cn_name
+            return '星云天空' if cn_name == '青云天空' else cn_name
     return False
 
 def get_relation(r_data_list, uma_list):

@@ -19,7 +19,7 @@
     "airgroove": ["女帝", "副会长"],
     "agnesdigital": ["数码", "cdd", "DD", "dd", "dd头子", "DD头子"],
     "tamamocross": ["tama", "玉藻", "玉藻电池", "玉藻大电"],
-    "seiunsky": ["星云", "sky", "卷王", "卷云天空", "青云天空", "嫩花"],
+    "seiunsky": ["星云", "sky", "卷王", "卷云天空", "星云天空", "嫩花", "青云"],
     "finemotion": ["美妙", "姿势", "狍子", "傻狍子"],
     "biwahayahide": ["大头", "琵琶", "晨光"],
     "mayanotopgun": ["玛雅", "maya", "小可爱", "玛雅诺冲锋枪"],
@@ -27,8 +27,8 @@
     "mihonobourbon": ["波旁", "赛博朋马", "赛博马", "波门"],
     "mejiroryan": ["莱恩", "赖恩", "雷恩", "6爷", "六爷"],
     "hishiakebono": ["凌署", "凌曙", "菱署", "巨大化马娘"],
-    "yukinobijin": ["雪中美人"],
-    "riceshower": ["大米洗澡", "小祖宗","大米淋浴"],
+    "yukinobijin": ["雪中美人", "雪美", "雪美人"],
+    "riceshower": ["大米洗澡", "小祖宗", "大米淋浴"],
     "inesfujin": ["风神"],
     "agnestachyon": ["速子"],
     "admirevega": ["织姬"],
@@ -96,7 +96,7 @@
     "kiryuinaoi": ["桐生院", "钢之意志人"],
     "anshinzawasasami": ["针灸师", "庸医", "戴墨镜的黄金城市"],
     "kashimotoriko": ["理事长", "代理理事长", "理子"],
-    "lighthello": ["爱丽女士"],
+    "lighthello": ["爱丽女士", "b95", "B95", "无忧", "无忧呼唤"],
     "akasakamisato": [],
     "hosoejunko": []
 }
