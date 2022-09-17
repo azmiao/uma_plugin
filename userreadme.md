@@ -237,8 +237,9 @@
 <summary><font size = 4>其他</font></summary>
  <br> 功能命令 | 介绍   </br> 
 <br> 马娘插件-v | 查看当前插件版本 </br>
-<br> </br>
+<br></br>
 <br> 现插件已自带跟踪新版更新，只要确保bot能访问Github即可，如不能访问请配置代理 </br>
 
 </details>
+<br> </br>
 *by--int-PP、AZMIAO*
