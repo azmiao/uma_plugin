@@ -240,4 +240,5 @@
 <br> </br>
 <br> 现插件已自带跟踪新版更新，只要确保bot能访问Github即可，如不能访问请配置代理 </br>
 
+</details>
 *by--int-PP、AZMIAO*
