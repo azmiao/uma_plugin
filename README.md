@@ -23,6 +23,8 @@
 <p align="center">
   <a href="https://github.com/azmiao/uma_plugin/blob/main/README.md">文档</a>
   ·
+  <a href="https://github.com/azmiao/uma_plugin/issues">问题反馈</a>
+  ·
   <a href="https://github.com/azmiao/uma_plugin/discussions">讨论</a>
   ·
   <a href="https://github.com/azmiao/uma_info_data">基础数据库</a>
@@ -367,6 +369,8 @@ Please, commit your changes or stash them before you can merge
 <summary>点我展开</summary>
 
 安装 [autohelp](https://github.com/SonderXiaoming/autohelp) 即可，可显示更好看的帮助界面
+
+你可以选择help模式（推荐，但不是默认）或者读取userreadme模式
 
 关于本马娘插件推荐添加的`black.json`：
 
