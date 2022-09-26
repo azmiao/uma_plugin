@@ -18,7 +18,7 @@ from .uma_gacha_v2.update_init import update as gacha_update, auto_update as gac
 from .uma_support_chart.update_init import update as sup_update
 
 sv = Service('uma_help')
-with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
+with open(os.path.join(os.path.dirname(__file__), f'{sv.name}.png'), 'rb') as f:
     base64_data = base64.b64encode(f.read())
     s = base64_data.decode()
 sv.help = f'![](data:image/jpeg;base64,{s})'
