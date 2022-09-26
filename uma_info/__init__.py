@@ -11,7 +11,7 @@ from ..plugin_utils.base_util import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
 
-sv = Service('uma_info', help_='![](https://img.gejiba.com/images/63c84910b6117c7eb5d8f7a706f2ff9a.png)', enable_on_default = True)
+sv = Service('uma_info', help_='![](./uma_info_help.png)', enable_on_default = True)
 svbr = Service('uma_bir_push', enable_on_default = False)
 
 @sv.on_fullmatch('马娘数据帮助')

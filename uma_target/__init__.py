@@ -5,7 +5,7 @@ from hoshino import Service
 from .get_target import get_tar
 from ..plugin_utils.base_util import get_img_cq
 
-sv = Service('uma_target', help_='![](https://img.gejiba.com/images/2bef2337722582aa066899258c8c94c0.png)')
+sv = Service('uma_target', help_='![](./uma_target_help.png)')
 
 @sv.on_fullmatch('育成目标帮助')
 async def get_help(bot, ev):

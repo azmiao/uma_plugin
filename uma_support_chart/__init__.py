@@ -5,7 +5,7 @@ from .get_url_tw import generate_img_tw
 from hoshino import Service
 from ..plugin_utils.base_util import get_img_cq, get_server_default
 
-sv = Service('uma_support_chart', help_='![](https://img.gejiba.com/images/881d1f7010c79b8cfcc6b3dad8c17028.png)')
+sv = Service('uma_support_chart', help_='![](./uma_support_chart_help.png)')
 
 # 帮助界面
 @sv.on_fullmatch("支援卡节奏榜帮助")

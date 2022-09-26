@@ -6,7 +6,7 @@ from .news_spider import get_news, judge, news_broadcast, sort_news, translate_n
 from .news_spider_tw import get_news_tw, judge_tw, news_broadcast_tw
 from ..plugin_utils.base_util import get_img_cq, get_server_default
 
-sv = Service('umamusume_news', enable_on_default=True, help_='![](https://img.gejiba.com/images/58fadc7fba87e876ea67c4c9e89c4668.png)')
+sv = Service('umamusume_news', enable_on_default=True, help_='![](./umamusume_news_help.png)')
 svuma = Service('umamusume-news-poller', enable_on_default=False)
 svumatw = Service('umamusume-news-poller-tw', enable_on_default=False)
 

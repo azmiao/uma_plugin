@@ -16,7 +16,7 @@ from .uma_tasks.update_init import update as tasks_update, auto_update as tasks_
 from .uma_gacha_v2.update_init import update as gacha_update, auto_update as gacha_auto
 from .uma_support_chart.update_init import update as sup_update
 
-sv = Service('uma_help', help_='![](https://img.gejiba.com/images/1d987330ad0a9e041321cdf433e5c7c4.png)')
+sv = Service('uma_help', help_='![](./uma_help.png)')
 
 @sv.on_fullmatch('马娘帮助')
 async def get_help(bot, ev):

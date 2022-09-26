@@ -4,7 +4,7 @@ from hoshino import Service, priv
 from .face import update_info, get_face_uma, get_face_id, get_face_random, get_mean_id, get_mean_uma
 from ..plugin_utils.base_util import get_img_cq
 
-sv = Service('uma_face', help_='![](https://img.gejiba.com/images/ca1e78b1faf8a2a58bfbe62d04cff247.png)')
+sv = Service('uma_face', help_='![](./uma_face_help.pngs)')
 
 @sv.on_fullmatch('马娘表情包帮助')
 async def get_help(bot, ev):

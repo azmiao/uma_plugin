@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/azmiao/uma_plugin/">
-    <img src="https://img.gejiba.com/images/dab0cfe092c1f5f77ae54cd3b488a0d4.png" width="200" height="200" alt="uma_plugin">
+    <img src="https://raw.githubusercontent.com/azmiao/uma_plugin/main/icon.png" width="200" height="200" alt="uma_plugin">
   </a>
 </p>
 
@@ -226,23 +226,23 @@ Please, commit your changes or stash them before you can merge
 <details>
 <summary><font size = 4>子模块的图片版帮助</font></summary>
 
-![](https://img.gejiba.com/images/14656fafe6c33ac7f0429c572a251808.png)
-![](https://img.gejiba.com/images/3aff9b9882954e3f8206328444627a93.png)
-![](https://img.gejiba.com/images/9b012de7f710229bea2fa7e867b031bc.png)
-![](https://img.gejiba.com/images/ca1e78b1faf8a2a58bfbe62d04cff247.png)
-![](https://img.gejiba.com/images/4d0aa3a260363002bb4edabb689c141e.png)
-![](https://img.gejiba.com/images/63c84910b6117c7eb5d8f7a706f2ff9a.png)
-![](https://img.gejiba.com/images/90d76cb9ac80c7cbe0d01e0403954a29.png)
-![](https://img.gejiba.com/images/881d1f7010c79b8cfcc6b3dad8c17028.png)
-![](https://img.gejiba.com/images/2bef2337722582aa066899258c8c94c0.png)
-![](https://img.gejiba.com/images/9c429aa7be4a6f997b22c54f11eda3c6.png)
-![](https://img.gejiba.com/images/58fadc7fba87e876ea67c4c9e89c4668.png)
+![uma_comic](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_comic/uma_comic_help.png)
+![uma_compatibility](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_compatibility/uma_compatibility_help.png)
+![uma_endurance](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_endurance/uma_endurance_help.png)
+![uma_face](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_face/uma_face_help.png)
+![uma_gacha_v2](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_gacha_v2/uma_gacha_v2_help.png)
+![uma_info](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_info/uma_info_help.png)
+![uma_skills](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_skills/uma_skills_help.png)
+![uma_support_chart](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_support_chart/uma_support_chart_help.png)
+![uma_target](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_target/uma_target_help.png)
+![uma_tasks](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_tasks/uma_tasks_help.png)
+![umamusume_news](https://raw.githubusercontent.com/azmiao/uma_plugin/main/umamusume_news/umamusume_news_help.png)
 
 </details>
 
 ### 汇总命令 (群里发送“马娘帮助”也可查看)
 
-![汇总命令](https://img.gejiba.com/images/1d987330ad0a9e041321cdf433e5c7c4.png)
+![汇总命令](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_help.png)
 
 ## 插件安装
 

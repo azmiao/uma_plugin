@@ -19,7 +19,7 @@ skill_type = ['被动（速度）', '被动（耐力）', '被动（力量）', 
 ]
 params = rarity + limit + color + skill_type
 
-sv = Service('uma_skills', help_='![](https://img.gejiba.com/images/90d76cb9ac80c7cbe0d01e0403954a29.png)')
+sv = Service('uma_skills', help_='![](./uma_skills_help.png)')
 
 @sv.on_fullmatch('马娘技能帮助')
 async def get_help(bot, ev):

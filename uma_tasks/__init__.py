@@ -8,7 +8,7 @@ from ..plugin_utils.base_util import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), f'tasks_config.json')
 
-sv = Service('uma_tasks', help_='![](https://img.gejiba.com/images/9c429aa7be4a6f997b22c54f11eda3c6.png)')
+sv = Service('uma_tasks', help_='![](./uma_tasks_help.png)')
 
 @sv.on_fullmatch('马娘限时任务帮助')
 async def get_help(bot, ev):

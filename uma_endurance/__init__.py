@@ -4,7 +4,7 @@ from hoshino import Service
 from .caculate import *
 from ..plugin_utils.base_util import get_img_cq
 
-sv = Service('uma_endurance', help_='![](https://img.gejiba.com/images/9b012de7f710229bea2fa7e867b031bc.png)')
+sv = Service('uma_endurance', help_='![](./uma_endurance_help.png)')
 
 # 帮助界面
 @sv.on_fullmatch("马娘耐力帮助")

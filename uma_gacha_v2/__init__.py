@@ -7,7 +7,7 @@ from .util import get_pool, get_img_path, generate_img, random_comment, server_l
 from hoshino import Service, priv
 from ..plugin_utils.base_util import get_img_cq
 
-sv = Service('uma_gacha_v2', help_='![](https://img.gejiba.com/images/4d0aa3a260363002bb4edabb689c141e.png)')
+sv = Service('uma_gacha_v2', help_='![](./uma_gacha_v2_help.png)')
 
 # 帮助界面
 @sv.on_fullmatch("马娘抽卡帮助")
