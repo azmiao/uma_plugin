@@ -1,4 +1,5 @@
 import os
+import base64
 
 from .gacha import Gacha
 from . update_init import auto_update
@@ -7,7 +8,11 @@ from .util import get_pool, get_img_path, generate_img, random_comment, server_l
 from hoshino import Service, priv
 from ..plugin_utils.base_util import get_img_cq
 
-sv = Service('uma_gacha_v2', help_='![](./uma_gacha_v2_help.png)')
+sv = Service('uma_gacha_v2')
+with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
+    base64_data = base64.b64encode(f.read())
+    s = base64_data.decode()
+sv.help = f'![](data:image/jpeg;base64,{s})'
 
 # 帮助界面
 @sv.on_fullmatch("马娘抽卡帮助")

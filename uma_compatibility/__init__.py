@@ -1,12 +1,17 @@
 import json
 import os
+import base64
 
 from hoshino import Service, priv
 from .caculate import judge_name, get_relation
 from .update_type import update as com_update
 from ..plugin_utils.base_util import get_img_cq
 
-sv = Service('uma_compatibility', help_='![](./uma_compatibility_help.png)')
+sv = Service('uma_compatibility')
+with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
+    base64_data = base64.b64encode(f.read())
+    s = base64_data.decode()
+sv.help = f'![](data:image/jpeg;base64,{s})'
 
 # 帮助界面
 @sv.on_fullmatch("马娘相性帮助")

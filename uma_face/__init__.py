@@ -1,10 +1,15 @@
 import os
+import base64
 
 from hoshino import Service, priv
 from .face import update_info, get_face_uma, get_face_id, get_face_random, get_mean_id, get_mean_uma
 from ..plugin_utils.base_util import get_img_cq
 
-sv = Service('uma_face', help_='![](./uma_face_help.pngs)')
+sv = Service('uma_face')
+with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
+    base64_data = base64.b64encode(f.read())
+    s = base64_data.decode()
+sv.help = f'![](data:image/jpeg;base64,{s})'
 
 @sv.on_fullmatch('马娘表情包帮助')
 async def get_help(bot, ev):

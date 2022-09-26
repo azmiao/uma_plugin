@@ -1,5 +1,6 @@
 import os
 import json
+import base64
 
 from hoshino import Service, priv, R
 from .update_skills import del_img, update_info, del_img
@@ -19,7 +20,11 @@ skill_type = ['被动（速度）', '被动（耐力）', '被动（力量）', 
 ]
 params = rarity + limit + color + skill_type
 
-sv = Service('uma_skills', help_='![](./uma_skills_help.png)')
+sv = Service('uma_skills')
+with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
+    base64_data = base64.b64encode(f.read())
+    s = base64_data.decode()
+sv.help = f'![](data:image/jpeg;base64,{s})'
 
 @sv.on_fullmatch('马娘技能帮助')
 async def get_help(bot, ev):

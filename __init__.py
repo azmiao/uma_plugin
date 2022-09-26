@@ -1,4 +1,5 @@
 import os
+import base64
 import shutil
 import asyncio
 import json
@@ -16,7 +17,11 @@ from .uma_tasks.update_init import update as tasks_update, auto_update as tasks_
 from .uma_gacha_v2.update_init import update as gacha_update, auto_update as gacha_auto
 from .uma_support_chart.update_init import update as sup_update
 
-sv = Service('uma_help', help_='![](./uma_help.png)')
+sv = Service('uma_help')
+with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
+    base64_data = base64.b64encode(f.read())
+    s = base64_data.decode()
+sv.help = f'![](data:image/jpeg;base64,{s})'
 
 @sv.on_fullmatch('马娘帮助')
 async def get_help(bot, ev):

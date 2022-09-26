@@ -1,4 +1,5 @@
 import os
+import base64
 import datetime
 import json
 
@@ -11,7 +12,11 @@ from ..plugin_utils.base_util import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
 
-sv = Service('uma_info', help_='![](./uma_info_help.png)', enable_on_default = True)
+sv = Service('uma_info', enable_on_default = True)
+with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
+    base64_data = base64.b64encode(f.read())
+    s = base64_data.decode()
+sv.help = f'![](data:image/jpeg;base64,{s})'
 svbr = Service('uma_bir_push', enable_on_default = False)
 
 @sv.on_fullmatch('马娘数据帮助')

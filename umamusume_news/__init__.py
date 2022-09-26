@@ -1,4 +1,5 @@
 import os
+import base64
 import asyncio
 
 from hoshino import Service, priv
@@ -6,7 +7,11 @@ from .news_spider import get_news, judge, news_broadcast, sort_news, translate_n
 from .news_spider_tw import get_news_tw, judge_tw, news_broadcast_tw
 from ..plugin_utils.base_util import get_img_cq, get_server_default
 
-sv = Service('umamusume_news', enable_on_default=True, help_='![](./umamusume_news_help.png)')
+sv = Service('umamusume_news', enable_on_default=True)
+with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
+    base64_data = base64.b64encode(f.read())
+    s = base64_data.decode()
+sv.help = f'![](data:image/jpeg;base64,{s})'
 svuma = Service('umamusume-news-poller', enable_on_default=False)
 svumatw = Service('umamusume-news-poller-tw', enable_on_default=False)
 
