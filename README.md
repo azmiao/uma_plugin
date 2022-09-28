@@ -90,18 +90,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+ + 22-09-28     v2.7.2  新增由于网络问题导致插件版本获取不到的日志，并更新文档
+
  + 22-09-01     v2.7.1  修复当前版本为f版本时，更新不迭代版本的更新，缺仍然提示须手动的BUG
 
  + 22-08-31		v2.7.0f	新增插件统一管理功能，具体配置方式请看本文末‘额外定制配置’，本次也需要`git pull -f`来更新，如果启动的时候获取马娘插件版本报错，请按照定制配置内方法添加代理后再重启bot
 
  + 22-08-28     v2.6.6f  临时改变节奏榜的内容为bwiki上巅峰杯歌姬杯分开的节奏榜，新增可选设置插件默认服务器，配置方法在本文末。注意：本次更新需要使用命令`git pull -f`来更新，并且定制配置的`properties.json`的配置会回到默认状态须重新设置，另外节奏榜的uma_support_chart文件夹下的日服配置文件`sup_config.json`建议删一下并重启bot再使用。
 
- + 22-28-28     v2.6.5  修复耐力计算的BUG，修复方案来自[@aaaaaaria](https://github.com/aaaaaaria)，[issue #36](https://github.com/azmiao/uma_plugin/issues/36)
-
 </details>
 
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 22-28-28     v2.6.5  修复耐力计算的BUG，修复方案来自[@aaaaaaria](https://github.com/aaaaaaria)，[issue #36](https://github.com/azmiao/uma_plugin/issues/36)
 
  + 22-08-22     v2.6.4  常规数据更新，新增红宝石和凯斯的别名，更新后记得“手动更新马娘数据”或者等半夜自动更新
 
@@ -179,7 +181,7 @@ https://github.com/azmiao/uma_plugin/
 
 > 选择一：自动更新
 
-插件已自带更新功能，更新后会发私聊消息到维护者，之后会提醒您手动重启bot完成更新
+插件已自带更新功能，更新后会发私聊消息到维护者，之后会提醒您手动重启bot完成更新，请确保能链接Github服务器，如不行请按照下面额外定制功能配置代理或者关闭插件自动更新
 
 > 选择二：手动更新
 
@@ -200,7 +202,7 @@ Please, commit your changes or stash them before you can merge
 
 ### 3.如何跟踪新版
 
-现插件已自带，只要确保bot能访问Github即可，如不能访问请配置代理，方法在下面额外定制功能内
+现插件已自带，只要确保bot能访问Github即可，如不能访问请配置代理，方法在下面额外定制功能内，或者关闭自动更新，自己手动更新吧
 
 </details>
 
@@ -267,7 +269,9 @@ Please, commit your changes or stash them before you can merge
 
     然后重启 HoshinoBot
 
-    装完插件后首次启动时会更新马娘各种数据，按带宽的大小可能需要3-10分钟不等，请耐心等待，您可以看着控制台看他有没有报错。
+    装完插件后首次启动时会更新马娘各种数据，按带宽的大小可能需要3-10分钟不等，请耐心等待。
+
+    【注意】如果首次启动很快没有新的日志，即没有出现更新操作，请查看日志是否是马娘插件版本获取失败，如是，说明你的服务器连不到Github，需要手动按照下文额外定制功能配置代理或者关闭自动更新功能
 
 4. 额外功能：（自动提醒）
 

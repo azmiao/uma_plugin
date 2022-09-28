@@ -68,12 +68,14 @@ move_dir('uma_gacha')
 
 # v1.8将首次启动事件合并到一块，防止首次启动时过多线程同时工作导致触发反爬虫
 async def update():
-    await init_plugin()
+    try:
+        await init_plugin()
+    except:
+        logger.error('马娘插件版本获取失败，插件部分功能已停止启动！请检查是否能访问Github，如不能请设置代理或者关闭插件自动更新功能，重启生效')
     await asyncio.sleep(0.1)
     flag = await info_update()
     if not flag:
-        logger.info('马娘基础数据库更新失败，后续更新操作已停止，请重新启动Bot更新')
-        return
+        logger.error('马娘基础数据库更新失败，后续部分更新操作已停止，请重新启动Bot更新')
     await asyncio.sleep(0.1)
     await comic_update()
     await asyncio.sleep(0.1)
