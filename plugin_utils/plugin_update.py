@@ -15,14 +15,14 @@ url = 'https://github.com/azmiao/uma_plugin'
 # 初始化马娘插件版本
 async def init_plugin():
     update_type = await get_update_type()
+    if os.path.exists(version_path):
+            return
     if update_type == 'no':
         with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'README.md'), 'r', encoding='utf-8') as f:
             text = f.read()
         version = re.search(r'release-([0-9]+\.[0-9]+\.[0-9]+f?)-orange\.svg', text).group(1)
         commit_time = datetime.strftime(datetime.now(),"%Y-%m-%d %H:%M:%S")
     else:
-        if os.path.exists(version_path):
-            return
         logger.info('【马娘插件】正在获取马娘插件版本...')
         data_list, version = await get_commits(url)
         commit_time = data_list[0]['time']
