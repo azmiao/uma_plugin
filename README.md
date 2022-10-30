@@ -15,7 +15,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.7.2-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.7.3-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -90,18 +90,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+ + 22-10-30     v2.7.3  新增模拟抽空频次限制和每日上限，在uma_gacha_v2/\_\_init\_\_.py文件中可自定义修改
+
  + 22-09-28     v2.7.2  新增由于网络问题导致插件版本获取不到的日志，并更新文档
 
  + 22-09-01     v2.7.1  修复当前版本为f版本时，更新不迭代版本的更新，缺仍然提示须手动的BUG
 
  + 22-08-31		v2.7.0f	新增插件统一管理功能，具体配置方式请看本文末‘额外定制配置’，本次也需要`git pull -f`来更新，如果启动的时候获取马娘插件版本报错，请按照定制配置内方法添加代理后再重启bot
 
- + 22-08-28     v2.6.6f  临时改变节奏榜的内容为bwiki上巅峰杯歌姬杯分开的节奏榜，新增可选设置插件默认服务器，配置方法在本文末。注意：本次更新需要使用命令`git pull -f`来更新，并且定制配置的`properties.json`的配置会回到默认状态须重新设置，另外节奏榜的uma_support_chart文件夹下的日服配置文件`sup_config.json`建议删一下并重启bot再使用。
-
 </details>
 
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 22-08-28     v2.6.6f  临时改变节奏榜的内容为bwiki上巅峰杯歌姬杯分开的节奏榜，新增可选设置插件默认服务器，配置方法在本文末。注意：本次更新需要使用命令`git pull -f`来更新，并且定制配置的`properties.json`的配置会回到默认状态须重新设置，另外节奏榜的uma_support_chart文件夹下的日服配置文件`sup_config.json`建议删一下并重启bot再使用。
 
  + 22-28-28     v2.6.5  修复耐力计算的BUG，修复方案来自[@aaaaaaria](https://github.com/aaaaaaria)，[issue #36](https://github.com/azmiao/uma_plugin/issues/36)
 
@@ -273,7 +275,7 @@ Please, commit your changes or stash them before you can merge
 
     【注意】如果首次启动很快没有新的日志，即没有出现更新操作，请查看日志是否是马娘插件版本获取失败，如是，说明你的服务器连不到Github，需要手动按照下文额外定制功能配置代理或者关闭自动更新功能
 
-4. 额外功能：（自动提醒）
+4. 手动选择开启是否自动提醒功能：
 
     在某个群里发消息输入下文以开启马娘生日提醒（提醒当天哪知马娘生日）
     ```
@@ -290,16 +292,39 @@ Please, commit your changes or stash them before you can merge
 
     可以通过发消息输入"lssv"查看这个功能前面是不是⚪来确认是否开启成功
 
-5. 马娘新闻配置代理（可选）
-
-    配置代理方法已集成至统一配置里，请看下文额外定制配置
-
 </details>
 
 ## 额外定制配置（可选）
 
 <details>
 <summary>点我展开</summary>
+
+### 马娘抽卡自定义冷却和每日上限
+
+具体在uma_gacha_v2/\_\_init\_\_.py文件中可自定义修改，改数字即可，自定义建议关闭插件自动更新，不然可能被自动更新覆盖回默认，大概吧，没有确认过，有好兄弟确认过可以issue里说一下。
+
+```
+##########自定义配置##########
+
+# 每个人的指令冷却 | 默认10秒
+lmt = FreqLimiter(10)
+
+# 单抽和十连的萝卜上限 | 默认每天30000萝卜
+single_limit = DailyNumberLimiter(30000)
+
+# 抽井的次数(马娘池和支援卡池次数共通) | 默认每天15次
+tenjo_limit = DailyNumberLimiter(15)
+
+# 抽满破的次数 | 默认每天10次
+full_limit = DailyNumberLimiter(10)
+
+# 超过次数的消息
+SINGLE_EXCEED_NOTICE = f'您今天已经抽过{single_limit.max}颗萝卜了，欢迎明早5点后再来哦！'
+TENJO_EXCEED_NOTICE = f'您今天已经抽过{tenjo_limit.max}张天井券了，欢迎明早5点后再来哦！'
+FULL_EXCEED_NOTICE = f'您今天已经抽过{full_limit.max}次支援卡满破了，欢迎明早5点后再来哦！'
+
+#############################
+```
 
 ### 该功能的所有配置均在插件目录下的 `properties.json` 里
 

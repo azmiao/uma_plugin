@@ -6,7 +6,31 @@ from . update_init import auto_update
 from .util import get_pool, get_img_path, generate_img, random_comment, server_list, \
     switch_server, switch_pool_id, get_pool_detail
 from hoshino import Service, priv
+from hoshino.util import DailyNumberLimiter, FreqLimiter
 from ..plugin_utils.base_util import get_img_cq
+
+
+##########自定义配置##########
+
+# 每个人的指令冷却 | 默认10秒
+lmt = FreqLimiter(10)
+
+# 单抽和十连的萝卜上限 | 默认每天30000萝卜
+single_limit = DailyNumberLimiter(30000)
+
+# 抽井的次数(马娘池和支援卡池次数共通) | 默认每天15次
+tenjo_limit = DailyNumberLimiter(15)
+
+# 抽满破的次数 | 默认每天10次
+full_limit = DailyNumberLimiter(10)
+
+# 超过次数的消息
+SINGLE_EXCEED_NOTICE = f'您今天已经抽过{single_limit.max}颗萝卜了，欢迎明早5点后再来哦！'
+TENJO_EXCEED_NOTICE = f'您今天已经抽过{tenjo_limit.max}张天井券了，欢迎明早5点后再来哦！'
+FULL_EXCEED_NOTICE = f'您今天已经抽过{full_limit.max}次支援卡满破了，欢迎明早5点后再来哦！'
+
+#############################
+
 
 sv = Service('uma_gacha_v2')
 with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
@@ -24,6 +48,12 @@ async def help(bot, ev):
 # 马娘单抽
 @sv.on_fullmatch(('马娘单抽', '单抽马娘'), only_to_me=True)
 async def one_gacha_uma(bot, ev):
+    if not lmt.check(ev.user_id):
+        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
+    if not single_limit.check(ev.user_id):
+        await bot.finish(ev, SINGLE_EXCEED_NOTICE, at_sender=True)
+    lmt.start_cd(ev.user_id)
+    single_limit.increase(ev.user_id, 150)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await one_gacha(group_id, user_id, 'uma')
     await bot.send(ev, msg)
@@ -31,6 +61,12 @@ async def one_gacha_uma(bot, ev):
 # 支援卡单抽
 @sv.on_fullmatch(('育成卡单抽', '支援卡单抽','s卡单抽','S卡单抽'), only_to_me=True)
 async def one_gacha_chart(bot, ev):
+    if not lmt.check(ev.user_id):
+        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
+    if not single_limit.check(ev.user_id):
+        await bot.finish(ev, SINGLE_EXCEED_NOTICE, at_sender=True)
+    lmt.start_cd(ev.user_id)
+    single_limit.increase(ev.user_id, 150)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await one_gacha(group_id, user_id, 'chart')
     await bot.send(ev, msg)
@@ -38,6 +74,12 @@ async def one_gacha_chart(bot, ev):
 # 马娘十连
 @sv.on_fullmatch(('马娘十连', '马十连'), only_to_me=True)
 async def ten_gacha_uma(bot, ev):
+    if not lmt.check(ev.user_id):
+        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
+    if not single_limit.check(ev.user_id):
+        await bot.finish(ev, SINGLE_EXCEED_NOTICE, at_sender=True)
+    lmt.start_cd(ev.user_id)
+    single_limit.increase(ev.user_id, 1500)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await ten_gacha(group_id, user_id, 'uma')
     await bot.send(ev, msg)
@@ -45,6 +87,12 @@ async def ten_gacha_uma(bot, ev):
 # 育成卡十连
 @sv.on_fullmatch(('育成卡十连', '支援卡十连','s卡十连','S卡十连'), only_to_me=True)
 async def ten_gacha_chart(bot, ev):
+    if not lmt.check(ev.user_id):
+        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
+    if not single_limit.check(ev.user_id):
+        await bot.finish(ev, SINGLE_EXCEED_NOTICE, at_sender=True)
+    lmt.start_cd(ev.user_id)
+    single_limit.increase(ev.user_id, 1500)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await ten_gacha(group_id, user_id, 'chart')
     await bot.send(ev, msg)
@@ -52,6 +100,12 @@ async def ten_gacha_chart(bot, ev):
 # 马娘井
 @sv.on_fullmatch(('马之井', '马娘井', '马娘一井'), only_to_me=True)
 async def tenjou_gacha_uma(bot, ev):
+    if not lmt.check(ev.user_id):
+        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
+    if not tenjo_limit.check(ev.user_id):
+        await bot.finish(ev, TENJO_EXCEED_NOTICE, at_sender=True)
+    lmt.start_cd(ev.user_id)
+    tenjo_limit.increase(ev.user_id)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await tenjou_gacha(group_id, user_id, 'uma')
     await bot.send(ev, msg)
@@ -59,6 +113,12 @@ async def tenjou_gacha_uma(bot, ev):
 # 育成卡井
 @sv.on_fullmatch(('育成卡井', '育成卡一井', '支援卡井', '支援卡一井','s卡井','s卡一井','S卡井','S卡一井'), only_to_me=True)
 async def tenjou_gacha_chart(bot, ev):
+    if not lmt.check(ev.user_id):
+        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
+    if not tenjo_limit.check(ev.user_id):
+        await bot.finish(ev, TENJO_EXCEED_NOTICE, at_sender=True)
+    lmt.start_cd(ev.user_id)
+    tenjo_limit.increase(ev.user_id)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await tenjou_gacha(group_id, user_id, 'chart')
     await bot.send(ev, msg)
@@ -66,6 +126,12 @@ async def tenjou_gacha_chart(bot, ev):
 # 育成卡抽满破
 @sv.on_fullmatch(('育成卡抽满破', '支援卡抽满破'), only_to_me=True)
 async def full_singer_gacha_chart(bot, ev):
+    if not lmt.check(ev.user_id):
+        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
+    if not full_limit.check(ev.user_id):
+        await bot.finish(ev, FULL_EXCEED_NOTICE, at_sender=True)
+    lmt.start_cd(ev.user_id)
+    full_limit.increase(ev.user_id)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await full_singer_gacha(group_id, user_id, 'chart')
     await bot.send(ev, msg)
