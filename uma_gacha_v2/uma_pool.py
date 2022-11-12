@@ -41,34 +41,13 @@ async def UP_modify(pool_data):
     for server in server_list:
         for pool_id in list(pool_data[server].keys()):
             cal_pool_id = await get_correspond(server, 'jp', pool_id)
-            if cal_pool_id == '20220224':
-                pool_data[server][pool_id]['uma_up']['3'] = ['北部玄驹']
-                pool_data[server][pool_id]['uma_up']['2'] = ['待兼诗歌剧']
-                pool_data[server][pool_id]['chart_up']['R'] = ['【トレセン学園】メジロブライト']
+
             if cal_pool_id == '20220729':
                 pool_data[server][pool_id]['chart_up']['R'] = ['【トレセン学園】ツルマルツヨシ']
             if cal_pool_id == '20220111':
                 pool_data[server][pool_id]['chart_up']['SR'] = ['【これがウチらのいか焼きや！】タマモクロス']
                 pool_data[server][pool_id]['chart_up']['SSR'] = ['【ブスッといっとく？】安心沢刺々美']
     return pool_data
-
-# 特殊R卡调整，一般是由于活动SSR卡导致的
-async def sp_modify(uma_name_list):
-    # 一般只需要在这里加上缺少的即可
-    uma_name_list.append('【トレセン学園】テイエムオペラオー')
-    uma_name_list.append('【トレセン学園】メジロマックイーン')
-    # 下面比较特殊，一般不需要动
-    if '【トレセン学園】安心沢刺々美' in uma_name_list:
-        uma_name_list.remove('【トレセン学園】安心沢刺々美')
-        uma_name_list.append('【笹針師】安心沢刺々美')
-    if '【トレセン学園】玉座に集いし者たち' in uma_name_list:
-        uma_name_list.remove('【トレセン学園】玉座に集いし者たち')
-    if '【トレセン学園】ライトハロー' in uma_name_list:
-        uma_name_list.remove('【トレセン学園】ライトハロー')
-        uma_name_list.append('【イベントプロデューサー】ライトハロー')
-    # 去重
-    uma_name_list = list(set(uma_name_list))
-    return uma_name_list
 
 # 获取其他马娘/支援卡数据
 async def get_other_uma(pool_data, server):
@@ -82,28 +61,21 @@ async def get_other_uma(pool_data, server):
             last_pool = pool_data[server][id_list[i-1]][f'other_{gacha_type}']
             new_pool_data = {}
             for rank in list(last_pool.keys()):
-                new_pool_data[rank] = last_pool[rank] + pool_data[server][id_list[i-1]][f'{gacha_type}_up'][rank]
+                new_pool_data[rank] = list(set(last_pool[rank] + pool_data[server][id_list[i-1]][f'{gacha_type}_up'][rank]))
             pool_data[server][id_list[i]][f'other_{gacha_type}'] = new_pool_data
             if re.search('全体', pool_data[server][id_list[i]][f'{gacha_type}_title']):
                 high_rank = list(last_pool.keys())[0]
                 pool_data[server][id_list[i]][f'{gacha_type}_up'][high_rank] = last_pool[high_rank]
                 pool_data[server][id_list[i]][f'other_{gacha_type}'][high_rank] = []
-    pool_data = await get_R(pool_data, server)
     return pool_data
 
-# 支援卡增加R卡数据
+# 初始池增加R卡数据
 async def get_R(pool_data, server):
-    for pool_id in list(pool_data[server].keys()):
-        uma_name_list = []
-        for rank in list(pool_data[server][pool_id]['chart_up'].keys()):
-            chart_uma = ['【トレセン学園】' + x.split('】', 1)[1] for x in pool_data[server][pool_id]['chart_up'][rank]]
-            uma_name_list += chart_uma
-        for rank in list(pool_data[server][pool_id]['other_chart'].keys()):
-            chart_uma = ['【トレセン学園】' + x.split('】', 1)[1] for x in pool_data[server][pool_id]['other_chart'][rank]]
-            uma_name_list += chart_uma
-        # 特殊情况
-        uma_name_list = await sp_modify(uma_name_list)
-        pool_data[server][pool_id]['other_chart']['R'] = uma_name_list
+    R_chart = ['【トレセン学園】' + x.split('】', 1)[1] for x in pool_data[server]['000000']['other_chart']['SSR']]
+    # 补上缺少的R卡
+    R_chart.append('【トレセン学園】テイエムオペラオー')
+    R_chart.append('【トレセン学園】メジロマックイーン')
+    pool_data[server]['000000']['other_chart']['R'] = list(set(R_chart))
     return pool_data
 
 # 增加初始卡池
@@ -122,6 +94,7 @@ async def add_init_pool(pool_data):
             'other_uma': init_data['other_uma'],
             'other_chart': init_data['other_chart'],
         }
+        pool_data = await get_R(pool_data, server)
     return pool_data
 
 # 获取卡池数据
@@ -158,11 +131,19 @@ async def get_pool_data():
         chart_title_img = pool[1].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '')\
             .replace('/400px-'+ chart_title_id, '')
         chart_up_list = [span.find('a').get('title') for span in pool[1].find_all('span', {"style": "display:inline-block;"})]
-        if re.search('、SR', chart_title):
-            chart_SR_up_list = [x for x in chart_up_list if x != chart_up_list[0]]
-            chart_up = {'SSR': [chart_up_list[0]], 'SR': chart_SR_up_list, 'R': []}
-        else:
-            chart_up = {'SSR': chart_up_list, 'SR': [], 'R': []}
+        chart_up_img_list = [span.find('img').get('alt') for span in pool[1].find_all('span', {"style": "display:inline-block;"})]
+        # 判断星级
+        SSR_list, SR_list, R_list = [], [], []
+        for img_name in chart_up_img_list:
+            name = img_name.replace('Support thumb ', '')
+            num = chart_up_img_list.index(img_name)
+            if name.startswith('1'):
+                R_list.append(chart_up_list[num])
+            elif name.startswith('2'):
+                SR_list.append(chart_up_list[num])
+            else:
+                SSR_list.append(chart_up_list[num])
+        chart_up = {'SSR': SSR_list, 'SR': SR_list, 'R': R_list}
         # 日服数据
         pool_data['jp'][pool_id] = {
             'pool_time': pool_time,
