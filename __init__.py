@@ -97,6 +97,8 @@ loop.run_until_complete(update())
 # 部分统一自动更新时间点
 @sv.scheduled_job('cron',id='daily_uma_res', day=f'1/{get_interval()}', hour='2', minute='30')
 async def auto_update():
+    await plugin_update_auto()
+    await asyncio.sleep(0.1)
     _ = await info_auto()
     await asyncio.sleep(0.1)
     await comic_auto()
@@ -106,8 +108,6 @@ async def auto_update():
     await face_auto()
     await asyncio.sleep(0.1)
     await gacha_auto()
-    await asyncio.sleep(0.1)
-    await plugin_update_auto()
 
 # 其他每小时自动对比是否有更新
 @sv.scheduled_job('cron',id='hourly_uma_res', hour='0-23', minute='00')
