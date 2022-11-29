@@ -15,7 +15,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.7.3-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.7.4-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -90,18 +90,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+ + 22-11-29     v2.7.4  修复由于UI变动导致的马娘卡池异常，更新后请使用命令“更新马娘卡池”更新一下
+
  + 22-10-30     v2.7.3  新增模拟抽空频次限制和每日上限，在uma_gacha_v2/\_\_init\_\_.py文件中可自定义修改
 
  + 22-09-28     v2.7.2  新增由于网络问题导致插件版本获取不到的日志，并更新文档
 
  + 22-09-01     v2.7.1  修复当前版本为f版本时，更新不迭代版本的更新，缺仍然提示须手动的BUG
 
- + 22-08-31		v2.7.0f	新增插件统一管理功能，具体配置方式请看本文末‘额外定制配置’，本次也需要`git pull -f`来更新，如果启动的时候获取马娘插件版本报错，请按照定制配置内方法添加代理后再重启bot
-
 </details>
 
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 22-08-31		v2.7.0f	新增插件统一管理功能，具体配置方式请看本文末‘额外定制配置’，本次也需要`git pull -f`来更新，如果启动的时候获取马娘插件版本报错，请按照定制配置内方法添加代理后再重启bot
 
  + 22-08-28     v2.6.6f  临时改变节奏榜的内容为bwiki上巅峰杯歌姬杯分开的节奏榜，新增可选设置插件默认服务器，配置方法在本文末。注意：本次更新需要使用命令`git pull -f`来更新，并且定制配置的`properties.json`的配置会回到默认状态须重新设置，另外节奏榜的uma_support_chart文件夹下的日服配置文件`sup_config.json`建议删一下并重启bot再使用。
 
