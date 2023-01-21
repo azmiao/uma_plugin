@@ -12,6 +12,8 @@
 
 #### 如有魔改版请遵守本插件的GPL3.0开源协议并保持开源！！最好注明来源支持一下作者hhh
 
+#### 马娘别称存在插件目录/uma_info/replace_dict.json文件中，可以为本仓库提交PR共享出来哦
+
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
