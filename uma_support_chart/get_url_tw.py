@@ -14,7 +14,7 @@ async def get_title_url(sup_type):
     url_region = 'https://wiki.biligame.com/umamusume/攻略（繁中服）'
     res = httpx.get(url_region, timeout=10)
     soup = BeautifulSoup(res.text, 'lxml')
-    title = soup.find('a', {"title": re.compile(fr"{sup_type}卡节奏榜\S+")}).text
+    title = soup.find('a', {"title": re.compile(fr"^((?!SR).)*{sup_type}卡节奏榜\S+$")}).text
     return url_header + title
 
 # 生成字典
