@@ -36,8 +36,8 @@ async def get_task_info(task_id, f_data):
         info_data['info'][s_task_id] = {}
         info_data['info'][s_task_id]['task_name'] = f_data['tasks'][task_id]['task_list'][s_task_id]['任务名']
         info_data['info'][s_task_id]['condition'] = f_data['tasks'][task_id]['task_list'][s_task_id]['达成条件']
-        info_data['info'][s_task_id]['race_time'] = f_data['tasks'][task_id]['task_list'][s_task_id]['比赛时间']
-        info_data['info'][s_task_id]['race_env'] = f_data['tasks'][task_id]['task_list'][s_task_id]['比赛环境']
+        info_data['info'][s_task_id]['race_time'] = f_data['tasks'][task_id]['task_list'][s_task_id].get('比赛时间', '无')
+        info_data['info'][s_task_id]['race_env'] = f_data['tasks'][task_id]['task_list'][s_task_id].get('比赛环境', '无')
         info_data['info'][s_task_id]['suggest_uma'] = f_data['tasks'][task_id]['task_list'][s_task_id]['推荐赛马娘']
         info_data['info'][s_task_id]['reward'] = f_data['tasks'][task_id]['task_list'][s_task_id]['奖励']
     img_dir = os.path.join(R.img('umamusume').path, f'uma_tasks/task_id_{task_id}.png')

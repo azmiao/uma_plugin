@@ -17,7 +17,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.7.7-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.7.8-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -92,18 +92,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+ + 23-02-16     v2.7.8  修复限时任务页面更新的问题
+
  + 23-02-08     v2.7.7  修复节奏榜匹配错误
 
  + 23-02-07     v2.7.6  修复日服马娘新闻翻译功能
 
  + 22-11-29     v2.7.5  修复由于UI变动导致的马娘卡池异常，更新后请使用命令“更新马娘卡池”更新一下
 
- + 22-11-12     v2.7.4  修复模拟抽卡SSR个别出货率比其他高0.026%的BUG，修改R卡卡池逻辑跟随bwiki更新
-
 </details>
 
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 22-11-12     v2.7.4  修复模拟抽卡SSR个别出货率比其他高0.026%的BUG，修改R卡卡池逻辑跟随bwiki更新
 
  + 22-10-30     v2.7.3  新增模拟抽卡频次限制和每日上限，在uma_gacha_v2/\_\_init\_\_.py文件中可自定义修改
 

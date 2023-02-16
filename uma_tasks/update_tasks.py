@@ -64,14 +64,22 @@ async def update_info():
             for each_td in each_tr.find_all('td'):
                 each_td = each_td.text.replace('\n', '')
                 each_tr_list.append(each_td)
-            each_tr_dict = {
-                '任务名': each_tr_list[0],
-                '达成条件': each_tr_list[1],
-                '比赛时间': each_tr_list[2],
-                '比赛环境': each_tr_list[3],
-                '推荐赛马娘': each_tr_list[4],
-                '奖励': each_tr_list[5]
-            }
+            if len(each_tr_list) == 4:
+                each_tr_dict = {
+                    '任务名': each_tr_list[0],
+                    '达成条件': each_tr_list[1],
+                    '推荐赛马娘': each_tr_list[2],
+                    '奖励': each_tr_list[3]
+                }
+            else:
+                each_tr_dict = {
+                    '任务名': each_tr_list[0],
+                    '达成条件': each_tr_list[1],
+                    '比赛时间': each_tr_list[2],
+                    '比赛环境': each_tr_list[3],
+                    '推荐赛马娘': each_tr_list[4],
+                    '奖励': each_tr_list[5]
+                }
             f_data['tasks'][str(number)]['task_list'][str(m)] = each_tr_dict
         number -= 1
         # 都做完了再写入
