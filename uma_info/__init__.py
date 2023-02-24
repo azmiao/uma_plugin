@@ -63,7 +63,7 @@ async def search_bir(bot, ev):
     name_list.remove('current_chara')
     for uma_name in name_list:
         if f_data[uma_name]['category'] == 'umamusume':
-            other_name_list = list(replace_data[uma_name])
+            other_name_list = list(replace_data[uma_name]) if uma_name in replace_data else []
             cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else f_data[uma_name]['jp_name']
             if str(uma_name) == str(uma_name_tmp) or str(cn_name) == str(uma_name_tmp) or str(uma_name_tmp) in other_name_list:
                 cn_name_tmp = cn_name
@@ -143,7 +143,7 @@ async def get_single_info(bot, ev):
     name_list.remove('current_chara')
     msg = ''
     for uma_name in name_list:
-        other_name_list = list(replace_data[uma_name])
+        other_name_list = list(replace_data[uma_name]) if uma_name in replace_data else []
         cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else f_data[uma_name]['jp_name']
         if str(uma_name) == str(uma_name_tmp) or str(cn_name) == str(uma_name_tmp) or str(uma_name_tmp) in other_name_list:
             if info_type == 'id':

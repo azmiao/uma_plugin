@@ -3,7 +3,7 @@ def judge_name(name_tmp, f_data, replace_data):
     name_list = list(f_data.keys())
     name_list.remove('current_chara')
     for uma_name in name_list:
-        other_name_list = list(replace_data[uma_name])
+        other_name_list = list(replace_data[uma_name]) if uma_name in replace_data else []
         cn_name = f_data[uma_name]['cn_name']
         if str(name_tmp) == str(cn_name) or str(name_tmp) in other_name_list:
             return '星云天空' if cn_name == '青云天空' else cn_name

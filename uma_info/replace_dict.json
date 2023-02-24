@@ -86,8 +86,13 @@
     "chevalgrand": ["高尚俊逸", "高尚骏逸", "俊逸", "骏逸"],
     "k-s-miracle": ["凯斯奇迹", "KS奇迹", "凯斯", "ks", "KS"],
     "copanorickey": ["小林历奇","小林", "小林檎", "林檎", "历奇"],
+    "junglepocket": ["森林宝穴"],
     "hokkotarumae": ["北港火山", "火山"],
     "wonderacute": ["敏锐奇才", "奇锐骏"],
+    "katsuragiace": ["葛城王牌", "王牌"],
+    "neouniverse": ["新宇宙"],
+    "hishimiracle": ["菱钻奇宝"],
+    "tapdancecity": ["跳舞城"],
     "happymik": ["米可", "快乐温顺"],
     "bitterglasse": ["苦涩眼镜"],
     "littlecocon": ["小可可"],
@@ -98,6 +103,9 @@
     "anshinzawasasami": ["针灸师", "庸医", "戴墨镜的黄金城市"],
     "kashimotoriko": ["理事长", "代理理事长", "理子"],
     "lighthello": ["爱丽女士", "b95", "B95", "无忧", "无忧呼唤"],
+    "darleyarabian": ["达利阿拉伯"],
+    "godolphinbarb": ["高多芬巴布"],
+    "byerleyturk": ["拜耶尔土耳其"],
     "akasakamisato": [],
     "hosoejunko": []
 }

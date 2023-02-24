@@ -32,7 +32,7 @@ async def search_target(bot, ev):
     name_list.remove('current_chara')
     for uma_name in name_list:
         if f_data[uma_name]['category'] == 'umamusume':
-            other_name_list = list(replace_data[uma_name])
+            other_name_list = list(replace_data[uma_name]) if uma_name in replace_data else []
             if f_data[uma_name]['cn_name']:
                 cn_name = f_data[uma_name]['cn_name']
             else:
