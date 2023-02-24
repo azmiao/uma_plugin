@@ -17,7 +17,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.7.9-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.7.10-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -92,16 +92,18 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+ + 23-02-24     v2.7.10  修复马娘技能更新失败的问题
+
  + 23-02-24     v2.7.9  优化部分代码，同步官网更新的马娘数据
 
  + 23-02-16     v2.7.8  修复限时任务页面更新的问题
 
  + 23-02-08     v2.7.7  修复节奏榜匹配错误
 
- + 23-02-07     v2.7.6  修复日服马娘新闻翻译功能
-
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 23-02-07     v2.7.6  修复日服马娘新闻翻译功能
 
  + 22-11-29     v2.7.5  修复由于UI变动导致的马娘卡池异常，更新后请使用命令“更新马娘卡池”更新一下
 

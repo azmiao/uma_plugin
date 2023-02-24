@@ -14,7 +14,6 @@ async def create_msg(skill_name: str, f_data):
 颜色：{f_data['skills'][skill_name]['颜色']}
 繁中译名：{f_data['skills'][skill_name]['繁中译名']}
 条件限制：{f_data['skills'][skill_name]['条件限制']}
-技能描述：{f_data['skills'][skill_name]['技能描述']}
 技能数值：{f_data['skills'][skill_name]['技能数值']}
 持续时间：{f_data['skills'][skill_name]['持续时间']}
 需要PT：{f_data['skills'][skill_name]['需要PT']}
@@ -112,7 +111,7 @@ async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list:li
 async def create_img(info_data, filename_tmp):
     field_names = (
         '技能名', '中文名', '稀有度', '颜色', '繁中译名', '条件限制',
-        '技能描述', '技能数值', '持续时间', '评价分',
+        '技能数值', '持续时间', '评价分',
         '需要PT', 'PT评价比', '触发条件', '技能类型'
     )
     titles = info_data['title']
@@ -124,7 +123,6 @@ async def create_img(info_data, filename_tmp):
         color = info_data['info'][skill_name]['颜色']
         tw_name = info_data['info'][skill_name]['繁中译名']
         limit = info_data['info'][skill_name]['条件限制']
-        intro = info_data['info'][skill_name]['技能描述']
         value = info_data['info'][skill_name]['技能数值']
         time = info_data['info'][skill_name]['持续时间']
         point = info_data['info'][skill_name]['评价分']
@@ -133,7 +131,7 @@ async def create_img(info_data, filename_tmp):
         condition = info_data['info'][skill_name]['触发条件']
         skill_type = info_data['info'][skill_name]['技能类型']
         table.add_row([
-            skill_name, cn_name, rarity, color, tw_name, limit, intro,
+            skill_name, cn_name, rarity, color, tw_name, limit,
             value, time, point, pt, pt_per_point, condition, skill_type
         ])
 
