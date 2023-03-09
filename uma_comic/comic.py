@@ -37,9 +37,9 @@ async def get_imgurl():
 
 # 调整url
 async def adjust_url(url):
-    url_pattern = re.compile(r'(https://patchwiki\.biligame\.com/images/umamusume)/\S+?(/\S+?\.jpg)')
+    url_pattern = re.compile(r'https://patchwiki\.biligame\.com/images/umamusume\S+?(/\S+?\.(jpg|png))')
     url_g = re.match(url_pattern, url)
-    url = url_g.group(1) + url_g.group(2)
+    url = url_g.group(0).replace('/thumb', '')
     return url
 
 # 创建json配置文件
