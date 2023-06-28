@@ -10,8 +10,10 @@ from .util import server_list, init_data, get_differ, get_correspond
 
 gacha_path = os.path.join(R.img('umamusume').path, 'uma_gacha')
 
+
 # 其他服的卡池
-async def add_other_server(server, start_time, end_time, now, pool_data, uma_title, uma_title_img, uma_up, chart_title, chart_title_img, chart_up):
+async def add_other_server(server, start_time, end_time, now, pool_data, uma_title, uma_title_img, uma_up, chart_title,
+                           chart_title_img, chart_up):
     differ = await get_differ(server, 'jp')
     # 卡池时间
     start_time_ot = start_time + datetime.timedelta(days=differ + 1)
@@ -36,18 +38,31 @@ async def add_other_server(server, start_time, end_time, now, pool_data, uma_tit
         }
     return pool_data
 
+
 # 特殊UP调整
 async def UP_modify(pool_data):
     for server in server_list:
         for pool_id in list(pool_data[server].keys()):
             cal_pool_id = await get_correspond(server, 'jp', pool_id)
-
             if cal_pool_id == '20220729':
                 pool_data[server][pool_id]['chart_up']['R'] = ['【トレセン学園】ツルマルツヨシ']
             if cal_pool_id == '20220111':
                 pool_data[server][pool_id]['chart_up']['SR'] = ['【これがウチらのいか焼きや！】タマモクロス']
                 pool_data[server][pool_id]['chart_up']['SSR'] = ['【ブスッといっとく？】安心沢刺々美']
+            if '重炮' in pool_data[server][pool_id]['uma_up']['2']:
+                pool_data[server][pool_id]['uma_up']['2'].remove('重炮')
+                pool_data[server][pool_id]['uma_up']['2'].append('摩耶重炮')
+            if '重炮' in pool_data[server][pool_id]['other_uma']['2']:
+                pool_data[server][pool_id]['other_uma']['2'].remove('重炮')
+                pool_data[server][pool_id]['other_uma']['2'].append('摩耶重炮')
+            if '皇帝' in pool_data[server][pool_id]['uma_up']['3']:
+                pool_data[server][pool_id]['uma_up']['3'].remove('皇帝')
+                pool_data[server][pool_id]['uma_up']['3'].append('鲁道夫象征')
+            if '皇帝' in pool_data[server][pool_id]['other_uma']['2']:
+                pool_data[server][pool_id]['other_uma']['3'].remove('皇帝')
+                pool_data[server][pool_id]['other_uma']['3'].append('鲁道夫象征')
     return pool_data
+
 
 # 获取其他马娘/支援卡数据
 async def get_other_uma(pool_data, server):
@@ -58,10 +73,11 @@ async def get_other_uma(pool_data, server):
         id_list.reverse()
         pool_data[server][id_list[0]][f'other_{gacha_type}'] = init_data[f'other_{gacha_type}']
         for i in range(1, len(id_list)):
-            last_pool = pool_data[server][id_list[i-1]][f'other_{gacha_type}']
+            last_pool = pool_data[server][id_list[i - 1]][f'other_{gacha_type}']
             new_pool_data = {}
             for rank in list(last_pool.keys()):
-                new_pool_data[rank] = list(set(last_pool[rank] + pool_data[server][id_list[i-1]][f'{gacha_type}_up'][rank]))
+                new_pool_data[rank] = list(
+                    set(last_pool[rank] + pool_data[server][id_list[i - 1]][f'{gacha_type}_up'][rank]))
             pool_data[server][id_list[i]][f'other_{gacha_type}'] = new_pool_data
             if re.search('全体', pool_data[server][id_list[i]][f'{gacha_type}_title']):
                 high_rank = list(last_pool.keys())[0]
@@ -69,33 +85,36 @@ async def get_other_uma(pool_data, server):
                 pool_data[server][id_list[i]][f'other_{gacha_type}'][high_rank] = []
     return pool_data
 
+
 # 初始池增加R卡数据
 async def get_R(pool_data, server):
-    R_chart = ['【トレセン学園】' + x.split('】', 1)[1] for x in pool_data[server]['000000']['other_chart']['SSR']]
+    R_chart = ['【トレセン学園】' + x.split('】', 1)[1] for x in pool_data[server]['00000000']['other_chart']['SSR']]
     # 补上缺少的R卡
     R_chart.append('【トレセン学園】テイエムオペラオー')
     R_chart.append('【トレセン学園】メジロマックイーン')
-    pool_data[server]['000000']['other_chart']['R'] = list(set(R_chart))
+    pool_data[server]['00000000']['other_chart']['R'] = list(set(R_chart))
     return pool_data
+
 
 # 增加初始卡池
 async def add_init_pool(pool_data):
     for server in server_list:
-        pool_data[server]['000000'] = {
+        pool_data[server]['00000000'] = {
             'pool_time': '',
             'start_time': '',
             'end_time': '',
             'uma_title': '开服初始马娘池',
             'uma_title_img': '',
-            'uma_up': {'3':[], '2':[], '1': []},
+            'uma_up': {'3': [], '2': [], '1': []},
             'chart_title': '开服初始支援卡池',
             'chart_title_img': '',
-            'chart_up': {'SSR':[], 'SR':[], 'R': []},
+            'chart_up': {'SSR': [], 'SR': [], 'R': []},
             'other_uma': init_data['other_uma'],
             'other_chart': init_data['other_chart'],
         }
         pool_data = await get_R(pool_data, server)
     return pool_data
+
 
 # 获取卡池数据
 async def get_pool_data():
@@ -104,7 +123,7 @@ async def get_pool_data():
     soup = BeautifulSoup(res.text, 'lxml')
     soup = soup.find('table', {"style": "width:100%;text-align:center"})
     tr_all = [tr for tr in soup.find_all('tr') if tr.find('div', {"class": "floatnone"})]
-    pool_list = [(tr_all[i], tr_all[i+1]) for i in range(0, len(tr_all), 2)]
+    pool_list = [(tr_all[i], tr_all[i + 1]) for i in range(0, len(tr_all), 2)]
     pool_data, now = {}, datetime.datetime.now()
     for server in server_list:
         pool_data[server] = {}
@@ -121,17 +140,20 @@ async def get_pool_data():
         # 马娘
         uma_title = pool[0].find('div', {"class": "floatnone"}).find('a').get('title')
         uma_title_id = pool[0].find('div', {"class": "floatnone"}).find('img').get('alt').replace(' ', '_')
-        uma_title_img = pool[0].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '')\
-            .replace('/400px-'+ uma_title_id, '')
-        uma_up_list = [span.find('a').get('title') for span in pool[0].find_all('span', {"style": "display: table-cell;"})]
+        uma_title_img = pool[0].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '') \
+            .replace('/400px-' + uma_title_id, '')
+        uma_up_list = [span.find('a').get('title') for span in
+                       pool[0].find_all('span', {"style": "display: table-cell;"})]
         uma_up = {'3': uma_up_list, '2': [], '1': []}
         # 支援卡
         chart_title = pool[1].find('div', {"class": "floatnone"}).find('a').get('title')
         chart_title_id = pool[1].find('div', {"class": "floatnone"}).find('img').get('alt').replace(' ', '_')
-        chart_title_img = pool[1].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '')\
-            .replace('/400px-'+ chart_title_id, '')
-        chart_up_list = [span.find('a').get('title') for span in pool[1].find_all('span', {"style": "display:inline-block;"})]
-        chart_up_img_list = [span.find('img').get('alt') for span in pool[1].find_all('span', {"style": "display:inline-block;"})]
+        chart_title_img = pool[1].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '') \
+            .replace('/400px-' + chart_title_id, '')
+        chart_up_list = [span.find('a').get('title') for span in
+                         pool[1].find_all('span', {"style": "display:inline-block;"})]
+        chart_up_img_list = [span.find('img').get('alt') for span in
+                             pool[1].find_all('span', {"style": "display:inline-block;"})]
         # 判断星级
         SSR_list, SR_list, R_list = [], [], []
         for img_name in chart_up_img_list:
@@ -160,10 +182,11 @@ async def get_pool_data():
         for server in server_list:
             if server == 'jp':
                 continue
-            pool_data = await add_other_server(server, start_time, end_time, now, pool_data, uma_title, uma_title_img, uma_up, chart_title, chart_title_img, chart_up)
-    pool_data = await UP_modify(pool_data)
+            pool_data = await add_other_server(server, start_time, end_time, now, pool_data, uma_title, uma_title_img,
+                                               uma_up, chart_title, chart_title_img, chart_up)
     pool_data = await add_init_pool(pool_data)
     for server in server_list:
         pool_data = await get_other_uma(pool_data, server)
+    pool_data = await UP_modify(pool_data)
     with open(os.path.join(gacha_path, 'uma_pool.json'), 'w', encoding='utf-8') as f:
         json.dump(pool_data, f, ensure_ascii=False, indent=4)

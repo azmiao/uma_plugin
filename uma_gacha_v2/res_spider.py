@@ -35,7 +35,7 @@ async def get_res():
         for span in span_list:
             title = span.find('a').get('title')
             filename = span.find('img').get('alt').replace(' ', '_')
-            img_url = span.find('img').get('src').replace('thumb/', '').replace('/100px-'+ filename, '')
+            img_url = span.find('img').get('src').replace('thumb/', '').replace('/100px-' + filename, '')
             res_data[res_type_f][title] = {
                 'filename': filename,
                 'img_url': img_url

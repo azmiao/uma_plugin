@@ -27,8 +27,8 @@ server_list = list(server_data.keys())
 # 梦开始的地方
 init_data = {
     'other_uma': {
-        '3': ['特别周', '无声铃鹿', '东海帝皇', '丸善斯基', '小栗帽', '大树快车', '目白麦昆', '皇帝', '米浴'],
-        '2': ['黄金船', '伏特加', '大和赤骥', '草上飞', '神鹰', '气槽', '重炮', '超级小海湾'],
+        '3': ['特别周', '无声铃鹿', '东海帝皇', '丸善斯基', '小栗帽', '大树快车', '目白麦昆', '鲁道夫象征', '米浴'],
+        '2': ['黄金船', '伏特加', '大和赤骥', '草上飞', '神鹰', '气槽', '摩耶重炮', '超级小海湾'],
         '1': ['目白赖恩', '爱丽速子', '胜利奖券', '樱花进王', '春乌拉拉', '待兼福来', '优秀素质', '帝王光辉']
     },
     'other_chart': {
@@ -66,6 +66,8 @@ async def get_differ(server_A, server_B) -> int:
 # 输入：服务器A 和 服务器B 和 服务器A的某个卡池ID
 # 输出：服务器B的对应卡池ID
 async def get_correspond(server_A, server_B, pool_id) -> str:
+    if pool_id == '00000000':
+        return pool_id
     if (server_A not in server_list) or (server_B not in server_list):
         raise 'input error: server_A or server_B not in server_list!'
     differ = await get_differ(server_A, server_B)

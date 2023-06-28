@@ -209,8 +209,8 @@ async def tenjou_gacha(group_id, user_id, gacha_type):
 
 async def full_singer_gacha(group_id, user_id, gacha_type):
     server, pool_id = await get_pool(group_id)
-    if pool_id == '000000':
-        return '初始卡池000000不支持该功能哦'
+    if pool_id == '00000000':
+        return '初始卡池00000000不支持该功能哦'
     gacha = Gacha(pool_id, gacha_type, server)
     select_chart, up_num, ten_num, exchange, first_up, result = gacha.gacha_full_singer(gacha.result, gacha.first_up)
     result_list = result['up'] + result['s3']
