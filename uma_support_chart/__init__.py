@@ -1,9 +1,10 @@
-import os
 import base64
+import os
+
+from hoshino import Service
 
 from .get_url import generate_img
 from .get_url_tw import generate_img_tw
-from hoshino import Service
 from ..plugin_utils.base_util import get_img_cq, get_server_default
 
 sv = Service('uma_support_chart')
@@ -12,15 +13,17 @@ with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') 
     s = base64_data.decode()
 sv.help = f'![](data:image/jpeg;base64,{s})'
 
+
 # 帮助界面
 @sv.on_fullmatch("支援卡节奏榜帮助")
-async def help(bot, ev):
+async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
+
 @sv.on_rex(r'^(\S服)?(\S{1,2})卡节奏榜$')
-async def SSR_speed_chart(bot, ev):
+async def ssr_speed_chart(bot, ev):
     sup_type = ev['match'].group(2)
     if sup_type not in ['速', '耐', '力', '根', '智', '友人']:
         return
