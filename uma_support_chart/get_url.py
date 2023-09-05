@@ -104,7 +104,7 @@ async def download_img(file_name, url):
     k = 900 / x
     out = im.resize((int(x * k), int(y * k)))
     out.save(current_dir, quality=80)
-    logger.info(f'最新版节奏榜图片：{file_name}下载成功')
+    logger.info(f'最新版节奏榜图片：[{file_name}]下载成功')
 
 
 # 删除旧版图片
@@ -117,7 +117,7 @@ async def del_img(sup_type):
             file_name = file_name.group(0)
             current_dir = os.path.join(img_path, file_name)
             os.remove(current_dir)
-            logger.info(f'旧版{sup_type}卡节奏榜图片{file_name}删除成功')
+            logger.info(f'旧版{sup_type}卡节奏榜图片[{file_name}]删除成功')
 
 
 # 合成图片

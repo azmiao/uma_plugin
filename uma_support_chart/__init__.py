@@ -47,6 +47,9 @@ async def ssr_speed_chart(bot, ev):
             else:
                 msg = f'该服务器"{ev["match"].group(1)}"暂未支持节奏榜'
     except AttributeError:
-        msg = f'{sup_type}卡节奏榜获取失败!'
+        msg = f'{sup_type}卡节奏榜获取失败，请联系维护组反馈BUG'
+        sv.logger.error(msg)
+    except IndexError:
+        msg = f'{sup_type}卡节奏榜获取失败：该节奏榜页面找不到对应图片，请等待WIKI更新后再试'
         sv.logger.error(msg)
     await bot.send(ev, msg)
