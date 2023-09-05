@@ -4,7 +4,6 @@ import os
 from hoshino import Service
 
 from .get_url import generate_img
-from .get_url_tw import generate_img_tw
 from ..plugin_utils.base_util import get_img_cq, get_server_default
 
 sv = Service('uma_support_chart')
@@ -31,18 +30,23 @@ async def ssr_speed_chart(bot, ev):
     try:
         if not ev['match'].group(1):
             if default_server == 'jp':
-                msg = await generate_img(sup_type)
+                msg = await generate_img(sup_type, '日服')
             elif default_server == 'tw':
-                msg = await generate_img_tw(sup_type)
+                msg = await generate_img(sup_type, '繁中服')
+            elif default_server == 'bili':
+                msg = await generate_img(sup_type, '简中服')
             else:
                 msg = f'该服务器"{default_server}"暂未支持节奏榜'
         else:
             if ev['match'].group(1) == '日服':
-                msg = await generate_img(sup_type)
-            elif ev['match'].group(1) == '台服':
-                msg = await generate_img_tw(sup_type)
+                msg = await generate_img(sup_type, '日服')
+            elif ev['match'].group(1) in ['台服', '繁中服']:
+                msg = await generate_img(sup_type, '繁中服')
+            elif ev['match'].group(1) in ['b服', 'B服', '国服', '简中服']:
+                msg = await generate_img(sup_type, '简中服')
             else:
                 msg = f'该服务器"{ev["match"].group(1)}"暂未支持节奏榜'
     except AttributeError:
         msg = f'{sup_type}卡节奏榜获取失败!'
+        sv.logger.error(msg)
     await bot.send(ev, msg)
