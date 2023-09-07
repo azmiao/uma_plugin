@@ -433,6 +433,7 @@ FULL_EXCEED_NOTICE = f'您今天已经抽过{full_limit.max}次支援卡满破�
     "uma_bir_push",
     "umamusume-news-poller",
     "umamusume-news-poller-tw",
+    "umamusume-news-poller-bili"
 }
 ```
 
