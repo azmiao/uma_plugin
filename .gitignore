@@ -23,6 +23,7 @@ data/*
 # umamusume_news文件夹下的记录最新时间的文件和转发模式保存文件
 /umamusume_news/prev_time.yml
 /umamusume_news/prev_time_tw.yml
+/umamusume_news/prev_time_bili.yml
 /umamusume_news/mode.txt
 
 # uma_face文件夹下的自动生成的表情包配置文件
