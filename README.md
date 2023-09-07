@@ -17,7 +17,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.8.0-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.8.1-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -35,10 +35,10 @@
 <details>
 <summary>插件说明</summary>
 
-这是一个适用[hoshinobot](https://github.com/Ice-Cirno/HoshinoBot)的赛马娘功能插件，数据来自：
+这是一个适用[hoshinoBot](https://github.com/Ice-Cirno/HoshinoBot)的赛马娘功能插件，数据来自：
 
  + [马娘官网](https://github.com/azmiao/uma_info_data)
- + [bwiki](https://wiki.biligame.com/umamusume)
+ + [BWiki](https://wiki.biligame.com/umamusume)
  + [马娘基础数据库](https://github.com/azmiao/uma_info_data)
  + [台服马娘官网](https://uma.komoejoy.com/)
  + [乌拉拉大胜利](https://urarawin.com/#/)
@@ -60,18 +60,18 @@
 
 （具体命令请看本页面下方功能命令和描述）
 
-+ 马娘新闻播报【已支持台/日服】
++ 马娘新闻播报【已支持台/日/B服】
 + 马娘模拟抽卡v2【已支持台/日/韩/B服】
-+ 马娘基础数据库【台/日通用】
-+ 支援卡节奏榜【已支持台/日服】
-+ 相性计算器【台/日通用】
-+ 马娘黄历【台/日通用】
-+ 马娘耐力计算器【台/日通用】
-+ 马娘表情包【台/日通用】
-+ 马娘漫画【台/日通用】
-+ 马娘限时任务
-+ 马娘技能查询【已支持台/日服】
-+ 育成目标查询【台/日差不多通用】
++ 马娘基础数据库【台/日/韩/B服通用】
++ 支援卡节奏榜【已支持台/日/B服】
++ 相性计算器【台/日/韩/B服通用】
++ 马娘黄历【台/日/韩/B服通用】
++ 马娘耐力计算器【台/日/韩/B服通用】
++ 马娘表情包【台/日/韩/B服通用】
++ 马娘漫画【台/日/韩/B服通用】
++ 马娘限时任务【台/日/韩/B服通用】
++ 马娘技能查询【台/日/韩/B服通用】
++ 育成目标查询【台/日/韩/B服通用】
 
 </details>
 
@@ -93,16 +93,18 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+ + 23-09-07     v2.8.1  适配国服马娘新闻
+
  + 23-09-05     v2.8.0  适配国服卡池和支援卡节奏榜
 
  + 23-08-25     v2.7.14  修复节奏榜获取失败的问题
 
  + 23-06-28     v2.7.13  修复马娘抽卡由于名称变更导致的部分报错，[# 53](https://github.com/azmiao/uma_plugin/issues/53)
 
- + 23-04-13     v2.7.12  修复马娘技能页面更新后的刷新报错
-
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 23-04-13     v2.7.12  修复马娘技能页面更新后的刷新报错
 
  + 23-03-09     v2.7.11  修复马娘漫画由于图片路径变动导致的问题
 
@@ -415,12 +417,12 @@ FULL_EXCEED_NOTICE = f'您今天已经抽过{full_limit.max}次支援卡满破�
 
 </details>
 
-## [Autohelp](https://github.com/SonderXiaoming/autohelp)推荐配置(可选)
+## [AutoHelp](https://github.com/SonderXiaoming/autohelp)推荐配置(可选)
 
 <details>
 <summary>点我展开</summary>
 
-安装 [autohelp](https://github.com/SonderXiaoming/autohelp) 即可，可显示更好看的帮助界面
+安装 [AutoHelp](https://github.com/SonderXiaoming/autohelp) 即可，可显示更好看的帮助界面
 
 你可以选择help模式（推荐，但不是默认）或者读取userreadme模式
 
