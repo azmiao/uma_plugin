@@ -51,8 +51,12 @@ async def get_img(img_dict, sup_type, chart_url, server_name):
     res = httpx.get(chart_url, timeout=10)
     soup = BeautifulSoup(res.text, 'lxml')
     img_soup_list = soup.find_all('img', {"decoding": "async"})
-    # 获取第一个作为版本号
-    ver_tmp = re.match(fr'(\S+)?{sup_type}(卡节奏榜)?([0-9]+)\.([0-9]+)\.([0-9]+)榜?\.png', img_soup_list[0].get('alt'))
+    ver_tmp = None
+    for img_soup in img_soup_list:
+        ver_tmp = re.match(fr'(\S+)?{sup_type}(卡节奏榜)?([0-9]+)\.([0-9]+)\.([0-9]+)榜?\.png', img_soup.get('alt'))
+        if ver_tmp:
+            # 匹配到的第一个
+            break
     # 精确版本
     ver = ver_tmp.group(3) + '.' + ver_tmp.group(4) + '.' + ver_tmp.group(5)
     # 比较版本号
