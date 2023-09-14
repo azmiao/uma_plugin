@@ -60,6 +60,10 @@ async def uma_news(bot, ev):
 @sv_uma.scheduled_job('cron', minute='*/5')
 async def uma_news_poller():
     try:
+        group_list = await sv_uma.get_enable_groups()
+        if not group_list:
+            sv_uma.logger.info('所有群均已禁用马娘新闻播报服务，将跳过')
+            return
         flag = await judge()
         if flag:
             sv_uma.logger.info('检测到马娘新闻更新！')
@@ -75,6 +79,10 @@ async def uma_news_poller():
 @sv_uma_tw.scheduled_job('cron', minute='*/5')
 async def uma_news_poller_tw():
     try:
+        group_list = await sv_uma_tw.get_enable_groups()
+        if not group_list:
+            sv_uma_tw.logger.info('所有群均已禁用台服马娘新闻播报服务，将跳过')
+            return
         flag = await judge_tw()
         if flag:
             sv_uma_tw.logger.info('检测到台服马娘新闻更新！')
@@ -90,6 +98,10 @@ async def uma_news_poller_tw():
 @sv_uma_bili.scheduled_job('cron', minute='*/5')
 async def uma_news_poller_bili():
     try:
+        group_list = await sv_uma_bili.get_enable_groups()
+        if not group_list:
+            sv_uma_bili.logger.info('所有群均已禁用B服马娘新闻播报服务，将跳过')
+            return
         flag = await judge_bili()
         if flag:
             sv_uma_bili.logger.info('检测到B服马娘新闻更新！')

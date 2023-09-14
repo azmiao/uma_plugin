@@ -12,12 +12,13 @@ from ..plugin_utils.base_util import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
 
-sv = Service('uma_info', enable_on_default = True)
+sv = Service('uma_info', enable_on_default=True)
 with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
     base64_data = base64.b64encode(f.read())
     s = base64_data.decode()
 sv.help = f'![](data:image/jpeg;base64,{s})'
-svbr = Service('uma_bir_push', enable_on_default = False)
+sv_br = Service('uma_bir_push', enable_on_default=False)
+
 
 @sv.on_fullmatch('马娘数据帮助')
 async def get_help(bot, ev):
@@ -25,12 +26,13 @@ async def get_help(bot, ev):
     sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
+
 @sv.on_fullmatch('查今天生日马娘')
 async def get_tod(bot, ev):
-    with open(current_dir, 'r', encoding = 'UTF-8') as f:
+    with open(current_dir, 'r', encoding='UTF-8') as f:
         f_data = json.load(f)
     rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
-    with open(rep_dir, 'r', encoding = 'UTF-8') as f:
+    with open(rep_dir, 'r', encoding='UTF-8') as f:
         rep_data = json.load(f)
     tod = datetime.datetime.now().strftime('%m-%d')
     tod_list = tod.split('-', 1)
@@ -49,13 +51,14 @@ async def get_tod(bot, ev):
     msg = '今天生日的马娘有：\n' + ' | '.join(tod_list)
     await bot.send(ev, msg)
 
+
 @sv.on_prefix('查马娘生日')
 async def search_bir(bot, ev):
     uma_name_tmp = ev.message
-    with open(current_dir, 'r', encoding = 'UTF-8') as f:
+    with open(current_dir, 'r', encoding='UTF-8') as f:
         f_data = json.load(f)
         f.close()
-    with open(os.path.join(os.path.dirname(__file__), 'replace_dict.json'), 'r', encoding = 'UTF-8') as af:
+    with open(os.path.join(os.path.dirname(__file__), 'replace_dict.json'), 'r', encoding='UTF-8') as af:
         replace_data = json.load(af)
         af.close()
     uma_bir = ''
@@ -65,7 +68,8 @@ async def search_bir(bot, ev):
         if f_data[uma_name]['category'] == 'umamusume':
             other_name_list = list(replace_data[uma_name]) if uma_name in replace_data else []
             cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else f_data[uma_name]['jp_name']
-            if str(uma_name) == str(uma_name_tmp) or str(cn_name) == str(uma_name_tmp) or str(uma_name_tmp) in other_name_list:
+            if str(uma_name) == str(uma_name_tmp) or str(cn_name) == str(uma_name_tmp) or str(
+                    uma_name_tmp) in other_name_list:
                 cn_name_tmp = cn_name
                 uma_bir = f_data[uma_name]['bir']
     if not uma_bir:
@@ -74,13 +78,14 @@ async def search_bir(bot, ev):
     msg = f'{cn_name_tmp}的生日是：{uma_bir}'
     await bot.send(ev, msg)
 
+
 @sv.on_prefix('查生日马娘')
 async def search_uma(bot, ev):
     uma_bir_tmp = ev.message
-    with open(current_dir, 'r', encoding = 'UTF-8') as f:
+    with open(current_dir, 'r', encoding='UTF-8') as f:
         f_data = json.load(f)
     rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
-    with open(rep_dir, 'r', encoding = 'UTF-8') as f:
+    with open(rep_dir, 'r', encoding='UTF-8') as f:
         rep_data = json.load(f)
     uma_list = []
     name_list = list(f_data.keys())
@@ -96,12 +101,17 @@ async def search_uma(bot, ev):
     msg = f'{uma_bir_tmp}生日的马娘有：\n' + ' | '.join(uma_list)
     await bot.send(ev, msg)
 
-@svbr.scheduled_job('cron', hour='8', minute='31')
+
+@sv_br.scheduled_job('cron', hour='8', minute='31')
 async def push_bir():
-    with open(current_dir, 'r', encoding = 'UTF-8') as f:
+    group_list = await sv_br.get_enable_groups()
+    if not group_list:
+        sv_br.logger.info('所有群均已禁用马娘生日推送服务，将跳过')
+        return
+    with open(current_dir, 'r', encoding='UTF-8') as f:
         f_data = json.load(f)
     rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
-    with open(rep_dir, 'r', encoding = 'UTF-8') as f:
+    with open(rep_dir, 'r', encoding='UTF-8') as f:
         rep_data = json.load(f)
     tod = datetime.datetime.now().strftime('%m-%d')
     tod_list = tod.split('-', 1)
@@ -115,10 +125,11 @@ async def push_bir():
                 cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else rep_data[uma_name][0]
                 tod_list.append(cn_name)
     if not tod_list:
-        svbr.logger.info(f'今天没有马娘生日哟')
+        sv_br.logger.info(f'今天没有马娘生日哟')
         return
     msg = '今天生日的马娘有：\n' + ' | '.join(tod_list)
-    await svbr.broadcast(msg, 'uma_bir_push', 0.2)
+    await sv_br.broadcast(msg, 'uma_bir_push', 0.2)
+
 
 @sv.on_prefix('查角色')
 async def get_single_info(bot, ev):
@@ -129,14 +140,15 @@ async def get_single_info(bot, ev):
         msg = f'命令格式输入错误，请参考“马娘数据帮助”发送命令！'
         await bot.finish(ev, msg)
     info_type = text_list[0]
-    if info_type not in ['id', '日文名', '中文名', '英文名', '分类', '语音', '头像', 'cv', '身高', '体重', '三围', '适应性', '详细信息', \
-        '原案', '决胜服', '制服']:
+    if info_type not in ['id', '日文名', '中文名', '英文名', '分类', '语音', '头像', 'cv', '身高', '体重', '三围',
+                         '适应性', '详细信息', \
+                         '原案', '决胜服', '制服']:
         return
     uma_name_tmp = text_list[1]
-    with open(current_dir, 'r', encoding = 'UTF-8') as f:
+    with open(current_dir, 'r', encoding='UTF-8') as f:
         f_data = json.load(f)
         f.close()
-    with open(os.path.join(os.path.dirname(__file__), 'replace_dict.json'), 'r', encoding = 'UTF-8') as af:
+    with open(os.path.join(os.path.dirname(__file__), 'replace_dict.json'), 'r', encoding='UTF-8') as af:
         replace_data = json.load(af)
         af.close()
     name_list = list(f_data.keys())
@@ -145,7 +157,8 @@ async def get_single_info(bot, ev):
     for uma_name in name_list:
         other_name_list = list(replace_data[uma_name]) if uma_name in replace_data else []
         cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else f_data[uma_name]['jp_name']
-        if str(uma_name) == str(uma_name_tmp) or str(cn_name) == str(uma_name_tmp) or str(uma_name_tmp) in other_name_list:
+        if str(uma_name) == str(uma_name_tmp) or str(cn_name) == str(uma_name_tmp) or str(
+                uma_name_tmp) in other_name_list:
             if info_type == 'id':
                 id = f_data[uma_name]['id']
                 msg = f'{uma_name_tmp}的角色id为{id}'
@@ -236,6 +249,7 @@ async def get_single_info(bot, ev):
     if not msg:
         msg = f'这个角色可能不存在或者角色名称对不上'
     await bot.send(ev, msg)
+
 
 @sv.on_fullmatch('手动更新马娘数据')
 async def update_info(bot, ev):
