@@ -41,3 +41,6 @@ data/*
 
 # uma_skills文件夹下的自动生成的马娘技能信息文件
 /uma_skills/skills_config.json
+
+# IDEA/Pycharm
+.idea/*
