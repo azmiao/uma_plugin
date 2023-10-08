@@ -1,10 +1,11 @@
-import os
-import json
 import base64
+import json
+import os
 
 from hoshino import Service, priv, R
-from .update_skills import del_img, update_info, del_img
+
 from .generate import get_skill_list, get_skill_info
+from .update_skills import del_img, update_info, del_img
 from ..plugin_utils.base_util import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), f'skills_config.json')
@@ -14,10 +15,10 @@ rarity = ['普通', '传说', '独特', '普通·继承', '独特·继承', '剧
 limit = ['通用', '短距离', '英里', '中距离', '长距离', '泥地', '逃马', '先行', '差行', '追马']
 color = ['绿色', '紫色', '黄色', '蓝色', '红色']
 skill_type = ['被动（速度）', '被动（耐力）', '被动（力量）', '被动（毅力）', '被动（智力）',
-    '耐力恢复', '速度', '加速度', '出闸', '视野', '切换跑道',
-    '妨害（速度）', '妨害（加速度）', '妨害（心态）', '妨害（智力）', '妨害（耐力恢复）', '妨害（视野）',
-    '(未知)'
-]
+              '耐力恢复', '速度', '加速度', '出闸', '视野', '切换跑道',
+              '妨害（速度）', '妨害（加速度）', '妨害（心态）', '妨害（智力）', '妨害（耐力恢复）', '妨害（视野）',
+              '(未知)'
+              ]
 params = rarity + limit + color + skill_type
 
 sv = Service('uma_skills')
@@ -26,18 +27,20 @@ with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') 
     s = base64_data.decode()
 sv.help = f'![](data:image/jpeg;base64,{s})'
 
+
 @sv.on_fullmatch('马娘技能帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
+
 @sv.on_prefix('查技能')
 async def check_skill(bot, ev):
-    alltext = ev.message.extract_plain_text().replace(')', '）').replace('(', '（')
-    skill_list = alltext.split(' ')
-    with open(current_dir, 'r', encoding='UTF-8') as f:
-        f_data = json.load(f)
+    all_text = ev.message.extract_plain_text().replace(')', '）').replace('(', '（')
+    skill_list = all_text.split(' ')
+    with open(current_dir, 'r', encoding='UTF-8') as f_:
+        f_data = json.load(f_)
     if not skill_list:
         return
     elif len(skill_list) == 1 and not all(elem in params for elem in skill_list):
@@ -72,6 +75,7 @@ async def check_skill(bot, ev):
             f_data
         )
     await bot.send(ev, msg)
+
 
 # 手动更新本地数据
 @sv.on_fullmatch('手动更新马娘技能')
