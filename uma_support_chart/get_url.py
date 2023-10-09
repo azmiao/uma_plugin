@@ -13,9 +13,9 @@ from ..plugin_utils.base_util import get_img_cq
 # 获取各个节奏榜的链接
 async def get_title_url(sup_type, server_name):
     # 对应URL链接的服务器名称
-    server_name = '' if server_name == '日服' else f'（{server_name}）'
+    server_name = '(?!（[繁|简]中服）).*' if server_name == '日服' else f'（{server_name}）'
     url_pre = 'https://wiki.biligame.com/umamusume/支援卡节奏榜'
-    res_pre = httpx.get(url_pre, timeout=10)
+    res_pre = httpx.get(url_pre, timeout=15)
     soup = BeautifulSoup(res_pre.text, 'lxml')
     url_region = soup.find('a', {"title": re.compile(fr"支援卡节奏榜合集{server_name}[\S\s]*")}).get('title')
 
