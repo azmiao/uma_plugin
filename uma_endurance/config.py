@@ -6,8 +6,8 @@ feeling_bonus = {
     '绝不调': 0.96
 }
 
-site_type_bonus ={
-    '芝':{
+site_type_bonus = {
+    '芝': {
         '良': {
             'speed_limit': 0,
             'power': 0
@@ -25,7 +25,7 @@ site_type_bonus ={
             'power': 50
         }
     },
-    '泥地':{
+    '泥地': {
         '良': {
             'speed_limit': 0,
             'power': 100
@@ -142,13 +142,13 @@ track_adaptability_bonus = {
 }
 
 hp_consume_bonus = {
-    '芝':{
+    '芝': {
         '良': 1,
         '稍重': 1,
         '重': 1.02,
         '不良': 1.02
     },
-    '泥地':{
+    '泥地': {
         '良': 1,
         '稍重': 1,
         '重': 1.01,

@@ -1,7 +1,8 @@
-import os
 import base64
+import os
 
 from hoshino import Service
+
 from .caculate import *
 from ..plugin_utils.base_util import get_img_cq
 
@@ -11,12 +12,14 @@ with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') 
     s = base64_data.decode()
 sv.help = f'![](data:image/jpeg;base64,{s})'
 
+
 # 帮助界面
 @sv.on_fullmatch("马娘耐力帮助")
-async def help(bot, ev):
+async def sv_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = await get_img_cq(img_path)
-    await bot.send(ev, sv_help)
+    sv_help_ = await get_img_cq(img_path)
+    await bot.send(ev, sv_help_)
+
 
 @sv.on_rex(r'''
 算耐力\r?
@@ -75,30 +78,43 @@ async def get_endurance(bot, ev):
     # 终盘体力消耗比
     end_endurance_bonus = 1 + 200 / ((600 * determination_patch) ** 0.5)
     # 序盘体力需求
-    endurance_begin, uniform_speed_begin = await cacul_begin_endurance(speed_standard_patch, run_type, intelligence_patch, power_patch, 
-        site_adaptability, track_length, track_adaptability, site_type, situation)
+    endurance_begin, uniform_speed_begin = await calcu_begin_endurance(speed_standard_patch, run_type,
+                                                                       intelligence_patch, power_patch,
+                                                                       site_adaptability, track_length,
+                                                                       track_adaptability, site_type, situation)
     # 中盘体力需求
-    endurance_middle, uniform_speed_middle = await cacul_middle_endurance(uniform_speed_begin, speed_standard_patch, run_type, 
-        intelligence_patch, power_patch, site_adaptability, track_length, track_adaptability, site_type, situation)
+    endurance_middle, uniform_speed_middle = await calcu_middle_endurance(uniform_speed_begin, speed_standard_patch,
+                                                                          run_type,
+                                                                          intelligence_patch, power_patch,
+                                                                          site_adaptability, track_length,
+                                                                          track_adaptability, site_type, situation)
     # 终盘体力需求
-    endurance_end = await cacul_end_endurance(speed_limit_patch, uniform_speed_middle, speed_standard_patch, run_type, 
-        intelligence_patch, power_patch, site_adaptability, track_length, track_adaptability, site_type, situation, end_endurance_bonus)
+    endurance_end = await calcu_end_endurance(speed_limit_patch, uniform_speed_middle, speed_standard_patch, run_type,
+                                              intelligence_patch, power_patch, site_adaptability, track_length,
+                                              track_adaptability, site_type, situation, end_endurance_bonus)
     # 理论总体力需求
     hp = endurance_begin + endurance_middle + endurance_end
     # 理论总耐力需求
-    endurance = await cacul_endurance(endurance_begin, endurance_middle, endurance_end, track_length, run_type)
+    endurance = await calcu_endurance(endurance_begin, endurance_middle, endurance_end, track_length, run_type)
     # 理论
     # 理论体力
     theoretical_hp = await theoretical_endurance(track_length, endurance_tmp * feeling_bonus[feeling], run_type)
     # 回体技能折算耐力
-    stable_recover_endu, common_recover_endu, upper_recover_endu = await cacul_skill_endu(stable_recover_level, theoretical_hp, run_type)
+    stable_recover_end, common_recover_end, upper_recover_end = await calcu_skill_end(stable_recover_level,
+                                                                                      theoretical_hp, run_type)
     # 回体技能折算体力
-    stable_recover, common_recover_single, common_recover, upper_recover_single, upper_recover = await cacul_skill(
+    stable_recover, common_recover_single, common_recover, upper_recover_single, upper_recover = await calcu_skill(
         stable_recover_level, common_recover_num, upper_recover_num, theoretical_hp)
     # 算上技能后的总体力
     end_hp = theoretical_hp + stable_recover + common_recover + upper_recover
     # 算上技能后的总耐力
     end_endurance = await get_end_endurance(end_hp, track_length, run_type)
+    # 结论
+    if end_endurance > endurance:
+        conclusion = f'🎉恭喜您，您的马娘可以正常跑完！甚至富余了{round(end_endurance - endurance, 1)}耐力'
+    else:
+        conclusion = f'😱很抱歉，您的马娘无法正常跑完，还需要补充{round(endurance - end_endurance, 1)}耐力，请按照技能回耐量自行安排。'
+
     msg = f'''
 速度上限：{speed_limit}
 耐力：{endurance_tmp}
@@ -121,19 +137,21 @@ async def get_endurance(bot, ev):
 
 其中：
 -每个普通回体回复{round(common_recover_single, 1)}体力
-    - 折合耐力：{round(common_recover_endu, 1)}
+    - 折合耐力：{round(common_recover_end, 1)}
 -每个金回体回复{round(upper_recover_single, 1)}体力
-    - 折合耐力：{round(upper_recover_endu, 1)}
+    - 折合耐力：{round(upper_recover_end, 1)}
 -固有体力回复{round(stable_recover, 1)}体力
-    - 折合耐力：{round(stable_recover_endu, 1)}
+    - 折合耐力：{round(stable_recover_end, 1)}
 
-汇总：
-无回体技能的体力需求：{round(hp, 1)}
-算上技能后的本马体力：{round(end_hp, 1)}
+正常跑完需要：{round(hp, 1)}体力
+    - 折合耐力：{round(endurance, 1)}
+当前马娘实际：{round(end_hp, 1)}体力
+    - 折合耐力：{round(end_endurance, 1)}
+其中技能回复了：{round(stable_recover + common_recover + upper_recover, 1)}体力
+    - 折合耐力：{round(end_endurance - endurance_tmp, 1)}
 
 结论：
-无回体技能的耐力需求：{round(endurance, 1)}
-算上技能后的本马耐力：{round(end_endurance, 1)}
+    {conclusion}
 
 注：此数据取自根性下坡改版前的数据
 实际需求比计算器结果要高不少，尤其是大赛
