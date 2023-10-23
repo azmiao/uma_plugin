@@ -72,14 +72,14 @@ async def get_news_bili():
 # 获取新闻更新
 async def news_broadcast_bili():
     news_list = await sort_news()
-    current_dir = os.path.join(os.path.dirname(__file__), 'prev_time_tw.yml')
+    current_dir = os.path.join(os.path.dirname(__file__), 'prev_time_bili.yml')
     with open(current_dir, 'r', encoding="UTF-8") as f:
         init_time = str(f.read())
     init_time = datetime.datetime.strptime(init_time, '%Y-%m-%d %H:%M:%S')
     msg = '◎◎ B服马娘新闻更新 ◎◎\n'
     for news in news_list:
         prev_time = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
-        if (init_time >= prev_time):
+        if init_time >= prev_time:
             break
         else:
             news_time = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
@@ -111,7 +111,7 @@ async def judge_bili() -> bool:
         prev_time = news.news_time
         break
 
-    if (init_time != prev_time):
+    if init_time != prev_time:
         return True
     else:
         return False
