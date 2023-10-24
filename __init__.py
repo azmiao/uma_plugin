@@ -23,11 +23,13 @@ with open(os.path.join(os.path.dirname(__file__), f'{sv.name}.png'), 'rb') as f:
     s = base64_data.decode()
 sv.help = f'![](data:image/jpeg;base64,{s})'
 
+
 @sv.on_fullmatch('马娘帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}.png')
     sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
+
 
 @sv.on_fullmatch(('马娘插件-v', '马娘插件-version'))
 async def get_plugin_version(bot, ev):
@@ -38,6 +40,7 @@ async def get_plugin_version(bot, ev):
     commit_time = version_data['commit_time']
     msg = f'【马娘插件】\n基础版本：{version}\n更新时间：{commit_time}'
     await bot.send(ev, msg)
+
 
 # 马娘速查，一些支援卡对比的子网站就不列举了，去百科里找就行了
 @sv.on_fullmatch('马娘速查')
@@ -50,11 +53,16 @@ async def uma_query(bot, ev):
         msg += '\n' + title + '：' + query_data[title]
     await bot.send(ev, msg)
 
+
 # v1.5.2将图片文件夹合并至一个文件夹
 root_path = R.img('umamusume').path
+
+
 def move_dir(dir_name):
     if os.path.exists(R.img(dir_name).path):
         shutil.move(os.path.abspath(R.img(dir_name).path), os.path.abspath(root_path))
+
+
 if not os.path.exists(root_path):
     os.mkdir(root_path)
     move_dir('uma_bir')
@@ -66,12 +74,14 @@ if not os.path.exists(root_path):
 # 这样独立版马娘抽卡删除后再装本整合版可以通用
 move_dir('uma_gacha')
 
+
 # v1.8将首次启动事件合并到一块，防止首次启动时过多线程同时工作导致触发反爬虫
 async def update():
     try:
         await init_plugin()
     except:
-        logger.error('马娘插件版本获取失败，插件部分功能已停止启动！请检查是否能访问Github，如不能请设置代理或者关闭插件自动更新功能，重启生效')
+        logger.error(
+            '马娘插件版本获取失败，插件部分功能已停止启动！请检查是否能访问Github，如不能请设置代理或者关闭插件自动更新功能，重启生效')
     await asyncio.sleep(0.1)
     flag = await info_update()
     if not flag:
@@ -91,11 +101,13 @@ async def update():
     await asyncio.sleep(0.1)
     await gacha_update()
 
+
 loop = asyncio.get_event_loop()
 loop.run_until_complete(update())
 
+
 # 部分统一自动更新时间点
-@sv.scheduled_job('cron',id='daily_uma_res', day=f'1/{get_interval()}', hour='2', minute='30')
+@sv.scheduled_job('cron', id='daily_uma_res', day=f'1/{get_interval()}', hour='2', minute='30')
 async def auto_update():
     await plugin_update_auto()
     await asyncio.sleep(0.1)
@@ -109,8 +121,9 @@ async def auto_update():
     await asyncio.sleep(0.1)
     await gacha_auto()
 
+
 # 其他每小时自动对比是否有更新
-@sv.scheduled_job('cron',id='hourly_uma_res', hour='0-23', minute='00')
+@sv.scheduled_job('cron', id='hourly_uma_res', hour='0-23', minute='00')
 async def auto_update_per():
     await skills_auto()
     await asyncio.sleep(0.1)
