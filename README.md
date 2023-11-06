@@ -461,3 +461,7 @@ FULL_EXCEED_NOTICE = f'您今天已经抽过{full_limit.max}次支援卡满破�
 }
 ```
 </details>
+
+## 鸣谢
+
+[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="200"/>](https://jb.gg/OpenSourceSupport)
