@@ -1,14 +1,16 @@
-import os
-import re
-import json
-import requests
-import operator
-import random
 import asyncio
 import datetime
+import json
+import operator
+import os
+import random
+import re
 from datetime import timedelta
 
+import requests
+from bs4 import BeautifulSoup
 from hoshino import R
+
 from .translator_lite.apis import youdao
 from ..plugin_utils.base_util import get_img_cq, get_proxy
 
@@ -25,10 +27,11 @@ user_agent_list = [
 
 # 新闻类
 class news_class:
-    def __init__(self,news_time,news_url,news_title):
+    def __init__(self, news_time, news_url, news_title):
         self.news_time = news_time
         self.news_url = news_url
         self.news_title = news_title
+
 
 # 获取列表
 async def get_item():
@@ -47,6 +50,7 @@ async def get_item():
     res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=get_proxy()).json()
     return res_dict
 
+
 # 调整新闻列表
 async def sort_news():
     res_dict = await get_item()
@@ -58,13 +62,17 @@ async def sort_news():
             news_time = res_dict['information_list'][n]['update_at']
 
         news_id = res_dict['information_list'][n]['announce_id']
-        news_url = '▲https://umamusume.jp/news/detail.php?id=' + str(news_id)
+        news_url = 'https://umamusume.jp/news/detail.php?id=' + str(news_id)
+        res = requests.post('https://osdb.link/', json={'url': news_url}, headers={'Content-Type': 'application/json'})
+        soup = BeautifulSoup(res.text, 'lxml')
+        news_url = '▲[短链]' + soup.find('label', {"id": "surl"}).text.replace('Your shortened URL is:', '').strip()
         news_title = res_dict['information_list'][n]['title']
-        news_list.append(news_class(news_time, news_url ,news_title))
+        news_list.append(news_class(news_time, news_url, news_title))
 
     news_key = operator.attrgetter('news_time')
-    news_list.sort(key = news_key, reverse = True)
+    news_list.sort(key=news_key, reverse=True)
     return news_list
+
 
 # 获取新闻
 async def get_news():
@@ -80,6 +88,7 @@ async def get_news():
         f.write(str(prev_time))
     return msg
 
+
 # 获取新闻更新
 async def news_broadcast():
     news_list = await sort_news()
@@ -90,7 +99,7 @@ async def news_broadcast():
     msg = '◎◎ 马娘官网新闻更新 ◎◎\n'
     for news in news_list:
         prev_time = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
-        if (init_time >= prev_time):
+        if init_time >= prev_time:
             break
         else:
             time_tmp = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
@@ -103,6 +112,7 @@ async def news_broadcast():
     with open(current_dir, 'w', encoding="UTF-8") as f:
         f.write(str(set_time))
     return msg
+
 
 # 判断一下是否有更新，为什么要单独写一个函数呢
 # 函数单独写一个是怎么回事呢？函数相信大家都很熟悉，但是函数单独写一个是怎么回事呢，下面就让小编带大家一起了解吧。
@@ -121,11 +131,12 @@ async def judge() -> bool:
     for news in news_list:
         prev_time = news.news_time
         break
-    
+
     if (init_time != prev_time):
         return True
     else:
         return False
+
 
 # 替换不必要的文本
 async def replace_text(text_tmp):
@@ -146,13 +157,14 @@ async def replace_text(text_tmp):
     text = re.sub(r'<br>', '\n\n', text)
     # 替换部分游戏术语
     current_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
-    with open(current_dir, 'r', encoding = 'UTF-8') as other_file:
+    with open(current_dir, 'r', encoding='UTF-8') as other_file:
         other_dict = json.load(other_file)
     for key in list(other_dict.keys()):
         value = other_dict[key]
         text = text.replace(f'{key}', f'{value}')
     # 替换马娘名字，来自马娘基础数据库
-    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r', encoding = 'UTF-8') as f:
+    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r',
+              encoding='UTF-8') as f:
         f_data = json.load(f)
     name_list = list(f_data.keys())
     name_list.remove('current_chara')
@@ -162,10 +174,12 @@ async def replace_text(text_tmp):
         text = text.replace(f'{jp_name}', f'{cn_name}')
     return text
 
+
 # 翻译完如果把中文又翻译一遍导致出问题可以在这里，再次替换一下？
 async def second_replace(news_text):
     # news_text = news_text.replace('', '') # 我先注释了
     return news_text
+
 
 # 翻译新闻
 async def translate_news(news_id):
@@ -179,7 +193,8 @@ async def translate_news(news_id):
     }
     head_img = ''
     try:
-        res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=get_proxy()).json()
+        res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15,
+                                 proxies=get_proxy()).json()
         if res_dict['detail']['title'] == '現在確認している不具合について':
             news_msg = re.match(r'([\s\S]+?【[\s\S]+?)【', res_dict['detail']['message']).group(1)
         else:
