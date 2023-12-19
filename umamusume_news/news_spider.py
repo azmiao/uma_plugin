@@ -5,12 +5,13 @@ import operator
 import os
 import random
 import re
+import time
 from datetime import timedelta
 
 import requests
-from bs4 import BeautifulSoup
 from hoshino import R
 
+from .news_class import NewsClass
 from .translator_lite.apis import youdao
 from ..plugin_utils.base_util import get_img_cq, get_proxy
 
@@ -21,53 +22,87 @@ user_agent_list = [
     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36",
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36",
     "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36",
-    "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)",
-    "Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10.5; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15",
+    "Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10.5; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15"
 ]
 
-# 新闻类
-class news_class:
-    def __init__(self, news_time, news_url, news_title):
-        self.news_time = news_time
-        self.news_url = news_url
-        self.news_title = news_title
+# 查询URL
+query_dict = {
+    'jp': {
+        'origin': 'https://umamusume.jp',
+        'url': 'https://umamusume.jp/api/ajax/pr_info_index?format=json',
+        'server_name': '日服'
+    },
+    'tw': {
+        'origin': 'https://uma.komoejoy.com',
+        'url': 'https://l11-web-api.komoejoy.com/game/website/content/107075/2/list?pageNum=1&pageSize=10&region=3',
+        'server_name': '台服'
+    },
+    'bili': {
+        'origin': 'https://game.bilibili.com',
+        'url': 'https://api.biligame.com/news/list?gameExtensionId=1006&positionId=2&pageNum=1&pageSize=10',
+        'server_name': 'B服'
+    }
+}
 
 
 # 获取列表
-async def get_item():
-    await asyncio.sleep(0.5)
-    url = 'https://umamusume.jp/api/ajax/pr_info_index?format=json'
-    data = {
-        'announce_label': 0,
-        'limit': 10,
-        'offset': 0
-    }
+async def get_item(server):
+    server_params = query_dict.get(server, {})
     headers = {
         'User-Agent': random.choice(user_agent_list),
-        'origin': 'https://umamusume.jp',
-        'referer': 'https://umamusume.jp/news',
+        'origin': server_params.get('origin', ''),
+        'referer': server_params.get('origin', '')
     }
-    res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=get_proxy()).json()
+    await asyncio.sleep(0.5)
+    url = server_params.get('url', '')
+
+    res_dict = {}
+    if 'jp' == server:
+        json_data = {
+            'announce_label': 0,
+            'limit': 10,
+            'offset': 0
+        }
+        res_dict = requests.post(url=url, json=json_data, headers=headers, timeout=15, proxies=get_proxy()).json()
+    elif 'tw' == server:
+        res_dict = requests.get(url=url, headers=headers, timeout=15, proxies=get_proxy()).json()
+    elif 'bili' == server:
+        res_dict = requests.get(url=url, headers=headers, timeout=15).json()
+    else:
+        assert Exception('不支持的服务器类型')
     return res_dict
 
 
 # 调整新闻列表
-async def sort_news():
-    res_dict = await get_item()
+async def sort_news(server):
+    res_dict = await get_item(server)
     news_list = []
     for n in range(0, 5):
-        if not res_dict['information_list'][n]['update_at']:
-            news_time = res_dict['information_list'][n]['post_at']
+        if 'jp' == server:
+            if not res_dict['information_list'][n]['update_at']:
+                news_time = res_dict['information_list'][n]['post_at']
+            else:
+                news_time = res_dict['information_list'][n]['update_at']
+            news_id = res_dict['information_list'][n]['announce_id']
+            news_url = 'https://umamusume.jp/news/detail.php?id=' + str(news_id)
+            news_title = res_dict['information_list'][n]['title']
+            news_list.append(NewsClass(server, news_id, news_time, news_url, news_title))
+        elif 'tw' == server:
+            publish_time = res_dict['data'][n]['publish_time']
+            time_tuple = time.localtime(int(str(publish_time)[:10]))
+            news_time = time.strftime('%Y-%m-%d %H:%M:%S', time_tuple)
+            news_id = res_dict['data'][n]['code']
+            news_url = 'https://uma.komoejoy.com/news.html?detail=' + str(news_id)
+            news_title = res_dict['data'][n]['title']
+            news_list.append(NewsClass(server, news_id, news_time, news_url, news_title))
+        elif 'bili' == server:
+            news_time = res_dict['data'][n]['modifyTime']
+            news_id = res_dict['data'][n]['id']
+            news_url = 'https://game.bilibili.com/pd/news/#news_detail_id=' + str(news_id)
+            news_title = res_dict['data'][n]['title']
+            news_list.append(NewsClass(server, news_id, news_time, news_url, news_title))
         else:
-            news_time = res_dict['information_list'][n]['update_at']
-
-        news_id = res_dict['information_list'][n]['announce_id']
-        news_url = 'https://umamusume.jp/news/detail.php?id=' + str(news_id)
-        res = requests.post('https://osdb.link/', json={'url': news_url}, headers={'Content-Type': 'application/json'})
-        soup = BeautifulSoup(res.text, 'lxml')
-        news_url = '▲[短链]' + soup.find('label', {"id": "surl"}).text.replace('Your shortened URL is:', '').strip()
-        news_title = res_dict['information_list'][n]['title']
-        news_list.append(news_class(news_time, news_url, news_title))
+            assert Exception('不支持的服务器类型')
 
     news_key = operator.attrgetter('news_time')
     news_list.sort(key=news_key, reverse=True)
@@ -75,14 +110,17 @@ async def sort_news():
 
 
 # 获取新闻
-async def get_news():
-    news_list = await sort_news()
-    msg = '◎◎ 马娘官网新闻 ◎◎\n'
+async def get_news(server):
+    news_list = await sort_news(server)
+    msg = '◎◎ ' + query_dict.get(server, {}).get('server_name', '') + '马娘官网新闻 ◎◎\n'
     for news in news_list:
-        time_tmp = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
-        news_time = time_tmp - timedelta(hours=1)
-        msg += '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.news_url + '\n'
-    current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
+        news_time = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
+        if 'jp' == server:
+            # 日本时间早一小时
+            news_time = news_time - timedelta(hours=1)
+        msg += '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.show_url + '\n'
+    file_name = 'prev_time.yml' if 'jp' == server else 'prev_time_' + server + '.yml'
+    current_dir = os.path.join(os.path.dirname(__file__), file_name)
     prev_time = news_list[0].news_time
     with open(current_dir, 'w', encoding="UTF-8") as f:
         f.write(str(prev_time))
@@ -90,13 +128,14 @@ async def get_news():
 
 
 # 获取新闻更新
-async def news_broadcast():
-    news_list = await sort_news()
-    current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
+async def news_broadcast(server):
+    news_list = await sort_news(server)
+    file_name = 'prev_time.yml' if 'jp' == server else 'prev_time_' + server + '.yml'
+    current_dir = os.path.join(os.path.dirname(__file__), file_name)
     with open(current_dir, 'r', encoding="UTF-8") as f:
         init_time = str(f.read())
     init_time = datetime.datetime.strptime(init_time, '%Y-%m-%d %H:%M:%S')
-    msg = '◎◎ 马娘官网新闻更新 ◎◎\n'
+    msg = '◎◎ ' + query_dict.get(server, {}).get('server_name', '') + '马娘官网新闻更新 ◎◎\n'
     for news in news_list:
         prev_time = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
         if init_time >= prev_time:
@@ -104,8 +143,9 @@ async def news_broadcast():
         else:
             time_tmp = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
             news_time = time_tmp - timedelta(hours=1)
-            msg += '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.news_url + '\n'
+            msg += '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.show_url + '\n'
 
+    set_time = None
     for news in news_list:
         set_time = news.news_time
         break
@@ -118,9 +158,10 @@ async def news_broadcast():
 # 函数单独写一个是怎么回事呢？函数相信大家都很熟悉，但是函数单独写一个是怎么回事呢，下面就让小编带大家一起了解吧。
 # 函数单独写一个，其实就是我想单独写一个函数，大家可能会很惊讶函数怎么会单独写一个呢？但事实就是这样，小编也感到非常惊讶。
 # 这就是关于函数单独写一个的事情了，大家有什么想法呢，欢迎在评论区告诉小编一起讨论哦！
-async def judge() -> bool:
-    current_dir = os.path.join(os.path.dirname(__file__), 'prev_time.yml')
-    news_list = await sort_news()
+async def judge(server) -> bool:
+    file_name = 'prev_time.yml' if 'jp' == server else 'prev_time_' + server + '.yml'
+    current_dir = os.path.join(os.path.dirname(__file__), file_name)
+    news_list = await sort_news(server)
     if os.path.exists(current_dir):
         with open(current_dir, 'r', encoding="UTF-8") as f:
             init_time = str(f.read())
@@ -128,11 +169,12 @@ async def judge() -> bool:
         with open(current_dir, 'w', encoding="UTF-8") as f:
             f.write('2022-01-01 00:00:00')
         return True
+    prev_time = None
     for news in news_list:
         prev_time = news.news_time
         break
 
-    if (init_time != prev_time):
+    if init_time != prev_time:
         return True
     else:
         return False
@@ -152,8 +194,8 @@ async def replace_text(text_tmp):
     text = text.replace('</h2>', '')
     text = re.sub(r'<h3.*?>', '\n', text)
     text = text.replace('</h3>', '')
-    text = re.sub(r'<figure>.*?<\/figure>', '', text)
-    text = re.sub(r'<exclusion-game>.*<\/exclusion-game>', '', text)
+    text = re.sub(r'<figure>.*?</figure>', '', text)
+    text = re.sub(r'<exclusion-game>.*</exclusion-game>', '', text)
     text = re.sub(r'<br>', '\n\n', text)
     # 替换部分游戏术语
     current_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
@@ -183,14 +225,15 @@ async def second_replace(news_text):
 
 # 翻译新闻
 async def translate_news(news_id):
-    await asyncio.sleep(0.5)
-    url = 'https://umamusume.jp/api/ajax/pr_info_detail?format=json'
-    data = {'announce_id': news_id}
+    server_params = query_dict.get('jp', {})
     headers = {
         'User-Agent': random.choice(user_agent_list),
-        'origin': 'https://umamusume.jp',
-        'referer': 'https://umamusume.jp/news',
+        'origin': server_params.get('origin', ''),
+        'referer': server_params.get('origin', '')
     }
+    await asyncio.sleep(0.5)
+    url = server_params.get('url', '')
+    data = {'announce_id': news_id}
     head_img = ''
     try:
         res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15,

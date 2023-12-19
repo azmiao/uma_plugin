@@ -17,7 +17,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.8.4-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.8.5-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -93,16 +93,18 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+ + 23-12-19     v2.8.5  马娘新闻代码整理优化，修复之前增加短链导致的翻译BUG
+
  + 23-11-21     v2.8.4  马娘新闻链接更换短链，防止tx屏蔽
 
  + 23-10-23     v2.8.3  修复由于wiki不同地方马娘名不同导致的相性错误，[# 63](https://github.com/azmiao/uma_plugin/issues/63)
 
  + 23-10-23     v2.8.2  修复一处书写错误导致的BUG，[# 62](https://github.com/azmiao/uma_plugin/issues/62)
 
- + 23-09-07     v2.8.1  适配国服马娘新闻
-
 <details>
 <summary>◆ 更以前的更新日志</summary>
+
+ + 23-09-07     v2.8.1  适配国服马娘新闻
 
  + 23-09-05     v2.8.0  适配国服卡池和支援卡节奏榜
 

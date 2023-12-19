@@ -1,11 +1,10 @@
-import os
-import base64
 import asyncio
+import base64
+import os
 
 from hoshino import Service, priv
-from .news_spider import get_news, judge, news_broadcast, sort_news, translate_news
-from .news_spider_tw import get_news_tw, judge_tw, news_broadcast_tw
-from .news_spider_bili import get_news_bili, judge_bili, news_broadcast_bili
+
+from .news_spider import get_news, judge, news_broadcast, sort_news, translate_news, query_dict
 from ..plugin_utils.base_util import get_img_cq, get_server_default
 
 sv = Service('umamusume_news', enable_on_default=True)
@@ -22,7 +21,7 @@ sv_uma_bili = Service('umamusume-news-poller-bili', enable_on_default=False)
 
 # 帮助界面
 @sv.on_fullmatch("马娘新闻帮助")
-async def help(bot, ev):
+async def _help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
@@ -34,21 +33,17 @@ async def uma_news(bot, ev):
     default_server = await get_server_default()
     try:
         if not ev['match'].group(1):
-            if default_server == 'jp':
-                msg = await get_news()
-            elif default_server == 'tw':
-                msg = await get_news_tw()
-            elif default_server == 'bili':
-                msg = await get_news_bili()
+            if default_server in query_dict:
+                msg = await get_news(default_server)
             else:
                 msg = f'该服务器"{default_server}"暂未支持马娘新闻'
         else:
             if ev['match'].group(1) == '日服':
-                msg = await get_news()
+                msg = await get_news('jp')
             elif ev['match'].group(1) == '台服':
-                msg = await get_news_tw()
+                msg = await get_news('tw')
             elif ev['match'].group(1) in ['B服', 'b服', '国服']:
-                msg = await get_news_bili()
+                msg = await get_news('bili')
             else:
                 msg = f'该服务器"{ev["match"].group(1)}"暂未支持马娘新闻'
     except:
@@ -64,10 +59,10 @@ async def uma_news_poller():
         if not group_list:
             sv_uma.logger.info('所有群均已禁用马娘新闻播报服务，将跳过')
             return
-        flag = await judge()
+        flag = await judge('jp')
         if flag:
             sv_uma.logger.info('检测到马娘新闻更新！')
-            await sv_uma.broadcast(await news_broadcast(), 'umamusume-news-poller', 0.2)
+            await sv_uma.broadcast(await news_broadcast('jp'), 'umamusume-news-poller', 0.2)
         else:
             sv_uma.logger.info('暂未检测到马娘新闻更新')
             return
@@ -83,10 +78,10 @@ async def uma_news_poller_tw():
         if not group_list:
             sv_uma_tw.logger.info('所有群均已禁用台服马娘新闻播报服务，将跳过')
             return
-        flag = await judge_tw()
+        flag = await judge('tw')
         if flag:
             sv_uma_tw.logger.info('检测到台服马娘新闻更新！')
-            await sv_uma_tw.broadcast(await news_broadcast_tw(), 'umamusume-news-poller-tw', 0.2)
+            await sv_uma_tw.broadcast(await news_broadcast('tw'), 'umamusume-news-poller-tw', 0.2)
         else:
             sv_uma_tw.logger.info('暂未检测到台服马娘新闻更新')
             return
@@ -102,10 +97,10 @@ async def uma_news_poller_bili():
         if not group_list:
             sv_uma_bili.logger.info('所有群均已禁用B服马娘新闻播报服务，将跳过')
             return
-        flag = await judge_bili()
+        flag = await judge('bili')
         if flag:
             sv_uma_bili.logger.info('检测到B服马娘新闻更新！')
-            await sv_uma_bili.broadcast(await news_broadcast_bili(), 'umamusume-news-poller-bili', 0.2)
+            await sv_uma_bili.broadcast(await news_broadcast('bili'), 'umamusume-news-poller-bili', 0.2)
         else:
             sv_uma_bili.logger.info('暂未检测到B服马娘新闻更新')
             return
@@ -119,7 +114,7 @@ async def select_source(bot, ev):
     group_id = ev['group_id']
     self_id = ev['self_id']
     try:
-        news_list = await sort_news()
+        news_list = await sort_news('jp')
     except Exception as e:
         msg = f'错误！马娘官网连接失败，原因：{e}'
         await bot.send(ev, msg)
@@ -129,23 +124,23 @@ async def select_source(bot, ev):
     for news in news_list:
         num_i += 1
         msg_c = msg_c + f'\n{num_i}. ' + news.news_title
-    alltext = ev.message.extract_plain_text()
-    if alltext not in ['1', '2', '3', '4', '5']:
+    all_text = ev.message.extract_plain_text()
+    if all_text not in ['1', '2', '3', '4', '5']:
         msg = '新闻编号错误！(可选值有：1/2/3/4/5)' + '\n\n' + msg_c
         await bot.send(ev, msg)
         return
-    news = news_list[int(alltext) - 1]
+    news = news_list[int(all_text) - 1]
     msg = '正在龟速翻译，请耐心等待...'
     await bot.send(ev, msg)
-    news_id = int(news.news_url.replace('▲https://umamusume.jp/news/detail.php?id=', ''))
+    news_id = int(news.news_url.replace('https://umamusume.jp/news/detail.php?id=', ''))
     await asyncio.sleep(0.5)
     head_img, msg = await translate_news(news_id)
     if msg == '错误！马娘官网连接失败':
         await bot.send(ev, '翻译失败，马娘官网连接失败')
         return
     current_dir = os.path.join(os.path.dirname(__file__), 'mode.txt')
-    with open(current_dir, 'r', encoding='utf-8') as f:
-        mode = f.read().strip()
+    with open(current_dir, 'r', encoding='utf-8') as cf:
+        mode = cf.read().strip()
     if mode == 'off':
         await bot.send(ev, head_img + msg)
         return
@@ -189,11 +184,11 @@ async def change_mode(bot, ev):
         await bot.finish(ev, msg)
     mode = ev.message.extract_plain_text()
     current_dir = os.path.join(os.path.dirname(__file__), 'mode.txt')
-    with open(current_dir, 'r', encoding='utf-8') as f:
-        mode_tmp = f.read().strip()
+    with open(current_dir, 'r', encoding='utf-8') as cf:
+        mode_tmp = cf.read().strip()
     if mode not in ['on', 'off']:
         msg = f'模式选择错误(on/off)，默认on，当前{mode_tmp}'
         await bot.finish(ev, msg)
-    with open(current_dir, 'w', encoding='utf-8') as f:
-        f.write(mode)
+    with open(current_dir, 'w', encoding='utf-8') as cf:
+        cf.write(mode)
     await bot.send(ev, f'已更换转发模式为{mode}')
