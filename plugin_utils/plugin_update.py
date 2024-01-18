@@ -48,7 +48,7 @@ async def plugin_update_auto():
         return
     # 如果不是强制更新的版本
     if not is_sup:
-        git_url = f'https://ghproxy.com/{url}'
+        git_url = f'https://ghproxy.net/{url}'
         plugin_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'uma_plugin')
         logger.info('【马娘插件】检测到插件更新，正在更新插件至最新...')
         repo = Repo(plugin_path)
