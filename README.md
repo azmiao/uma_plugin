@@ -91,21 +91,21 @@
 
 https://github.com/azmiao/uma_plugin/
 
-## 最近的更新日志
+## 最近的五条更新日志
 
 |   更新时间   |   版本号   | 更新日志&备注                                                                                                                                                                     |
 |:--------:|:-------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 24-01-22 | v2.8.6f | 一些代码优化，以及由于镜像源问题，修改插件的更新源为官方源.<br>此次更新请在插件目录下检查`/.git/config`文件中，<br>`[remote "origin"]`后面的`url: xxxx...`改为<br><https://github.com/azmiao/uma_plugin>后手动使用`git pull -f`强制更新 |
 
 <details>
-<summary>◆ 2024年的更新日志</summary>
+<summary>◆ 2024年的历史更新日志</summary>
 
 > 空空如也
 
 </details>
 
 <details>
-<summary>◆ 2023年的更新日志</summary>
+<summary>◆ 2023年的历史更新日志</summary>
 
  + 23-12-19     v2.8.5  马娘新闻代码整理优化，修复之前增加短链导致的翻译BUG
 
@@ -136,6 +136,11 @@ https://github.com/azmiao/uma_plugin/
  + 23-02-08     v2.7.7  修复节奏榜匹配错误
 
  + 23-02-07     v2.7.6  修复日服马娘新闻翻译功能
+
+</details>
+
+<details>
+<summary>◆ 2022年的历史更新日志</summary>
 
  + 22-11-29     v2.7.5  修复由于UI变动导致的马娘卡池异常，更新后请使用命令“更新马娘卡池”更新一下
 
@@ -233,9 +238,9 @@ https://github.com/azmiao/uma_plugin/
 
 > 选择二：手动更新
 
-【注意】如果不想自动更新，请看下方额外定制功能修改配置。
+【注意】如果不想插件自动更新，请看下方额外定制功能修改配置。
 
-修改完配置后，如果需要手动更新的话，请在你的 `hoshino/modules/uma_plugin` 文件夹里，打开powershell输入 `git pull` ，运行完重启hoshinobot即可
+根据定制功能修改完配置后，如果需要手动更新的话，请在你的 `hoshino/modules/uma_plugin` 文件夹里，打开powershell输入 `git pull` ，运行完重启hoshinoBot即可
 
 如果报错如下：
 ```
