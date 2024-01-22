@@ -1,21 +1,21 @@
-import os
-import base64
-import shutil
 import asyncio
+import base64
 import json
+import os
+import shutil
 
 from hoshino import Service, R, logger
+
 from .plugin_utils.base_util import get_img_cq, get_interval
 from .plugin_utils.plugin_update import init_plugin, plugin_update_auto
-
 from .uma_comic.update_init import update as comic_update, auto_update as comic_auto
 from .uma_compatibility.update_init import update as com_update, auto_update as com_auto
 from .uma_face.update_init import update as face_update, auto_update as face_auto
+from .uma_gacha_v2.update_init import update as gacha_update, auto_update as gacha_auto
 from .uma_info.update_init import update as info_update, update_info_auto as info_auto
 from .uma_skills.update_init import update as skills_update, auto_update as skills_auto
-from .uma_tasks.update_init import update as tasks_update, auto_update as tasks_auto
-from .uma_gacha_v2.update_init import update as gacha_update, auto_update as gacha_auto
 from .uma_support_chart.update_init import update as sup_update
+from .uma_tasks.update_init import update as tasks_update, auto_update as tasks_auto
 
 sv = Service('uma_help')
 with open(os.path.join(os.path.dirname(__file__), f'{sv.name}.png'), 'rb') as f:
@@ -34,8 +34,8 @@ async def get_help(bot, ev):
 @sv.on_fullmatch(('马娘插件-v', '马娘插件-version'))
 async def get_plugin_version(bot, ev):
     version_path = os.path.join(os.path.dirname(__file__), 'version.json')
-    with open(version_path, 'r', encoding="UTF-8") as f:
-        version_data = json.load(f)
+    with open(version_path, 'r', encoding="UTF-8") as file:
+        version_data = json.load(file)
     version = version_data['version']
     commit_time = version_data['commit_time']
     msg = f'【马娘插件】\n基础版本：{version}\n更新时间：{commit_time}'
@@ -46,8 +46,8 @@ async def get_plugin_version(bot, ev):
 @sv.on_fullmatch('马娘速查')
 async def uma_query(bot, ev):
     query_path = os.path.join(os.path.dirname(__file__), 'query_data.json')
-    with open(query_path, 'r', encoding='UTF-8') as f:
-        query_data = json.load(f)
+    with open(query_path, 'r', encoding='UTF-8') as file:
+        query_data = json.load(file)
     msg = '◎赛马娘常用网站◎'
     for title in list(query_data.keys()):
         msg += '\n' + title + '：' + query_data[title]
@@ -77,11 +77,11 @@ move_dir('uma_gacha')
 
 # v1.8将首次启动事件合并到一块，防止首次启动时过多线程同时工作导致触发反爬虫
 async def update():
+    logger.info('【马娘插件】启动时检查更新...')
     try:
-        await init_plugin()
+        await init_plugin(False)
     except:
-        logger.error(
-            '马娘插件版本获取失败，插件部分功能已停止启动！请检查是否能访问Github，如不能请设置代理或者关闭插件自动更新功能，重启生效')
+        logger.error('马娘插件版本获取失败，插件部分功能已停止启动！请检查是否能访问Github，如不能请设置代理或者关闭插件自动更新功能，重启生效')
     await asyncio.sleep(0.1)
     flag = await info_update()
     if not flag:
@@ -100,6 +100,7 @@ async def update():
     await sup_update()
     await asyncio.sleep(0.1)
     await gacha_update()
+    logger.info('【马娘插件】更新检查完成...')
 
 
 loop = asyncio.get_event_loop()

@@ -17,7 +17,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.8.5-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.8.6f-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -93,6 +93,20 @@ https://github.com/azmiao/uma_plugin/
 
 ## 最近的更新日志
 
+|   更新时间   |   版本号   | 更新日志&备注                                                                                                                                                                     |
+|:--------:|:-------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 24-01-22 | v2.8.6f | 一些代码优化，以及由于镜像源问题，修改插件的更新源为官方源.<br>此次更新请在插件目录下检查`/.git/config`文件中，<br>`[remote "origin"]`后面的`url: xxxx...`改为<br><https://github.com/azmiao/uma_plugin>后手动使用`git pull -f`强制更新 |
+
+<details>
+<summary>◆ 2024年的更新日志</summary>
+
+> 空空如也
+
+</details>
+
+<details>
+<summary>◆ 2023年的更新日志</summary>
+
  + 23-12-19     v2.8.5  马娘新闻代码整理优化，修复之前增加短链导致的翻译BUG
 
  + 23-11-21     v2.8.4  马娘新闻链接更换短链，防止tx屏蔽
@@ -100,9 +114,6 @@ https://github.com/azmiao/uma_plugin/
  + 23-10-23     v2.8.3  修复由于wiki不同地方马娘名不同导致的相性错误，[# 63](https://github.com/azmiao/uma_plugin/issues/63)
 
  + 23-10-23     v2.8.2  修复一处书写错误导致的BUG，[# 62](https://github.com/azmiao/uma_plugin/issues/62)
-
-<details>
-<summary>◆ 更以前的更新日志</summary>
 
  + 23-09-07     v2.8.1  适配国服马娘新闻
 
@@ -244,7 +255,7 @@ Please, commit your changes or stash them before you can merge
 ## 功能命令和描述
 
 <details>
-<summary><font size = 4>维护组的命令</font></summary>
+<summary><span style="font-size: 16px;">维护组的命令</span></summary>
 
 |  子模块   |      命令       |
 |:------:|:-------------:|
@@ -261,7 +272,7 @@ Please, commit your changes or stash them before you can merge
 </details>
 
 <details>
-<summary><font size = 4>子模块的图片版帮助</font></summary>
+<summary><span style="font-size: 16px;">子模块的图片版帮助</span></summary>
 
 ![uma_comic](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_comic/uma_comic_help.png)
 ![uma_compatibility](https://raw.githubusercontent.com/azmiao/uma_plugin/main/uma_compatibility/uma_compatibility_help.png)

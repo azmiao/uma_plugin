@@ -15,9 +15,9 @@ url = 'https://github.com/azmiao/uma_plugin'
 
 
 # 初始化马娘插件版本
-async def init_plugin():
+async def init_plugin(is_force):
     update_type = await get_update_type()
-    if os.path.exists(version_path):
+    if not is_force and os.path.exists(version_path):
         return
     if update_type == 'no':
         logger.info('【马娘插件】正在从本地获取马娘插件版本...')
@@ -35,7 +35,7 @@ async def init_plugin():
     }
     with open(version_path, 'w', encoding='utf-8') as f:
         json.dump(version_data, f, indent=4, ensure_ascii=False)
-    logger.info('【马娘插件】马娘插件版本获取成功')
+    logger.info(f'【马娘插件】马娘插件版本获取成功，当前版本[{version}]')
 
 
 # 更新马娘插件
@@ -48,14 +48,13 @@ async def plugin_update_auto():
         return
     # 如果不是强制更新的版本
     if not is_sup:
-        git_url = f'https://ghproxy.net/{url}'
         plugin_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'uma_plugin')
         logger.info('【马娘插件】检测到插件更新，正在更新插件至最新...')
         repo = Repo(plugin_path)
         # 判断并更换镜像站
         origin_url = repo.remote('origin').url
-        if origin_url != git_url:
-            repo.remote('origin').set_url(git_url)
+        if origin_url != url:
+            repo.remote('origin').set_url(url)
         repo.git.pull()
         logger.info('【马娘插件】已更新至最新！')
     super_id = config.SUPERUSERS[0]
@@ -104,11 +103,12 @@ async def get_commits(rep_url):
     # version
     res = requests.get(rep_url, proxies=get_proxy(), timeout=20)
     version = re.search(r'release-([0-9]+\.[0-9]+\.[0-9]+f?)-orange\.svg', res.text)
+    logger.info(f'version=[{version.group(1)}]')
     # commit
     resp = requests.get(rep_url + "/commits", proxies=get_proxy(), timeout=20)
     soup = BeautifulSoup(resp.text, 'lxml')
-    soup_find = soup.find('script', {'data-target': 'react-app.embeddedData'})
-    raw_info = json.loads(soup_find.text)
+    soup_find = soup.find('script', {"data-target": "react-app.embeddedData"})
+    raw_info = json.loads(soup_find.text.strip())
     commit_info_list = raw_info['payload']['commitGroups']
     for commit_info_by_date in commit_info_list:
         for commit_info in commit_info_by_date['commits']:
