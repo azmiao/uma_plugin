@@ -1,14 +1,16 @@
-import httpx
 import datetime
 import json
 import os
 import re
-from bs4 import BeautifulSoup
 
+import requests
+from bs4 import BeautifulSoup
 from hoshino import R
+
 from .util import server_list, init_data, get_differ, get_correspond
 
 gacha_path = os.path.join(R.img('umamusume').path, 'uma_gacha')
+type_list = ['支援卡卡池', '赛马娘卡池']
 
 
 # 其他服的卡池
@@ -116,20 +118,53 @@ async def add_init_pool(pool_data):
     return pool_data
 
 
+# 判断tr类型
+def judge_pool_type(tr):
+    tr_a = tr.find('td').get_text().strip()
+    if tr_a in type_list:
+        return tr_a
+    tr_b = tr.find('td').find_next_sibling('td').get_text().strip()
+    if tr_b in type_list:
+        return tr_b
+    return None
+
+
 # 获取卡池数据
 async def get_pool_data():
     pool_url = 'https://wiki.biligame.com/umamusume/卡池'
-    res = httpx.get(pool_url, timeout=15)
+    res = requests.get(pool_url, timeout=15)
     soup = BeautifulSoup(res.text, 'lxml')
     soup = soup.find('table', {"style": "width:100%;text-align:center"})
-    tr_all = [tr for tr in soup.find_all('tr') if tr.find('div', {"class": "floatnone"})]
-    pool_list = [(tr_all[i], tr_all[i + 1]) for i in range(0, len(tr_all), 2)]
+    tr_all = [tr for tr in soup.find_all('tr') if tr.find('div', {"class": "floatnone"}) and
+              judge_pool_type(tr) in type_list]
+    # 将两两一组
+    pool_list = []
+    i = 0
+    while i < len(tr_all):
+        tr_a = tr_all[i]
+        if judge_pool_type(tr_a) == '支援卡卡池':
+            pool_list.append((None, tr_a))
+            i += 1
+        elif judge_pool_type(tr_a) == '赛马娘卡池':
+            tr_b = tr_all[i + 1] if i + 1 < len(tr_all) else None
+            if tr_b and judge_pool_type(tr_b) == '赛马娘卡池':
+                pool_list.append((tr_a, None))
+                i += 1
+            elif tr_b and judge_pool_type(tr_b) == '支援卡卡池':
+                pool_list.append((tr_a, tr_b))
+                i += 2
+        else:
+            i += 1
+
     pool_data, now = {}, datetime.datetime.now()
     for server in server_list:
         pool_data[server] = {}
     for pool in pool_list:
         # 日服卡池时间
-        pool_time_edge = pool[0].find('td', {"rowspan": "2"}).text.strip().split('~', 1)
+        if pool[0]:
+            pool_time_edge = pool[0].find('td').text.strip().split('~', 1)
+        else:
+            pool_time_edge = pool[1].find('td').text.strip().split('~', 1)
         start_time = datetime.datetime.strptime(pool_time_edge[1], '%Y/%m/%d %H:%M') - datetime.timedelta(hours=1)
         start_time_show = datetime.datetime.strftime(start_time, '%Y/%m/%d %H:%M')
         end_time = datetime.datetime.strptime(pool_time_edge[0], '%Y/%m/%d %H:%M') - datetime.timedelta(hours=1)
@@ -138,22 +173,26 @@ async def get_pool_data():
         # 日服卡池ID
         pool_id = str(start_time).replace('-', '')[:8]
         # 马娘
-        uma_title = pool[0].find('div', {"class": "floatnone"}).find('a').get('title')
-        uma_title_id = pool[0].find('div', {"class": "floatnone"}).find('img').get('alt').replace(' ', '_')
-        uma_title_img = pool[0].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '') \
-            .replace('/400px-' + uma_title_id, '')
-        uma_up_list = [span.find('a').get('title') for span in
-                       pool[0].find_all('span', {"style": "display: table-cell;"})]
+        uma_title, uma_title_id, uma_title_img, uma_up_list = '', '', '', []
+        if pool[0]:
+            uma_title = pool[0].find('div', {"class": "floatnone"}).find('a').get('title')
+            uma_title_id = pool[0].find('div', {"class": "floatnone"}).find('img').get('alt').replace(' ', '_')
+            uma_title_img = pool[0].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '') \
+                .replace('/400px-' + uma_title_id, '')
+            uma_up_list = [span.find('a').get('title') for span in
+                           pool[0].find_all('span', {"style": "display: table-cell;"})]
         uma_up = {'3': uma_up_list, '2': [], '1': []}
         # 支援卡
-        chart_title = pool[1].find('div', {"class": "floatnone"}).find('a').get('title')
-        chart_title_id = pool[1].find('div', {"class": "floatnone"}).find('img').get('alt').replace(' ', '_')
-        chart_title_img = pool[1].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '') \
-            .replace('/400px-' + chart_title_id, '')
-        chart_up_list = [span.find('a').get('title') for span in
-                         pool[1].find_all('span', {"style": "display:inline-block;"})]
-        chart_up_img_list = [span.find('img').get('alt') for span in
+        chart_title, chart_title_id, chart_title_img, chart_up_list, chart_up_img_list = '', '', '', [], []
+        if pool[1]:
+            chart_title = pool[1].find('div', {"class": "floatnone"}).find('a').get('title')
+            chart_title_id = pool[1].find('div', {"class": "floatnone"}).find('img').get('alt').replace(' ', '_')
+            chart_title_img = pool[1].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '') \
+                .replace('/400px-' + chart_title_id, '')
+            chart_up_list = [span.find('a').get('title') for span in
                              pool[1].find_all('span', {"style": "display:inline-block;"})]
+            chart_up_img_list = [span.find('img').get('alt') for span in
+                                 pool[1].find_all('span', {"style": "display:inline-block;"})]
         # 判断星级
         SSR_list, SR_list, R_list = [], [], []
         for img_name in chart_up_img_list:

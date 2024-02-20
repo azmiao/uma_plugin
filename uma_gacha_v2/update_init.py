@@ -2,11 +2,13 @@ import os
 import shutil
 
 from hoshino import R, logger
+
 from .res_spider import get_res
 from .uma_pool import get_pool_data
 from .util import update_select_data
 
 gacha_path = os.path.join(R.img('umamusume').path, 'uma_gacha/')
+
 
 # 首次启动函数
 async def update():
@@ -33,6 +35,7 @@ async def update():
         except Exception as e:
             logger.info(f'马娘卡池信息初始化失败：{e}')
 
+
 # 自动更新
 async def auto_update():
     try:
@@ -54,6 +57,7 @@ async def auto_update():
         logger.info(f'马娘卡池信息更新失败：{e}')
         return f'马娘卡池信息更新失败：{e}'
 
+
 # 删除旧版文件
 async def delete_old_folder():
     await del_files('draw_card')
@@ -61,6 +65,7 @@ async def delete_old_folder():
     await del_files('draw_card_up')
     await del_files('pretty_card.json')
     await del_files('pretty.json')
+
 
 # 删除文件夹内的文件或本身的文件
 async def del_files(filename):
