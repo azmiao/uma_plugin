@@ -59,10 +59,11 @@ async def uma_news_poller():
         if not group_list:
             sv_uma.logger.info('所有群均已禁用马娘新闻播报服务，将跳过')
             return
-        flag = await judge('jp')
+        news_list = await sort_news('jp')
+        flag = await judge('jp', news_list)
         if flag:
             sv_uma.logger.info('检测到马娘新闻更新！')
-            await sv_uma.broadcast(await news_broadcast('jp'), 'umamusume-news-poller', 0.2)
+            await sv_uma.broadcast(await news_broadcast('jp', news_list), 'umamusume-news-poller', 0.2)
         else:
             sv_uma.logger.info('暂未检测到马娘新闻更新')
             return
@@ -78,10 +79,11 @@ async def uma_news_poller_tw():
         if not group_list:
             sv_uma_tw.logger.info('所有群均已禁用台服马娘新闻播报服务，将跳过')
             return
-        flag = await judge('tw')
+        news_list = await sort_news('tw')
+        flag = await judge('tw', news_list)
         if flag:
             sv_uma_tw.logger.info('检测到台服马娘新闻更新！')
-            await sv_uma_tw.broadcast(await news_broadcast('tw'), 'umamusume-news-poller-tw', 0.2)
+            await sv_uma_tw.broadcast(await news_broadcast('tw', news_list), 'umamusume-news-poller-tw', 0.2)
         else:
             sv_uma_tw.logger.info('暂未检测到台服马娘新闻更新')
             return
@@ -97,10 +99,11 @@ async def uma_news_poller_bili():
         if not group_list:
             sv_uma_bili.logger.info('所有群均已禁用B服马娘新闻播报服务，将跳过')
             return
-        flag = await judge('bili')
+        news_list = await sort_news('bili')
+        flag = await judge('bili', news_list)
         if flag:
             sv_uma_bili.logger.info('检测到B服马娘新闻更新！')
-            await sv_uma_bili.broadcast(await news_broadcast('bili'), 'umamusume-news-poller-bili', 0.2)
+            await sv_uma_bili.broadcast(await news_broadcast('bili', news_list), 'umamusume-news-poller-bili', 0.2)
         else:
             sv_uma_bili.logger.info('暂未检测到B服马娘新闻更新')
             return

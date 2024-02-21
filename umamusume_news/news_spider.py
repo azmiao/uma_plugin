@@ -8,8 +8,7 @@ import re
 import time
 from datetime import timedelta
 
-import requests
-from hoshino import R
+from hoshino import R, aiorequests
 
 from .news_class import NewsClass
 from .translator_lite.apis import youdao
@@ -55,6 +54,7 @@ async def get_item(server):
     }
     await asyncio.sleep(0.5)
     url = server_params.get('url', '')
+    proxy = get_proxy()
 
     res_dict = {}
     if 'jp' == server:
@@ -63,11 +63,14 @@ async def get_item(server):
             'limit': 10,
             'offset': 0
         }
-        res_dict = requests.post(url=url, json=json_data, headers=headers, timeout=15, proxies=get_proxy()).json()
+        resp = await aiorequests.post(url=url, json=json_data, headers=headers, timeout=15, proxies=proxy)
+        res_dict = await resp.json()
     elif 'tw' == server:
-        res_dict = requests.get(url=url, headers=headers, timeout=15, proxies=get_proxy()).json()
+        resp = await aiorequests.get(url=url, headers=headers, timeout=15, proxies=proxy)
+        res_dict = await resp.json()
     elif 'bili' == server:
-        res_dict = requests.get(url=url, headers=headers, timeout=15).json()
+        resp = await aiorequests.get(url=url, headers=headers, timeout=15)
+        res_dict = await resp.json()
     else:
         assert Exception('不支持的服务器类型')
     return res_dict
@@ -128,8 +131,7 @@ async def get_news(server):
 
 
 # 获取新闻更新
-async def news_broadcast(server):
-    news_list = await sort_news(server)
+async def news_broadcast(server, news_list):
     file_name = 'prev_time.yml' if 'jp' == server else 'prev_time_' + server + '.yml'
     current_dir = os.path.join(os.path.dirname(__file__), file_name)
     with open(current_dir, 'r', encoding="UTF-8") as f:
@@ -158,10 +160,9 @@ async def news_broadcast(server):
 # 函数单独写一个是怎么回事呢？函数相信大家都很熟悉，但是函数单独写一个是怎么回事呢，下面就让小编带大家一起了解吧。
 # 函数单独写一个，其实就是我想单独写一个函数，大家可能会很惊讶函数怎么会单独写一个呢？但事实就是这样，小编也感到非常惊讶。
 # 这就是关于函数单独写一个的事情了，大家有什么想法呢，欢迎在评论区告诉小编一起讨论哦！
-async def judge(server) -> bool:
+async def judge(server, news_list) -> bool:
     file_name = 'prev_time.yml' if 'jp' == server else 'prev_time_' + server + '.yml'
     current_dir = os.path.join(os.path.dirname(__file__), file_name)
-    news_list = await sort_news(server)
     if os.path.exists(current_dir):
         with open(current_dir, 'r', encoding="UTF-8") as f:
             init_time = str(f.read())
@@ -236,8 +237,8 @@ async def translate_news(news_id):
     data = {'announce_id': news_id}
     head_img = ''
     try:
-        res_dict = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15,
-                                 proxies=get_proxy()).json()
+        resp = await aiorequests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=get_proxy())
+        res_dict = await resp.json()
         if res_dict['detail']['title'] == '現在確認している不具合について':
             news_msg = re.match(r'([\s\S]+?【[\s\S]+?)【', res_dict['detail']['message']).group(1)
         else:
@@ -256,9 +257,9 @@ async def translate_news(news_id):
                 os.mkdir(dir_path)
             save_dir = os.path.join(R.img('umamusume').path, f'umamusume_news/news_img_{news_id}.jpg')
             if not os.path.exists(save_dir):
-                response = requests.get(url=img_url, proxies=get_proxy())
+                response = await aiorequests.get(url=img_url, proxies=get_proxy())
                 with open(save_dir, 'wb') as f:
-                    f.write(response.content)
+                    f.write(await response.content)
             img_path = R.img(f'umamusume/umamusume_news/news_img_{news_id}.jpg').path
             head_img = await get_img_cq(img_path)
     except Exception as e:
