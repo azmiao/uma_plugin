@@ -1,13 +1,14 @@
-import os
 import base64
 import datetime
 import json
+import os
 
-from .spider import uma_update
-from .adaptability import get_adaptability
-from .detail_info import get_detail
 from hoshino import Service, priv, R
 from hoshino.util import pic2b64
+
+from .adaptability import get_adaptability
+from .detail_info import get_detail
+from .spider import uma_update
 from ..plugin_utils.base_util import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), 'config.json')

@@ -1,9 +1,11 @@
-from PIL import Image, ImageDraw, ImageFont, ImageColor
-import httpx
 import os
 
-from .adaptability import get_adaptability
+import httpx
+from PIL import Image, ImageDraw, ImageFont, ImageColor
 from hoshino import R
+
+from .adaptability import get_adaptability
+
 
 # 生成详细图片
 async def get_detail(uma_name, f_data):
@@ -34,17 +36,19 @@ async def get_detail(uma_name, f_data):
     # im.show()
     return im
 
+
 # 下载制服图片
 async def download_img(uniform, current_dir):
     response = httpx.get(uniform, timeout=10)
     with open(current_dir, 'wb') as f:
         f.write(response.read())
 
+
 # 撰写文字
 async def add_text(im, uma_name, f_data):
     cn_name = f_data[uma_name]['cn_name'] if f_data[uma_name]['cn_name'] else f_data[uma_name]['jp_name']
     font_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), f'simhei.ttf')
-    img_font = ImageFont.truetype(font_path, 25, index=0) # 这个字体好像不带粗体，算了
+    img_font = ImageFont.truetype(font_path, 25, index=0)  # 这个字体好像不带粗体，算了
     font_rgb = ImageColor.getrgb('#8B4513')
     im_draw = ImageDraw.Draw(im)
     im_draw.text(xy=(35, 35), text=str(cn_name), font=img_font, fill=font_rgb)

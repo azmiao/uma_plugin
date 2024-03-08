@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+import shutil
 
 from hoshino import logger
 
@@ -68,3 +69,24 @@ async def get_update_type():
         with open(prop_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=4, ensure_ascii=False)
     return config['code_auto_update']['current']
+
+
+# 删除路径
+async def delete_dir(dir_path):
+    try:
+        if os.path.exists(dir_path):
+            shutil.rmtree(dir_path)
+            logger.info(f'> path[{dir_path}] has deleted!')
+        else:
+            logger.warn(f'> path[{dir_path}] is not exist!')
+    except Exception as e:
+        logger.error(f'> path[{dir_path}] delete failed: {e}')
+
+
+# 复制文件
+async def copy_file(source, destination):
+    try:
+        shutil.copy(source, destination)
+        print(f'> copy success: [{source}] > [{destination}]')
+    except IOError as e:
+        print(f'> copy fail: {e}')
