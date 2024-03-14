@@ -8,6 +8,11 @@ from hoshino import logger
 prop_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'properties.json')
 
 
+class UmaNotFoundException(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
 # 生成图片结果
 async def get_img_cq(img_path):
     with open(prop_path, 'r', encoding='utf-8') as f:
