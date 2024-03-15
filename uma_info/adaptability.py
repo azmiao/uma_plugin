@@ -41,7 +41,7 @@ async def get_adaptability(en_name: str, f_data: Dict[str, Uma]) -> Image:
 async def generate_img(grass: str, mud: str, short: str, mile: str, middle: str, long: str, run_away: str,
                        first: str, center: str, chase: str) -> Image:
     # 底层
-    img_path = os.path.join(dir_name, 'img_raw/adaptability.png')
+    img_path = os.path.join(dir_name, 'img_raw', 'adaptability.png')
     im = Image.open(img_path)
     await paste_img(im, await get_icon_image(grass), (298, 98))
     await paste_img(im, await get_icon_image(mud), (466, 98))
@@ -57,7 +57,7 @@ async def generate_img(grass: str, mud: str, short: str, mile: str, middle: str,
 
 
 async def get_icon_image(icon_type: str) -> Image:
-    icon_path = os.path.join(dir_name, f'img_raw/{icon_type}.png')
+    icon_path = os.path.join(dir_name, 'img_raw', f'{icon_type}.png')
     return Image.open(icon_path).convert("RGBA")
 
 

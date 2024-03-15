@@ -7,7 +7,7 @@ from hoshino import logger, R
 from .spider import uma_update
 
 # 启动时自动更新至最新版马娘技能信息
-current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
+current_dir = os.path.join(os.path.dirname(__file__), 'config_v2.json')
 
 
 async def update():
@@ -22,7 +22,7 @@ async def update():
         except Exception as e:
             # 更新失败就回退
             os.remove(current_dir)
-            download_path = os.path.join(R.img('umamusume').path, f'base_data/')
+            download_path = os.path.join(R.img('umamusume').path, f'base_data')
             if os.path.exists(download_path):
                 shutil.rmtree(download_path)
             logger.error(f'====马娘数据库更新失败：{e}。已回退====')

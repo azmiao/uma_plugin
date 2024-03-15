@@ -40,8 +40,8 @@ async def del_all_dir():
     delete_path_list = [
         os.path.join(os.path.dirname(__file__), f'config_tmp.json'),
         os.path.join(os.path.dirname(__file__), f'config.json'),
-        os.path.join(R.img('umamusume').path, f'uma_bir/'),
-        os.path.join(R.img('umamusume').path, f'uma_voice/')
+        os.path.join(R.img('umamusume').path, f'uma_bir'),
+        os.path.join(R.img('umamusume').path, f'uma_voice')
     ]
     for delete_path in delete_path_list:
         await delete_dir(delete_path)
@@ -56,5 +56,5 @@ async def uma_update(current_dir):
     # 删除旧版文件
     await del_all_dir()
     # 复制配置文件
-    data_path = os.path.join(R.img('umamusume').path, f'base_data/config_v2.json')
+    data_path = os.path.join(R.img('umamusume').path, f'base_data', 'config_v2.json')
     await copy_file(data_path, current_dir)

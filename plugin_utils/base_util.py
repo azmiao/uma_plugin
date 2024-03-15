@@ -3,9 +3,18 @@ import json
 import os
 import shutil
 
+import httpx
 from hoshino import logger
 
 prop_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'properties.json')
+
+# headers
+default_headers = {
+    'Accept': '*/*',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0'
+}
 
 
 class UmaNotFoundException(Exception):
@@ -95,3 +104,37 @@ async def copy_file(source, destination):
         print(f'> copy success: [{source}] > [{destination}]')
     except IOError as e:
         print(f'> copy fail: {e}')
+
+
+# send async request
+async def async_request(url, method='GET', headers=None, params=None, json_data=None, timeout=None):
+    logger.info(f'url = {url}')
+    async with httpx.AsyncClient(headers=headers, params=params, timeout=timeout) as client:
+        if method == 'GET':
+            response = await client.get(url)
+        elif method == 'POST':
+            response = await client.post(url, json=json_data)
+        elif method == 'PUT':
+            response = await client.put(url, json=json_data)
+        elif method == 'DELETE':
+            response = await client.delete(url)
+        else:
+            raise ValueError('Unsupported HTTP method')
+        return response
+
+
+# 下载文件
+async def download_file(url, download_dir, file_name):
+    file_path = os.path.join(download_dir, file_name)
+    if not url:
+        return
+    if os.path.exists(file_path):
+        logger.warning(f'{file_name} already exist!')
+        return
+    res = await async_request(url)
+    if 200 == res.status_code:
+        with open(file_path, 'wb') as fd:
+            fd.write(res.content)
+        logger.info(f'{file_name} download success!')
+    else:
+        logger.error(f'{file_name} download fail: code {res.status_code}!')
