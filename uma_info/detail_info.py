@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageColor
 from hoshino import R
 
 from .adaptability import get_adaptability
-from .detail_class import Uma
+from .detail_class import Uma, uma_from_dict
 from ..plugin_utils.base_util import *
 
 dir_name = os.path.dirname(__file__)
@@ -12,7 +12,12 @@ dir_name = os.path.dirname(__file__)
 
 # 生成详细图片
 async def get_detail(en_name: str, f_data: Dict[str, Uma]):
-    uma = f_data.get(en_name, None)
+    uma_raw = f_data.get(en_name, None)
+    # 没有找到
+    if not uma_raw:
+        raise UmaNotFoundException(f'Uma not found: [{en_name}]')
+
+    uma = uma_from_dict(uma_raw)
     # 看板图片URL
     top_url = uma.top_thumb.url
     # 主题色
@@ -20,9 +25,9 @@ async def get_detail(en_name: str, f_data: Dict[str, Uma]):
     color_sub = uma.color_sub
 
     # 背景&框架
-    background = Image.open(os.path.join(dir_name, 'img_raw', 'background.png'))
-    framework_1 = Image.open(os.path.join(dir_name, 'img_raw', 'framework_1.png'))
-    framework_2 = Image.open(os.path.join(dir_name, 'img_raw', 'framework_2.png'))
+    background = Image.open(os.path.join(dir_name, 'img_raw', 'background.png')).convert('RGBA')
+    framework_1 = Image.open(os.path.join(dir_name, 'img_raw', 'framework_1.png')).convert('RGBA')
+    framework_2 = Image.open(os.path.join(dir_name, 'img_raw', 'framework_2.png')).convert('RGBA')
     real_framework_1 = await fill_color(framework_1, color_main)
     real_framework_2 = await fill_color(framework_2, color_sub)
     background.paste(real_framework_1, (0, 0), mask=real_framework_1)
@@ -37,17 +42,17 @@ async def get_detail(en_name: str, f_data: Dict[str, Uma]):
     top_thumb_path = os.path.join(top_path, f'{en_name}_top_thumb.png')
     # 图片不存在就下载
     if not os.path.exists(top_thumb_path):
-        await download_file(top_url, top_path, f'{en_name}_uniform.png')
+        await download_file(top_url, top_path, f'{en_name}_top_thumb.png')
 
     # 贴上看板图片
-    top_thumb = Image.open(top_thumb_path).convert("RGBA")
+    top_thumb = Image.open(top_thumb_path).convert('RGBA')
     top_thumb = top_thumb.resize((525, 924))
     background.paste(top_thumb, (70, -110), mask=top_thumb)
 
     # 贴上适应性图片
     adapt_image = await get_adaptability(en_name, f_data)
     if adapt_image:
-        adaptability_img = adapt_image.convert("RGBA")
+        adaptability_img = adapt_image.convert('RGBA')
         adaptability_img = adaptability_img.resize((600, 200))
         background.paste(adaptability_img, (25, 620), mask=adaptability_img)
 
@@ -78,8 +83,9 @@ async def fill_color(image: Image, hex_color: str) -> Image:
     # 十六进制值颜色转RGB
     rgb_color = tuple(int(hex_color[i:i + 2], 16) for i in (1, 3, 5)) + (255,)
     # 获取图像的透明通道信息
-    alpha = image.split()[3]
-    image = image.point(lambda p: rgb_color if p > 128 else p)
-    # 将透明通道信息重新添加到图像中
-    r, g, b = image.split()[:3]
-    return Image.merge("RGBA", (r, g, b, alpha))
+    r, g, b, a = image.split()
+    # 使用 point 方法将颜色应用到RGB三个通道上
+    r = r.point(lambda p: rgb_color[0] if p > 128 else p)
+    g = g.point(lambda p: rgb_color[1] if p > 128 else p)
+    b = b.point(lambda p: rgb_color[2] if p > 128 else p)
+    return Image.merge("RGBA", (r, g, b, a))

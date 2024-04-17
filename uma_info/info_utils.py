@@ -5,7 +5,7 @@ from .detail_class import *
 async def query_uma_by_name(name_raw: str, f_data: dict, replace_data: dict) -> Optional[Uma]:
     for uma_raw in f_data.values():
         uma = uma_from_dict(uma_raw)
-        if (name_raw in [uma.name, uma.cn_name, uma.en]) or (uma.id in replace_data.get(uma.id, [])):
+        if (name_raw in [uma.name, uma.cn_name, uma.en]) or (name_raw in replace_data.get(uma.id, [])):
             return uma
     return None
 

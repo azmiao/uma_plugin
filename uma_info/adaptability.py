@@ -2,7 +2,7 @@ from typing import Dict, Tuple
 
 from PIL import Image
 
-from .detail_class import Uma
+from .detail_class import Uma, uma_from_dict
 from ..plugin_utils.base_util import *
 
 dir_name = os.path.dirname(__file__)
@@ -10,11 +10,12 @@ dir_name = os.path.dirname(__file__)
 
 # 获取适应性图片
 async def get_adaptability(en_name: str, f_data: Dict[str, Uma]) -> Image:
-    uma = f_data.get(en_name, None)
+    uma_raw = f_data.get(en_name, None)
     # 没有找到
-    if not uma:
+    if not uma_raw:
         raise UmaNotFoundException(f'Uma not found: [{en_name}]')
 
+    uma = uma_from_dict(uma_raw)
     adapt = uma.adapt
     # 没有适应性
     if not adapt:

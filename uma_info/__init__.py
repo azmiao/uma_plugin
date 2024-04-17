@@ -1,7 +1,7 @@
 import base64
-import datetime
 import json
 import os
+import platform
 from collections import defaultdict
 
 from hoshino import Service, priv, R
@@ -14,7 +14,8 @@ from .info_utils import *
 from .spider import uma_update
 from ..plugin_utils.base_util import get_img_cq
 
-current_dir = os.path.join(os.path.dirname(__file__), 'config.json')
+current_dir = os.path.join(os.path.dirname(__file__), 'config_v2.json')
+date_format = '%#m月%#d日' if platform.system() == 'Windows' else '%-m月%-d日'
 
 sv = Service('uma_info', enable_on_default=True)
 with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
@@ -40,13 +41,14 @@ async def get_tod(bot, ev):
         replace_data = json.load(file)
 
     # 今天
-    today = datetime.datetime.now().strftime('%-m月%-d日')
+    today = datetime.now().strftime(date_format)
 
     # 解析处理
     uma_name_list = []
     for uma_raw in f_data.values():
+        print(uma_raw)
         uma = uma_from_dict(uma_raw)
-        if 'ウマ娘' not in uma.category:
+        if not uma.category or 'ウマ娘' not in uma.category:
             continue
         if uma.birthday and today == uma.birthday:
             uma_name_list.append(await query_uma_name(uma, replace_data))
@@ -61,7 +63,7 @@ async def get_tod(bot, ev):
 
 @sv.on_prefix('查马娘生日')
 async def search_bir(bot, ev):
-    name_raw = ev.message
+    name_raw = str(ev.message).strip()
     with open(current_dir, 'r', encoding='UTF-8') as file:
         f_data = json.load(file)
     rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
@@ -72,7 +74,6 @@ async def search_bir(bot, ev):
     uma = await query_uma_by_name(name_raw, f_data, replace_data)
     if not uma:
         msg = f'这只马娘不存在哦'
-        await bot.send(ev, msg)
     else:
         birthday = uma.birthday
         uma_name = await query_uma_name(uma, replace_data)
@@ -85,7 +86,7 @@ async def search_bir(bot, ev):
 
 @sv.on_prefix('查生日马娘')
 async def search_uma(bot, ev):
-    uma_bir_tmp = ev.message.strip()
+    uma_bir_tmp = str(ev.message).strip()
     with open(current_dir, 'r', encoding='UTF-8') as file:
         f_data = json.load(file)
     rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
@@ -95,13 +96,13 @@ async def search_uma(bot, ev):
     # 解析日期
     try:
         date = datetime.strptime(uma_bir_tmp, '%m-%d')
-        formatted_date = date.strftime('%-m月%-d日')
+        formatted_date = date.strftime(date_format)
     except Exception as _:
         await bot.send(ev, f'时间解析失败，请检查输入日期：' + uma_bir_tmp)
         return
 
     # 分组
-    uma_list = [uma_from_dict(uma) for uma in f_data.values]
+    uma_list = [uma_from_dict(uma) for uma in f_data.values()]
     grouped_uma_dict = defaultdict(list, {uma.birthday: [] for uma in uma_list if uma.birthday})
     for uma in uma_list:
         grouped_uma_dict[uma.birthday].append(uma)
@@ -129,10 +130,10 @@ async def push_bir():
     with open(rep_dir, 'r', encoding='UTF-8') as file:
         replace_data = json.load(file)
 
-    today = datetime.datetime.now().strftime('%-m月%-d日')
+    today = datetime.now().strftime(date_format)
 
     # 分组
-    uma_list = [uma_from_dict(uma) for uma in f_data.values]
+    uma_list = [uma_from_dict(uma) for uma in f_data.values()]
     grouped_uma_dict = defaultdict(list, {uma.birthday: [] for uma in uma_list if uma.birthday})
     for uma in uma_list:
         grouped_uma_dict[uma.birthday].append(uma)
@@ -177,10 +178,10 @@ async def get_single_info(bot, ev):
     msg = ''
     if info_type == 'id':
         uma_id = uma.id
-        msg = f'{uma_name_tmp}的角色id为{uma_id}'
+        msg = f'{uma_name_tmp}的角色id为：\n{uma_id}'
     elif info_type == '日文名':
         jp_name = uma.name
-        msg = f'{uma_name_tmp}的日文名为{jp_name}'
+        msg = f'{uma_name_tmp}的日文名为：\n{jp_name}'
     elif info_type == '中文名':
         replace_name_list = replace_data.get(uma.id, [])
         replace_name = replace_name_list[0] if replace_name_list else None
@@ -188,16 +189,16 @@ async def get_single_info(bot, ev):
         if not cn_name:
             msg = f'{uma_name_tmp}暂时还没有中文名哟'
         else:
-            msg = f'{uma_name_tmp}的中文名为{cn_name}'
+            msg = f'{uma_name_tmp}的中文名为：\n{cn_name}'
     elif info_type == '英文名':
         en_name = uma.en
-        msg = f'{uma_name_tmp}的英文名为{en_name}'
+        msg = f'{uma_name_tmp}的英文名为：\n{en_name}'
     elif info_type == '分类':
         category_list = uma.category
         if not category_list:
             msg = f'{uma_name_tmp}的暂时没有角色分类哟'
         else:
-            msg = f'{uma_name_tmp}的角色分类为{" | ".join(category_list)}'
+            msg = f'{uma_name_tmp}的角色分类为：\n{" | ".join(category_list)}'
     elif info_type == '语音':
         voice = uma.voice.url
         if not voice:
@@ -215,25 +216,25 @@ async def get_single_info(bot, ev):
         if not cv:
             msg = f'{uma_name_tmp}暂时还没公布cv哟'
         else:
-            msg = f'{uma_name_tmp}的cv是:\n{cv}'
+            msg = f'{uma_name_tmp}的cv是：\n{cv}'
     elif info_type == '身高':
         height = uma.height
         if not height:
             msg = f'{uma_name_tmp}暂时还没公布身高哟'
         else:
-            msg = f'{uma_name_tmp}的身高是:\n{height}cm'
+            msg = f'{uma_name_tmp}的身高是：\n{height}'
     elif info_type == '体重':
         weight = uma.weight
         if not weight:
             msg = f'{uma_name_tmp}暂时还没公布体重哟'
         else:
-            msg = f'{uma_name_tmp}的体重是:\n{weight}'
+            msg = f'{uma_name_tmp}的体重是：\n{weight}'
     elif info_type == '三围':
         size = uma.size
         if not size:
             msg = f'{uma_name_tmp}暂时还没公布三围哟'
         else:
-            msg = f'{uma_name_tmp}的三围是:\n{size}'
+            msg = f'{uma_name_tmp}的三围是：\n{size}'
     elif info_type == '制服':
         visual_list = uma.visual
         image_dict = {visual.name.title: visual.image.url for visual in visual_list if visual.name.title}
