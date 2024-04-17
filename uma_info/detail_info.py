@@ -19,7 +19,10 @@ async def get_detail(en_name: str, f_data: Dict[str, Uma]):
 
     uma = uma_from_dict(uma_raw)
     # 看板图片URL
-    top_url = uma.top_thumb.url
+    visual_list = uma.visual
+    image_dict = {visual.name.title: visual.image for visual in visual_list if visual.name.title}
+    uniform_img = image_dict.get('制服', None)
+
     # 主题色
     color_main = uma.color_main
     color_sub = uma.color_sub
@@ -34,20 +37,21 @@ async def get_detail(en_name: str, f_data: Dict[str, Uma]):
     background.paste(real_framework_2, (0, 0), mask=real_framework_2)
 
     # 角色看板图片就放在额外数据里
-    top_path = os.path.join(R.img('umamusume').path, 'extra_data', 'top_thumb')
-    # 创建文件夹
-    if not os.path.exists(top_path):
-        os.mkdir(top_path)
-    # 图片路径
-    top_thumb_path = os.path.join(top_path, f'{en_name}_top_thumb.png')
-    # 图片不存在就下载
-    if not os.path.exists(top_thumb_path):
-        await download_file(top_url, top_path, f'{en_name}_top_thumb.png')
+    if uniform_img.url:
+        top_path = os.path.join(R.img('umamusume').path, 'extra_data', 'top_thumb')
+        # 创建文件夹
+        if not os.path.exists(top_path):
+            os.mkdir(top_path)
+        # 图片路径
+        top_thumb_path = os.path.join(top_path, f'{en_name}_top_thumb.png')
+        # 图片不存在就下载
+        if not os.path.exists(top_thumb_path):
+            await download_file(uniform_img.url, top_path, f'{en_name}_top_thumb.png')
 
-    # 贴上看板图片
-    top_thumb = Image.open(top_thumb_path).convert('RGBA')
-    top_thumb = top_thumb.resize((525, 924))
-    background.paste(top_thumb, (70, -110), mask=top_thumb)
+        # 贴上看板图片
+        top_thumb = Image.open(top_thumb_path).convert('RGBA')
+        top_thumb = top_thumb.resize((uniform_img.width * 900 // uniform_img.height, 900))
+        background.paste(top_thumb, (70, -110), mask=top_thumb)
 
     # 贴上适应性图片
     adapt_image = await get_adaptability(en_name, f_data)
@@ -57,14 +61,14 @@ async def get_detail(en_name: str, f_data: Dict[str, Uma]):
         background.paste(adaptability_img, (25, 620), mask=adaptability_img)
 
     # 补上文字
-    await add_text(background, uma.name, (35, 35), 30)
-    await add_text(background, uma.en, (35, 70), 15)
-    await add_text(background, uma.cn_name, (35, 90), 25)
-    await add_text(background, f'CV: {uma.cv}', (30, 120), 25)
-    await add_text(background, f'生日: {uma.birthday}', (30, 150), 25)
-    await add_text(background, f'身高: {uma.height}', (30, 180), 25)
-    await add_text(background, f'体重: {uma.weight}', (30, 210), 25)
-    await add_text(background, f'三围: {uma.size}', (30, 240), 25)
+    await add_text(background, uma.name, (700, 100), 50)
+    await add_text(background, uma.en, (700, 200), 30)
+    await add_text(background, uma.cn_name, (700, 270), 30)
+    await add_text(background, f'CV: {uma.cv}', (700, 350), 30)
+    await add_text(background, f'生日: {uma.birthday}', (700, 430), 30)
+    await add_text(background, f'身高: {uma.height}', (700, 510), 30)
+    await add_text(background, f'体重: {uma.weight}', (700, 590), 30)
+    await add_text(background, f'三围: {uma.size}', (700, 670), 30)
 
     # background.show()
     return background
