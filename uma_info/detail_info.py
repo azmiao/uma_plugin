@@ -17,12 +17,16 @@ async def get_detail(en_name: str, f_data: Dict[str, Uma]):
     top_url = uma.top_thumb.url
     # 主题色
     color_main = uma.color_main
+    color_sub = uma.color_sub
 
     # 背景&框架
     background = Image.open(os.path.join(dir_name, 'img_raw', 'background.png'))
-    framework = Image.open(os.path.join(dir_name, 'img_raw', 'framework.png'))
-    real_framework = await fill_color(framework, color_main)
-    background.paste(real_framework, (0, 0), mask=real_framework)
+    framework_1 = Image.open(os.path.join(dir_name, 'img_raw', 'framework_1.png'))
+    framework_2 = Image.open(os.path.join(dir_name, 'img_raw', 'framework_2.png'))
+    real_framework_1 = await fill_color(framework_1, color_main)
+    real_framework_2 = await fill_color(framework_2, color_sub)
+    background.paste(real_framework_1, (0, 0), mask=real_framework_1)
+    background.paste(real_framework_2, (0, 0), mask=real_framework_2)
 
     # 角色看板图片就放在额外数据里
     top_path = os.path.join(R.img('umamusume').path, 'extra_data', 'top_thumb')
@@ -49,13 +53,13 @@ async def get_detail(en_name: str, f_data: Dict[str, Uma]):
 
     # 补上文字
     await add_text(background, uma.name, (35, 35), 30)
-    await add_text(background, uma.en, (35, 45), 15)
-    await add_text(background, uma.cn_name, (35, 55), 25)
-    await add_text(background, f'CV: {uma.cv}', (35, 65), 25)
-    await add_text(background, f'生日: {uma.birthday}', (35, 75), 25)
-    await add_text(background, f'身高: {uma.height}', (35, 85), 25)
-    await add_text(background, f'体重: {uma.weight}', (35, 95), 25)
-    await add_text(background, f'三围: {uma.size}', (35, 105), 25)
+    await add_text(background, uma.en, (35, 70), 15)
+    await add_text(background, uma.cn_name, (35, 90), 25)
+    await add_text(background, f'CV: {uma.cv}', (30, 120), 25)
+    await add_text(background, f'生日: {uma.birthday}', (30, 150), 25)
+    await add_text(background, f'身高: {uma.height}', (30, 180), 25)
+    await add_text(background, f'体重: {uma.weight}', (30, 210), 25)
+    await add_text(background, f'三围: {uma.size}', (30, 240), 25)
 
     # background.show()
     return background
