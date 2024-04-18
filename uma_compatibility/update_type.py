@@ -1,11 +1,13 @@
-import httpx
 import os
+
+import httpx
 from bs4 import BeautifulSoup
+
 
 async def update():
     url = 'https://wiki.biligame.com/umamusume/相性计算器计算方法'
     res = httpx.get(url, timeout=15)
-    soup = BeautifulSoup(res, 'lxml')
+    soup = BeautifulSoup(res.text, 'lxml')
     type_text = soup.find('div', {'id': 'relation'}).text
     current_dir = os.path.join(os.path.dirname(__file__), 'relation_type.json')
     with open(current_dir, 'w', encoding='UTF-8') as f:
