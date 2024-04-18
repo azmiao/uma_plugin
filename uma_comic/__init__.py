@@ -1,7 +1,8 @@
-import os
 import base64
+import os
 
 from hoshino import Service, priv
+
 from .comic import update_info, get_comic_random, get_comic_id, get_comic_uma
 from ..plugin_utils.base_util import get_img_cq
 
@@ -11,11 +12,13 @@ with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') 
     s = base64_data.decode()
 sv.help = f'![](data:image/jpeg;base64,{s})'
 
+
 @sv.on_fullmatch('马娘漫画帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
+
 
 @sv.on_prefix('马娘漫画')
 async def check_meanings(bot, ev):
@@ -24,16 +27,16 @@ async def check_meanings(bot, ev):
         msg = await get_comic_random()
     elif uma_name_tmp.endswith('号'):
         try:
-            id = int(uma_name_tmp.replace('号', ''))
+            comic_id = int(uma_name_tmp.replace('号', ''))
         except:
-            id = 0
             return
-        msg = await get_comic_id(str(id))
+        msg = await get_comic_id(str(comic_id))
     else:
         msg = await get_comic_uma(uma_name_tmp)
         if not msg:
             return
     await bot.send(ev, msg)
+
 
 # 手动更新，已存在图片的话会自动跳过
 @sv.on_fullmatch('手动更新马娘漫画')
