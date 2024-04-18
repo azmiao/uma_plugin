@@ -1,8 +1,10 @@
-import os
-import json
-import random
 import datetime
+import json
+import os
+import random
+
 from .update_data import write_info
+
 
 # 获取当前时间
 async def get_time():
@@ -10,11 +12,12 @@ async def get_time():
     now_time = now_time.strftime('%Y-%m-%d %H:%M:%S')
     return now_time
 
+
 # 获取消息
 async def get_msg(group_id, user_id):
     # 获取可选文件
     current_dir = os.path.join(os.path.dirname(__file__), 'data.json')
-    with open(current_dir, 'r', encoding = 'utf-8') as f:
+    with open(current_dir, 'r', encoding='utf-8') as f:
         config = json.load(f)
     # 生成消息
     fortune = random.choice(config['fortune'])
@@ -23,17 +26,17 @@ async def get_msg(group_id, user_id):
     suitable_key = random.choice(list(config['suitable'].keys()))
     suitable_value = config['suitable'][suitable_key]
     suitable = suitable_key + '：' + suitable_value
-    unsuit_list = list(config['unsuitable'].keys())
-    unsuit_list.remove(suitable_key)
-    unsuitable_key = random.choice(unsuit_list)
+    unsuited_list = list(config['unsuitable'].keys())
+    unsuited_list.remove(suitable_key)
+    unsuitable_key = random.choice(unsuited_list)
     unsuitable_value = config['unsuitable'][unsuitable_key]
     unsuitable = unsuitable_key + '：' + unsuitable_value
-    prefertime = f'{int(random.random() * 24)}时' + f'{int(random.random() * 60)}分' + f'{int(random.random() * 60)}秒'
+    prefer_time = f'{int(random.random() * 24)}时' + f'{int(random.random() * 60)}分' + f'{int(random.random() * 60)}秒'
     position = random.choice(config['position'])
     actions = random.choice(config['actions'])
     # 写入信息到文件
     await write_info(
-        group_id, user_id, actions, characters, fortune, position, prefertime,
+        group_id, user_id, actions, characters, fortune, position, prefer_time,
         suitable_key, suitable_value, unsuitable_key, unsuitable_value
     )
     # 结果消息
@@ -44,15 +47,17 @@ async def get_msg(group_id, user_id):
 今日幸运角色：{characters}
 宜：{suitable}
 忌：{unsuitable}
-抽卡加成时间：{prefertime}
+抽卡加成时间：{prefer_time}
 抽卡加成方向：{position}
 抽卡加成动作：{actions}
     '''.strip()
     return msg
 
+
 # 获取角色
 async def get_chara():
-    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r', encoding = 'UTF-8') as f:
+    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r',
+              encoding='UTF-8') as f:
         f_data = json.load(f)
     name_list = list(f_data.keys())
     name_list.remove('current_chara')
@@ -62,22 +67,24 @@ async def get_chara():
             chara_list.append(f_data[uma_name]['cn_name'])
     return random.choice(chara_list)
 
+
 # 判断是否已经签到过
 async def judge(group_id, user_id):
     current_dir = os.path.join(os.path.dirname(__file__), f'data/{group_id}.json')
     if not os.path.exists(os.path.join(os.path.dirname(__file__), f'data/')):
         os.mkdir(os.path.join(os.path.dirname(__file__), f'data/'))
     if os.path.exists(current_dir):
-        file = open(current_dir, 'r', encoding = 'UTF-8')
+        file = open(current_dir, 'r', encoding='UTF-8')
         config = json.load(file)
         if str(user_id) in list(config.keys()):
             return True
     return False
 
+
 # 若签到过就获取已经签到过的信息
 async def get_almanac_info(group_id, user_id):
     current_dir = os.path.join(os.path.dirname(__file__), f'data/{group_id}.json')
-    with open(current_dir, 'r', encoding = 'UTF-8') as f:
+    with open(current_dir, 'r', encoding='UTF-8') as f:
         config = json.load(f)
     user_id = str(user_id)
     msg = f'''

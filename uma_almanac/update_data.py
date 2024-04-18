@@ -1,5 +1,6 @@
-import os
 import json
+import os
+
 
 # 创建文件
 async def create_json(_current_dir):
@@ -9,9 +10,10 @@ async def create_json(_current_dir):
             json.dump(data, f)
         return data
     else:
-        with open(_current_dir, 'r', encoding = 'UTF-8') as f:
+        with open(_current_dir, 'r', encoding='UTF-8') as f:
             config = json.load(f)
         return config
+
 
 # 写入信息
 async def write_info(*args):
