@@ -1,5 +1,5 @@
-import os
 import json
+import os
 import random
 
 from hoshino import R
@@ -9,29 +9,30 @@ from hoshino import R
 # 最大抽卡抽数，即一井
 max_gacha = 200
 # UP概率（单位：千分之）
-up_prob = 15
+up_prob_default = 15
 # 包括UP在内的三星概率（单位：千分之）
-s3_prob = 30
+s3_prob_default = 30
 # 二星概率（单位：千分之）
-s2_prob = 180
+s2_prob_default = 180
 # 一星概率（单位：千分之）
-s1_prob = 790
+s1_prob_default = 790
+
 
 # ===================
 
 # 抽卡类
 class Gacha(object):
-    def __init__(self, pool_id, gacha_type, server = 'jp'):
+    def __init__(self, pool_id, gacha_type, server='jp'):
         super().__init__()
         self.server = server
         # 卡池数据
         self.pool = self.get_pool(pool_id, server)
-        self.result = {'up': [], 's3': [], 's2':[], 's1':[]}
+        self.result = {'up': [], 's3': [], 's2': [], 's1': []}
         self.first_up = 999999
-        self.up_prob = up_prob
-        self.s3_prob = s3_prob
-        self.s2_prob = s2_prob
-        self.s1_prob = s1_prob
+        self.up_prob = up_prob_default
+        self.s3_prob = s3_prob_default
+        self.s2_prob = s2_prob_default
+        self.s1_prob = s1_prob_default
         # rank
         high_rank = '3' if gacha_type == 'uma' else 'SSR'
         mid_rank = '2' if gacha_type == 'uma' else 'SR'
@@ -43,7 +44,8 @@ class Gacha(object):
         self.star1 = self.pool[f'other_{gacha_type}'][low_rank]
 
     # 获取卡池信息
-    def get_pool(self, pool_id, server):
+    @staticmethod
+    def get_pool(pool_id, server):
         gacha_path = os.path.join(R.img('umamusume').path, 'uma_gacha')
         with open(os.path.join(gacha_path, 'uma_pool.json'), 'r', encoding='utf-8') as f:
             config = json.load(f)
@@ -54,18 +56,19 @@ class Gacha(object):
         return pool
 
     # 抽卡并整理数据
-    def sort_result(self, i:int, first_up:int, result:dict, select:str = None):
+    def sort_result(self, i: int, first_up: int, result: dict, select: str = None):
         is_select = False
         if i % 10:
-            chara, res_type = self.gacha_one(up_prob, s3_prob, s2_prob, s1_prob)
+            chara, res_type = self.gacha_one(up_prob_default, s3_prob_default, s2_prob_default, s1_prob_default)
         # 十连保底
         else:
-            chara, res_type = self.gacha_one(up_prob, s3_prob, s2_prob + s1_prob, 0)
+            chara, res_type = self.gacha_one(up_prob_default, s3_prob_default, s2_prob_default + s1_prob_default, 0)
         if res_type == 'up':
             result['up'].append(chara)
             first_up = min(i, first_up)
             # 想要的选择UP卡
-            if chara == select: is_select = True
+            if chara == select:
+                is_select = True
         else:
             result[res_type].append(chara)
         return first_up, result, is_select
@@ -108,7 +111,8 @@ class Gacha(object):
             for i in range(1, 11, 1):
                 k = ten_num * 10 + i
                 first_up, result, is_select = self.sort_result(k, first_up, result, select_chart)
-                if is_select: up_num += 1
+                if is_select:
+                    up_num += 1
             if ten_num and not ten_num % (max_gacha // 10):
                 exchange += 1
                 up_num += 1

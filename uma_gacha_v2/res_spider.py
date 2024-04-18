@@ -1,11 +1,12 @@
-import httpx
 import json
 import os
-from bs4 import BeautifulSoup
 
+import httpx
+from bs4 import BeautifulSoup
 from hoshino import R, logger
 
 gacha_path = os.path.join(R.img('umamusume').path, 'uma_gacha')
+
 
 # 下载图片资源
 async def download_img(res_type_f, filename, img_url):
@@ -21,6 +22,7 @@ async def download_img(res_type_f, filename, img_url):
             logger.info(f'未检测到马娘抽卡图片 {filename} ，现已下载成功')
         except Exception as e:
             logger.info(f'下载马娘抽卡图片 {filename} 时出现异常：{e}')
+
 
 # 获取资源数据
 async def get_res():

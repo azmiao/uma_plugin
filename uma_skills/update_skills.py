@@ -37,7 +37,6 @@ async def update_info():
     # 获取所有技能
     f_data['skills'] = {}
     res_tag = soup.find('div', {'id': 'jn-json'})
-    res_tag = soup.find('div', {'id': 'jn-json'})
     data_list_str = res_tag.text.replace(' ', '').replace('<br/>', '').replace('&#160;', '_').replace(',]', ']')
     # print(data_list_str)
     data_list = json.loads(data_list_str)

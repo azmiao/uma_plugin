@@ -4,15 +4,19 @@ import os
 
 from hoshino import Service, priv
 
-from .caculate import judge_name, get_relation
+from .caculate import get_relation
 from .update_type import update as com_update
 from ..plugin_utils.base_util import get_img_cq
+from ..uma_info.info_utils import *
 
 sv = Service('uma_compatibility')
 with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
     base64_data = base64.b64encode(f.read())
     s = base64_data.decode()
 sv.help = f'![](data:image/jpeg;base64,{s})'
+
+config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
+current_dir = os.path.join(config_dir, 'config_v2.json')
 
 
 # 帮助界面
@@ -27,74 +31,83 @@ async def get_help(bot, ev):
 async def calculate(bot, ev):
     all_text = ev.message.extract_plain_text()
     if not all_text:
-        await bot.finish(ev, '格式错误，请参考“马娘相性帮助”')
+        await bot.send(ev, '格式错误，请参考“马娘相性帮助”')
+        return
     text_list = all_text.split(' ')
-    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r',
-              encoding='UTF-8') as f:
-        f_data = json.load(f)
-        f.close()
-    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/replace_dict.json'), 'r',
-              encoding='UTF-8') as af:
-        replace_data = json.load(af)
-        af.close()
+
+    if len(text_list) not in [2, 7, 8]:
+        await bot.send(ev, '格式错误，请参考“马娘相性帮助”')
+        return
+
+    with open(current_dir, 'r', encoding='UTF-8') as file:
+        f_data = json.load(file)
+    rep_dir = os.path.join(config_dir, 'replace_dict.json')
+    with open(rep_dir, 'r', encoding='UTF-8') as file:
+        replace_data = json.load(file)
     with open(os.path.join(os.path.dirname(__file__), 'relation_type.json'), 'r', encoding='UTF-8') as sf:
         r_data_list = json.load(sf)
-        sf.close()
-    try:
-        self = judge_name(text_list[0], f_data, replace_data)
-        mother = judge_name(text_list[1], f_data, replace_data)
-    except IndexError:
-        return
+
+    self_uma = await query_uma_by_name(text_list[0], f_data, replace_data)
+    mother_uma = await query_uma_by_name(text_list[1], f_data, replace_data)
+
     # 仅查两者之间的相性
-    try:
-        _ = text_list[2]
-    except:
+    if len(text_list) == 2:
         msg_list = []
-        if not self:
-            msg_list.append(f'输入错误，你输入的 马娘1：{text_list[0]} 无法识别！')
-        if not mother:
-            msg_list.append(f'输入错误，你输入的 马娘2：{text_list[1]} 无法识别！')
+        if not self_uma:
+            msg_list.append(f'输入错误，你输入的 父母1：{text_list[0]} 无法识别！')
+        if not mother_uma:
+            msg_list.append(f'输入错误，你输入的 父母2：{text_list[1]} 无法识别！')
         if msg_list:
             msg = '\n'.join(msg_list)
-            await bot.finish(ev, msg)
+            await bot.send(ev, msg)
+            return
+
+        self = self_uma.cn_name
+        mother = mother_uma.cn_name
+
         relation = get_relation(r_data_list, [self, mother])
         msg = f'{self} 和 {mother} 的相性值为：{relation}'
-        await bot.finish(ev, msg)
+        await bot.send(ev, msg)
+        return
+
     # 查总相性
-    grandmother = judge_name(text_list[2], f_data, replace_data)
-    grandfather = judge_name(text_list[3], f_data, replace_data)
-    father = judge_name(text_list[4], f_data, replace_data)
-    grandmother_in_law = judge_name(text_list[5], f_data, replace_data)
-    grandfather_in_law = judge_name(text_list[6], f_data, replace_data)
+    grandmother_uma = await query_uma_by_name(text_list[2], f_data, replace_data)
+    grandfather_uma = await query_uma_by_name(text_list[3], f_data, replace_data)
+    father_uma = await query_uma_by_name(text_list[4], f_data, replace_data)
+    grandmother_in_law_uma = await query_uma_by_name(text_list[5], f_data, replace_data)
+    grandfather_in_law_uma = await query_uma_by_name(text_list[6], f_data, replace_data)
+
     msg_list = []
-    if not self:
+    if not self_uma:
         msg_list.append(f'输入错误，你输入的 本体：{text_list[0]} 无法识别！')
-    if not mother:
+    if not mother_uma:
         msg_list.append(f'输入错误，你输入的 父母1：{text_list[1]} 无法识别！')
-    if not grandmother:
+    if not grandmother_uma:
         msg_list.append(f'输入错误，你输入的 祖父母1：{text_list[2]} 无法识别！')
-    if not grandfather:
+    if not grandfather_uma:
         msg_list.append(f'输入错误，你输入的 祖父母2：{text_list[3]} 无法识别！')
-    if not father:
+    if not father_uma:
         msg_list.append(f'输入错误，你输入的 父母2：{text_list[4]} 无法识别！')
-    if not grandmother_in_law:
+    if not grandmother_in_law_uma:
         msg_list.append(f'输入错误，你输入的 祖父母3：{text_list[5]} 无法识别！')
-    if not grandfather_in_law:
+    if not grandfather_in_law_uma:
         msg_list.append(f'输入错误，你输入的 祖父母4：{text_list[6]} 无法识别！')
     if msg_list:
         msg = '\n'.join(msg_list)
-        await bot.finish(ev, msg)
+        await bot.send(ev, msg)
+        return
+
     try:
         win_saddle = int(text_list[7])
     except:
         win_saddle = 0
-    relation = get_relation(r_data_list, [self, mother])
-    relation += get_relation(r_data_list, [self, mother, grandmother])
-    relation += get_relation(r_data_list, [self, mother, grandfather])
-    relation += get_relation(r_data_list, [self, father])
-    relation += get_relation(r_data_list, [self, father, grandmother_in_law])
-    relation += get_relation(r_data_list, [self, father, grandfather_in_law])
-    relation += get_relation(r_data_list, [mother, father])
+    relation = get_relation(r_data_list, [self_uma.cn_name, mother_uma.cn_name])
+    relation += get_relation(r_data_list, [self_uma.cn_name, mother_uma.cn_name, grandmother_uma.cn_name])
+    relation += get_relation(r_data_list, [self_uma.cn_name, mother_uma.cn_name, grandfather_uma.cn_name])
+    relation += get_relation(r_data_list, [self_uma.cn_name, father_uma.cn_name])
+    relation += get_relation(r_data_list, [self_uma.cn_name, father_uma.cn_name, grandmother_in_law_uma.cn_name])
+    relation += get_relation(r_data_list, [self_uma.cn_name, father_uma.cn_name, grandfather_in_law_uma.cn_name])
+    relation += get_relation(r_data_list, [mother_uma.cn_name, father_uma.cn_name])
     end_relation = relation + win_saddle
     if 51 > end_relation >= 0:
         msg = f'最终计算出的相性值为：{end_relation}\n匹配符号：△'
@@ -107,36 +120,34 @@ async def calculate(bot, ev):
 
 @sv.on_prefix('相性榜')
 async def best_com(bot, ev):
-    self_tmp = ev.message
-    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r',
-              encoding='UTF-8') as df:
-        f_data = json.load(df)
-        df.close()
-    name_list = list(f_data.keys())
-    name_list.remove('current_chara')
-    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/replace_dict.json'), 'r',
-              encoding='UTF-8') as af:
-        replace_data = json.load(af)
-        af.close()
-    self = judge_name(self_tmp, f_data, replace_data)
-    if not self:
-        msg = f'输入错误，你输入的 马娘：{self_tmp} 无法识别！'
-        await bot.finish(ev, msg)
+    self_tmp = str(ev.message).strip()
+
+    with open(current_dir, 'r', encoding='UTF-8') as file:
+        f_data = json.load(file)
+    rep_dir = os.path.join(config_dir, 'replace_dict.json')
+    with open(rep_dir, 'r', encoding='UTF-8') as file:
+        replace_data = json.load(file)
     with open(os.path.join(os.path.dirname(__file__), 'relation_type.json'), 'r', encoding='UTF-8') as sf:
         r_data_list = json.load(sf)
-        sf.close()
+
+    self_uma = await query_uma_by_name(self_tmp, f_data, replace_data)
+    if not self_uma:
+        await bot.send(ev, f'输入错误，你输入的马娘：{self_tmp} 无法识别！')
+        return
+
     relation_dict = {}
-    for uma_name in name_list:
-        cn_name = f_data[uma_name]['cn_name']
+    for uma_raw in f_data.values():
+        uma = uma_from_dict(uma_raw)
+        cn_name = uma.cn_name
         if cn_name:
-            relation = get_relation(r_data_list, [self, cn_name])
+            relation = get_relation(r_data_list, [self_uma.cn_name, cn_name])
             relation_dict[cn_name] = relation
     relation_order_list = sorted(relation_dict.items(), key=lambda x: x[1], reverse=True)
-    msg, i = f'和 {self} 相性前十的马娘为：', 0
+    msg, i = f'和 {self_uma.cn_name} 相性前十的马娘为：', 0
     for name_tuple in relation_order_list:
         cn_name = name_tuple[0]
         relation = name_tuple[1]
-        if cn_name != self:
+        if cn_name != self_uma.cn_name:
             if i < 10:
                 msg += f'\n{cn_name}：相性值 {str(relation)}'
                 i += 1

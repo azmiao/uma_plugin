@@ -4,14 +4,14 @@ import os
 from hoshino import Service, priv
 from hoshino.util import DailyNumberLimiter, FreqLimiter
 
-from .gacha import Gacha
+from .gacha_class import Gacha
 from .update_init import auto_update
 from .util import get_pool, get_img_path, generate_img, random_comment, server_list, \
     switch_server, switch_pool_id, get_pool_detail
 from ..plugin_utils.base_util import get_img_cq
 
-
-##########自定义配置##########
+# 自定义配置
+#############################
 
 # 每个人的指令冷却 | 默认10秒
 lmt = FreqLimiter(10)
@@ -44,8 +44,8 @@ sv.help = f'![](data:image/jpeg;base64,{s})'
 @sv.on_fullmatch("马娘抽卡帮助")
 async def sv_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
-    sv_help = await get_img_cq(img_path)
-    await bot.send(ev, sv_help)
+    sv_help_img = await get_img_cq(img_path)
+    await bot.send(ev, sv_help_img)
 
 
 # 马娘单抽
@@ -154,7 +154,7 @@ async def change_server(bot, ev):
     if not priv.check_priv(ev, priv.ADMIN):
         await bot.finish(ev, '切换服务器仅限群管理员操作哦~')
     server = str(ev.message)
-    if not server in server_list:
+    if server not in server_list:
         await bot.finish(ev, f'切换失败！目前仅支持服务器：\n{" | ".join(server_list)}')
     msg = await switch_server(group_id, server)
     await bot.send(ev, msg)

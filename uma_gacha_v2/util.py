@@ -1,11 +1,11 @@
-from email.policy import default
-import os
-import json
 import datetime
+import json
+import os
 
 from PIL import Image
 from hoshino import R
 from hoshino.util import pic2b64
+
 from ..plugin_utils.base_util import get_server_default
 
 # =====可调整数据=====
@@ -34,10 +34,13 @@ init_data = {
     'other_chart': {
         'SSR': [
             '【輝く景色の、その先に】サイレンススズカ', '【夢は掲げるものなのだっ！】トウカイテイオー',
-            '【Run(my)way】ゴールドシチー', '【はやい！うまい！はやい！】サクラバクシンオー', '【まだ小さな蕾でも】ニシノフラワー',
+            '【Run(my)way】ゴールドシチー', '【はやい！うまい！はやい！】サクラバクシンオー',
+            '【まだ小さな蕾でも】ニシノフラワー',
             '【必殺！Wキャロットパンチ！】ビコーペガサス', '【不沈艦の進撃】ゴールドシップ', '【待望の大謀】セイウンスカイ',
-            '【天をも切り裂くイナズマ娘！】タマモクロス', '【一粒の安らぎ】スーパークリーク', '【千紫万紅にまぎれぬ一凛】グラスワンダー',
-            '【飛び出せ、キラメケ】アイネスフウジン', '【B·N·Winner!!】ウイニングチケット', '【感謝は指先まで込めて】ファインモーション',
+            '【天をも切り裂くイナズマ娘！】タマモクロス', '【一粒の安らぎ】スーパークリーク',
+            '【千紫万紅にまぎれぬ一凛】グラスワンダー',
+            '【飛び出せ、キラメケ】アイネスフウジン', '【B·N·Winner!!】ウイニングチケット',
+            '【感謝は指先まで込めて】ファインモーション',
             '【7センチの先へ】エアシャカール', '【ロード·オブ·ウオッカ】ウオッカ', '【ようこそ、トレセン学園へ！】駿川たづな',
             '【パッションチャンピオーナ！】エルコンドルパサー', '【これが私のウマドル道☆】スマートファルコン',
             '【日本一のステージを】スペシャルウィーク'
@@ -47,35 +50,40 @@ init_data = {
             '【副会長の一刺し】エアグルーヴ', '【デジタル充電中+】アグネスデジタル', '【検証、開始】ビワハヤヒデ',
             '【カワイイ＋カワイイは～？】マヤノトップガン', '【雨の独奏、私の独創】マンハッタンカフェ',
             '【鍛えぬくトモ】ミホノブルボン', '【鍛えて、応えて！】メジロライアン', '【シチーガール入門＃】ユキノビジン',
-            '【生体Aに関する実験的研究】アグネスタキオン', '【0500·定刻通り】エイシンフラッシュ', '【波立つキモチ】ナリタタイシン',
-            '【マーベラス☆大作戦】マーベラスサンデー', '【運の行方】マチカネフクキタル', '【幸せと背中合わせ】メイショウドトウ',
+            '【生体Aに関する実験的研究】アグネスタキオン', '【0500·定刻通り】エイシンフラッシュ',
+            '【波立つキモチ】ナリタタイシン',
+            '【マーベラス☆大作戦】マーベラスサンデー', '【運の行方】マチカネフクキタル',
+            '【幸せと背中合わせ】メイショウドトウ',
             '【目線は気にせず】メジロドーベル', '【…ただの水滴ですって】ナイスネイチャ', '【一流プランニング】キングヘイロー',
             '【共に同じ道を！】桐生院葵', '【これがウチらのいか焼きや！】タマモクロス'
         ]
     }
 }
 
+
 # 计算开服时间差, 前面大后面小时返回为正数，反之则反
-async def get_differ(server_A, server_B) -> int:
-    server_A_time = datetime.datetime.strptime(server_data[server_A], '%Y-%m-%d')
-    server_B_time = datetime.datetime.strptime(server_data[server_B], '%Y-%m-%d')
+async def get_differ(server_a, server_b) -> int:
+    server_A_time = datetime.datetime.strptime(server_data[server_a], '%Y-%m-%d')
+    server_B_time = datetime.datetime.strptime(server_data[server_b], '%Y-%m-%d')
     differ = (server_A_time - server_B_time).days
     return differ
+
 
 # 根据某个服的卡池ID计算其他池子对应的卡池ID
 # 输入：服务器A 和 服务器B 和 服务器A的某个卡池ID
 # 输出：服务器B的对应卡池ID
-async def get_correspond(server_A, server_B, pool_id) -> str:
+async def get_correspond(server_a, server_b, pool_id) -> str:
     if pool_id == '00000000':
         return pool_id
-    if (server_A not in server_list) or (server_B not in server_list):
+    if (server_a not in server_list) or (server_b not in server_list):
         raise 'input error: server_A or server_B not in server_list!'
-    differ = await get_differ(server_A, server_B)
+    differ = await get_differ(server_a, server_b)
     year, month, day = pool_id[:4], pool_id[4:6], pool_id[6:8]
     A_time = datetime.datetime.strptime(f'{year}-{month}-{day}', '%Y-%m-%d')
     B_time = A_time - datetime.timedelta(days=differ)
     new_pool_id = str(B_time).replace('-', '')[:8]
     return new_pool_id
+
 
 # 获取某个服务器的最新卡池ID
 async def get_new_pool_id(server):
@@ -84,6 +92,7 @@ async def get_new_pool_id(server):
         pool_data = json.load(f)
     pool_list = list(pool_data[server].keys())
     return pool_list[0]
+
 
 # 创建服务器选择数据文件
 # 文件已经存在的话会更新最新的池子ID，不会修改选择的服务器和默认服务器
@@ -96,8 +105,8 @@ async def update_select_data():
         with open(select_data_path, 'r', encoding='utf-8') as f:
             select_data = json.load(f)
         # 修改默认池子的ID
-        server_defalut = select_data['default']['server']
-        pool_id = await get_new_pool_id(server_defalut)
+        server_default = select_data['default']['server']
+        pool_id_default = await get_new_pool_id(server_default)
         select_data['default']['pool_id'] = pool_id_default
         # 修改分群的池子的ID
         group_list = list(select_data['group'].keys())
@@ -117,9 +126,10 @@ async def update_select_data():
     with open(select_data_path, 'w', encoding='utf-8') as f:
         json.dump(select_data, f, ensure_ascii=False, indent=4)
 
+
 # 获取当前群使用的卡池
 # 返回：服务器, 池子ID
-async def get_pool(group_id:str):
+async def get_pool(group_id: str):
     select_data_path = os.path.join(gacha_path, 'select_data.json')
     with open(select_data_path, 'r', encoding='utf-8') as f:
         select_data = json.load(f)
@@ -128,6 +138,7 @@ async def get_pool(group_id:str):
         return select_data['default']['server'], select_data['default']['pool_id']
     else:
         return select_data['group'][group_id]['server'], select_data['group'][group_id]['pool_id']
+
 
 # 获取单个卡的图片路径
 async def get_img_path(chara, gacha_type):
@@ -139,20 +150,22 @@ async def get_img_path(chara, gacha_type):
     img_path_abs = os.path.abspath(img_path)
     return img_path_abs
 
+
 # 生成多抽的图片
-async def generate_img(result_list:list, gacha_type):
+async def generate_img(result_list: list, gacha_type):
     # 图片压缩倍率，1为不压缩，越大压缩率越高，默认2节省带宽
     zoom = 2
     height_count = max((len(result_list) - 1) // 5 + 1, 2)
-    w = 256//zoom if gacha_type == 'uma' else 384//zoom
-    h = 280//zoom if gacha_type == 'uma' else 512//zoom
+    w = 256 // zoom if gacha_type == 'uma' else 384 // zoom
+    h = 280 // zoom if gacha_type == 'uma' else 512 // zoom
     full_wh = (w * 5, h * height_count)
     background = Image.new('RGBA', full_wh, 'white')
-    for i in range(1, len(result_list)+1, 1):
-        colomn = i % 5 - 1
-        if colomn == -1: colomn = 4
+    for i in range(1, len(result_list) + 1, 1):
+        column = i % 5 - 1
+        if column == -1:
+            column = 4
         row = (i - 1) // 5
-        pos = (colomn * w, row * h)
+        pos = (column * w, row * h)
         chara = result_list[i - 1]
         img_path = await get_img_path(chara, gacha_type)
         avatar = Image.open(img_path).convert("RGBA")
@@ -160,6 +173,7 @@ async def generate_img(result_list:list, gacha_type):
         background.paste(avatar, pos)
     result_image = pic2b64(background)
     return result_image
+
 
 # 生成评价
 async def random_comment(result, gacha_type, first_up, gacha_select):
@@ -177,6 +191,7 @@ async def random_comment(result, gacha_type, first_up, gacha_select):
     else:
         msg += f'\n其中第{first_up}抽首次出UP卡'
     return msg
+
 
 # 切换服务器
 async def switch_server(group_id, server):
@@ -198,6 +213,7 @@ async def switch_server(group_id, server):
         msg = f'本群已成功切换到服务器{server}，但由于目前暂未开服，仅提供开服卡池供娱乐，开服后会自动同步'
     return msg
 
+
 # 切换卡池
 async def switch_pool_id(group_id, pool_id):
     now_server, now_pool_id = await get_pool(group_id)
@@ -208,7 +224,7 @@ async def switch_pool_id(group_id, pool_id):
     with open(pool_data_path, 'r', encoding='utf-8') as f:
         pool_data = json.load(f)
     pool_list = list(pool_data[now_server].keys())
-    if not pool_id in pool_list:
+    if pool_id not in pool_list:
         msg = f'{now_server}中未找到该卡池！\n由于卡池ID过多，您可以去bwiki上查找需要的卡池\n'
         msg += f'注：卡池命名方式为卡池开始日期的前8位数字\n例如2022/07/29 12:00~2022/08/10 11:59对应的ID为：20220709'
         msg += f'\n另附bwiki的卡池链接：https://wiki.biligame.com/umamusume/%E5%8D%A1%E6%B1%A0'
@@ -224,6 +240,7 @@ async def switch_pool_id(group_id, pool_id):
     with open(select_data_path, 'w', encoding='utf-8') as f:
         json.dump(select_data, f, ensure_ascii=False, indent=4)
     return f'本群已成功切换到{now_server}服的卡池{pool_id}'
+
 
 # 获取当前卡池的信息详情
 async def get_pool_detail(group_id):
