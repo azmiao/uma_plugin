@@ -1,10 +1,12 @@
-from prettytable import PrettyTable
-from PIL import Image, ImageDraw, ImageFont
 import os
-from fuzzywuzzy import process
 
+from PIL import Image, ImageDraw, ImageFont
+from fuzzywuzzy import process
 from hoshino import R, logger
+from prettytable import PrettyTable
+
 from ..plugin_utils.base_util import get_img_cq
+
 
 async def create_msg(skill_name: str, f_data):
     msg = f'''
@@ -23,6 +25,7 @@ PT评价比：{f_data['skills'][skill_name]['PT评价比']}
 技能类型：{f_data['skills'][skill_name]['技能类型']}
     '''.strip()
     return msg
+
 
 # 获取马娘技能内容
 async def get_skill_info(skill_name: str, f_data):
@@ -54,8 +57,9 @@ async def get_skill_info(skill_name: str, f_data):
     msg = f'未找到相关技能，您有{score}%的可能在查询技能：{skill_name}'
     return msg
 
+
 # 获取马娘技能列表
-async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list:list, f_data):
+async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list: list, f_data):
     data_dict = {
         'title': '',
         'info': {}
@@ -66,7 +70,8 @@ async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list:li
         limit_tmp = limit if limit else f_data['skills'][skill_jp_name]['条件限制']
         color_tmp = color if color else f_data['skills'][skill_jp_name]['颜色']
         # 当前技能类型列表
-        text = f_data['skills'][skill_jp_name]['技能类型'].replace('条件1: ', '、').replace('条件2: ', '、').replace('条件3: ', '、')
+        text = f_data['skills'][skill_jp_name]['技能类型'].replace('条件1: ', '、').replace('条件2: ', '、').replace(
+            '条件3: ', '、')
         currrent_type_list = text.split('、')
         # 去除空值
         currrent_type_list = list(set(currrent_type_list))
@@ -76,10 +81,10 @@ async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list:li
         type_list_tmp = skill_type_list if skill_type_list else currrent_type_list
         # 判断条件
         if rarity_tmp == f_data['skills'][skill_jp_name]['稀有度'] and \
-        limit_tmp == f_data['skills'][skill_jp_name]['条件限制'] and \
-        color_tmp == f_data['skills'][skill_jp_name]['颜色'] and \
-        all(elem in currrent_type_list for elem in type_list_tmp):
-            data_dict['info'][skill_jp_name] =  f_data['skills'][skill_jp_name]
+                limit_tmp == f_data['skills'][skill_jp_name]['条件限制'] and \
+                color_tmp == f_data['skills'][skill_jp_name]['颜色'] and \
+                all(elem in currrent_type_list for elem in type_list_tmp):
+            data_dict['info'][skill_jp_name] = f_data['skills'][skill_jp_name]
     # 如果未找到任何数据
     if not data_dict['info']:
         return f'没有搜索出任何马娘技能呢，请确保你输入的检索条件正确且无冲突！'
@@ -107,6 +112,7 @@ async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list:li
     msg = await get_img_cq(img_dir)
     return msg
 
+
 # 生成图片
 async def create_img(info_data, filename_tmp):
     field_names = (
@@ -115,7 +121,7 @@ async def create_img(info_data, filename_tmp):
         '需要PT', 'PT评价比', '触发条件', '技能类型'
     )
     titles = info_data['title']
-    table = PrettyTable(field_names = field_names, title = titles)
+    table = PrettyTable(field_names=field_names, title=titles)
 
     for skill_name in list(info_data['info'].keys()):
         cn_name = info_data['info'][skill_name]['中文名']
@@ -139,14 +145,14 @@ async def create_img(info_data, filename_tmp):
     space = 5
     current_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'simhei.ttf')
     font = ImageFont.truetype(current_dir, 20, encoding='utf-8')
-    im = Image.new('RGB',(10, 10),(255, 255, 255, 0))
+    im = Image.new('RGB', (10, 10), (255, 255, 255, 0))
     draw = ImageDraw.Draw(im, 'RGB')
     img_size = draw.multiline_textsize(table_info, font=font)
-    im_new = im.resize((img_size[0]+space*2, img_size[1]+space*2))
+    im_new = im.resize((img_size[0] + space * 2, img_size[1] + space * 2))
     del draw
     del im
     draw = ImageDraw.Draw(im_new, 'RGB')
-    draw.multiline_text((space,space), table_info, fill=(0, 0, 0), font=font)
+    draw.multiline_text((space, space), table_info, fill=(0, 0, 0), font=font)
     save_dir = os.path.join(R.img('umamusume').path, 'uma_skills/')
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
