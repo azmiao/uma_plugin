@@ -3,7 +3,7 @@ import os
 from git.repo import Repo
 from hoshino import R, logger
 
-from ..plugin_utils.base_util import delete_dir, copy_file
+from ..plugin_utils.base_util import delete_dir, delete_file, copy_file
 
 # 基础数据源
 data_url = 'https://github.com/azmiao/uma_info_data.git'
@@ -38,13 +38,18 @@ async def download_info_data() -> bool:
 async def del_all_dir():
     # 需要删除的路径
     delete_path_list = [
-        os.path.join(os.path.dirname(__file__), f'config_tmp.json'),
-        os.path.join(os.path.dirname(__file__), f'config.json'),
         os.path.join(R.img('umamusume').path, f'uma_bir'),
         os.path.join(R.img('umamusume').path, f'uma_voice')
     ]
+    # 需要删除的文件
+    delete_file_list = [
+        os.path.join(os.path.dirname(__file__), f'config_tmp.json'),
+        os.path.join(os.path.dirname(__file__), f'config.json')
+    ]
     for delete_path in delete_path_list:
         await delete_dir(delete_path)
+    for file in delete_file_list:
+        await delete_file(file)
 
 
 # 更新数据

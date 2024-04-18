@@ -97,6 +97,18 @@ async def delete_dir(dir_path):
         logger.error(f'> path[{dir_path}] delete failed: {e}')
 
 
+# 删除文件
+async def delete_file(file_path):
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            logger.info(f'> file[{file_path}] has deleted!')
+        else:
+            logger.warn(f'> file[{file_path}] is not exist!')
+    except Exception as e:
+        logger.error(f'> file[{file_path}] delete failed: {e}')
+
+
 # 复制文件
 async def copy_file(source, destination):
     try:
