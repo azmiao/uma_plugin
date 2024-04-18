@@ -1,10 +1,11 @@
-import os
-import json
 import base64
+import json
+import os
 
 from hoshino import Service, priv, R
-from .update_tasks import del_img, update_info, del_img
+
 from .generate import get_title, get_task_info
+from .update_tasks import del_img, update_info, del_img
 from ..plugin_utils.base_util import get_img_cq
 
 current_dir = os.path.join(os.path.dirname(__file__), f'tasks_config.json')
@@ -15,17 +16,19 @@ with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') 
     s = base64_data.decode()
 sv.help = f'![](data:image/jpeg;base64,{s})'
 
+
 @sv.on_fullmatch('马娘限时任务帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
+
 @sv.on_rex(r'^限时任务(\S{1,3})$')
 async def check_meanings(bot, ev):
     task_id = ev['match'].group(1)
-    with open(current_dir, 'r', encoding='UTF-8') as f:
-        f_data = json.load(f)
+    with open(current_dir, 'r', encoding='UTF-8') as file:
+        f_data = json.load(file)
     if task_id == '列表':
         task_list = []
         for task_id_tmp in list(f_data['tasks'].keys()):
@@ -38,10 +41,11 @@ async def check_meanings(bot, ev):
     except:
         return
     number = int(f_data['number'])
-    if task_id not in range(1, number+1):
+    if task_id not in range(1, number + 1):
         await bot.finish(ev, f'未找到此编号的限时任务：{task_id}\n目前支持 1-{number}')
     msg = await get_task_info(str(task_id), f_data)
     await bot.send(ev, msg)
+
 
 # 手动更新本地数据
 @sv.on_fullmatch('手动更新限时任务')

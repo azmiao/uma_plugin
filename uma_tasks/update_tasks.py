@@ -1,14 +1,15 @@
-from bs4 import BeautifulSoup
-import os
 import json
+import os
 import re
-from datetime import datetime
 import shutil
+from datetime import datetime
 
+from bs4 import BeautifulSoup
 from hoshino import aiorequests
 
 url = 'https://wiki.biligame.com/umamusume/期间限定任务'
 current_dir = os.path.join(os.path.dirname(__file__), f'tasks_config.json')
+
 
 # 获取标题列表
 async def get_title_list(soup):
@@ -18,6 +19,7 @@ async def get_title_list(soup):
         title_list.append(title.text.replace('\u3000', ''))
     return title_list
 
+
 # 获取最新的更新时间
 async def get_update_time():
     update_url = 'https://wiki.biligame.com/umamusume/index.php?title=期间限定任务&action=history'
@@ -25,8 +27,10 @@ async def get_update_time():
     soup = BeautifulSoup(await rep.text, 'lxml')
     last_time_tmp = soup.find('a', {'class': 'mw-changeslist-date'}).text.replace(' ', '')
     group = re.search(r'^([0-9]{4})年([0-9]{1,2})月([0-9]{1,2})日\S*([0-9]{2}):([0-9]{2})$', last_time_tmp)
-    last_time = datetime(int(group.group(1)), int(group.group(2)), int(group.group(3)), int(group.group(4)), int(group.group(5)))
+    last_time = datetime(int(group.group(1)), int(group.group(2)), int(group.group(3)), int(group.group(4)),
+                         int(group.group(5)))
     return last_time
+
 
 # 更新数据
 async def update_info():
@@ -88,6 +92,7 @@ async def update_info():
                 json.dump(f_data, f, indent=4, ensure_ascii=False)
             break
 
+
 # 判断是否有更新
 async def judge_update():
     last_time = await get_update_time()
@@ -98,6 +103,7 @@ async def judge_update():
         return True
     else:
         return False
+
 
 # 若有更新就删除已经生成过的所有图片
 async def del_img(root_path):
