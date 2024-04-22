@@ -4,6 +4,7 @@ import os
 import random
 
 from .update_data import write_info
+from ..uma_info.info_utils import *
 
 
 # 获取当前时间
@@ -56,23 +57,22 @@ async def get_msg(group_id, user_id):
 
 # 获取角色
 async def get_chara():
-    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r',
-              encoding='UTF-8') as f:
-        f_data = json.load(f)
-    name_list = list(f_data.keys())
-    name_list.remove('current_chara')
-    chara_list = []
-    for uma_name in name_list:
-        if f_data[uma_name]['cn_name']:
-            chara_list.append(f_data[uma_name]['cn_name'])
+    current_dir = os.path.join(os.path.dirname(__file__), 'config_v2.json')
+    with open(current_dir, 'r', encoding='UTF-8') as file:
+        f_data = json.load(file)
+    rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
+    with open(rep_dir, 'r', encoding='UTF-8') as file:
+        replace_data = json.load(file)
+
+    chara_list = [await query_uma_name(uma_from_dict(uma_raw), replace_data) for uma_raw in f_data.values()]
     return random.choice(chara_list)
 
 
 # 判断是否已经签到过
 async def judge(group_id, user_id):
-    current_dir = os.path.join(os.path.dirname(__file__), f'data/{group_id}.json')
-    if not os.path.exists(os.path.join(os.path.dirname(__file__), f'data/')):
-        os.mkdir(os.path.join(os.path.dirname(__file__), f'data/'))
+    current_dir = os.path.join(os.path.dirname(__file__), 'data', f'{group_id}.json')
+    if not os.path.exists(os.path.join(os.path.dirname(__file__), f'data')):
+        os.mkdir(os.path.join(os.path.dirname(__file__), f'data'))
     if os.path.exists(current_dir):
         file = open(current_dir, 'r', encoding='UTF-8')
         config = json.load(file)
@@ -83,7 +83,7 @@ async def judge(group_id, user_id):
 
 # 若签到过就获取已经签到过的信息
 async def get_almanac_info(group_id, user_id):
-    current_dir = os.path.join(os.path.dirname(__file__), f'data/{group_id}.json')
+    current_dir = os.path.join(os.path.dirname(__file__), 'data', f'{group_id}.json')
     with open(current_dir, 'r', encoding='UTF-8') as f:
         config = json.load(f)
     user_id = str(user_id)

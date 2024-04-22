@@ -13,6 +13,7 @@ from hoshino import R, aiorequests
 from .news_class import NewsClass
 from .translator_lite.apis import youdao
 from ..plugin_utils.base_util import get_img_cq, get_proxy
+from ..uma_info.info_utils import *
 
 # 随机挑选一个小可爱作为header
 user_agent_list = [
@@ -206,15 +207,14 @@ async def replace_text(text_tmp):
         value = other_dict[key]
         text = text.replace(f'{key}', f'{value}')
     # 替换马娘名字，来自马娘基础数据库
-    with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info/config.json'), 'r',
-              encoding='UTF-8') as f:
-        f_data = json.load(f)
-    name_list = list(f_data.keys())
-    name_list.remove('current_chara')
-    for uma_name in name_list:
-        jp_name = f_data[uma_name]['jp_name']
-        cn_name = f_data[uma_name]['cn_name']
-        text = text.replace(f'{jp_name}', f'{cn_name}')
+    current_dir = os.path.join(os.path.dirname(__file__), 'config_v2.json')
+    with open(current_dir, 'r', encoding='UTF-8') as file:
+        f_data = json.load(file)
+
+    for uma_raw in f_data.values():
+        uma = uma_from_dict(uma_raw)
+        if uma.cn_name:
+            text = text.replace(f'{uma.name}', f'{uma.cn_name}')
     return text
 
 
@@ -252,10 +252,10 @@ async def translate_news(news_id):
         news_text = await second_replace(news_text)
         if res_dict['detail']['image_big']:
             img_url = res_dict['detail']['image_big']
-            dir_path = os.path.join(R.img('umamusume').path, 'umamusume_news/')
+            dir_path = os.path.join(R.img('umamusume').path, 'umamusume_news')
             if not os.path.exists(dir_path):
                 os.mkdir(dir_path)
-            save_dir = os.path.join(R.img('umamusume').path, f'umamusume_news/news_img_{news_id}.jpg')
+            save_dir = os.path.join(R.img('umamusume').path, f'umamusume_news', f'news_img_{news_id}.jpg')
             if not os.path.exists(save_dir):
                 response = await aiorequests.get(url=img_url, proxies=get_proxy())
                 with open(save_dir, 'wb') as f:
