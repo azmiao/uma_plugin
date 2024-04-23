@@ -1,5 +1,4 @@
 import asyncio
-import datetime
 import json
 import operator
 import os
@@ -118,7 +117,7 @@ async def get_news(server):
     news_list = await sort_news(server)
     msg = '◎◎ ' + query_dict.get(server, {}).get('server_name', '') + '马娘官网新闻 ◎◎\n'
     for news in news_list:
-        news_time = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
+        news_time = datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
         if 'jp' == server:
             # 日本时间早一小时
             news_time = news_time - timedelta(hours=1)
@@ -137,14 +136,14 @@ async def news_broadcast(server, news_list):
     current_dir = os.path.join(os.path.dirname(__file__), file_name)
     with open(current_dir, 'r', encoding="UTF-8") as f:
         init_time = str(f.read())
-    init_time = datetime.datetime.strptime(init_time, '%Y-%m-%d %H:%M:%S')
+    init_time = datetime.strptime(init_time, '%Y-%m-%d %H:%M:%S')
     msg = '◎◎ ' + query_dict.get(server, {}).get('server_name', '') + '马娘官网新闻更新 ◎◎\n'
     for news in news_list:
-        prev_time = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
+        prev_time = datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
         if init_time >= prev_time:
             break
         else:
-            time_tmp = datetime.datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
+            time_tmp = datetime.strptime(news.news_time, '%Y-%m-%d %H:%M:%S')
             news_time = time_tmp - timedelta(hours=1)
             msg += '\n' + str(news_time) + '\n' + news.news_title + '\n' + news.show_url + '\n'
 
@@ -207,7 +206,8 @@ async def replace_text(text_tmp):
         value = other_dict[key]
         text = text.replace(f'{key}', f'{value}')
     # 替换马娘名字，来自马娘基础数据库
-    current_dir = os.path.join(os.path.dirname(__file__), 'config_v2.json')
+    config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
+    current_dir = os.path.join(config_dir, 'config_v2.json')
     with open(current_dir, 'r', encoding='UTF-8') as file:
         f_data = json.load(file)
 

@@ -1,4 +1,3 @@
-import datetime
 import json
 import os
 import random
@@ -9,7 +8,7 @@ from ..uma_info.info_utils import *
 
 # 获取当前时间
 async def get_time():
-    now_time = datetime.datetime.now()
+    now_time = datetime.now()
     now_time = now_time.strftime('%Y-%m-%d %H:%M:%S')
     return now_time
 
@@ -57,10 +56,11 @@ async def get_msg(group_id, user_id):
 
 # 获取角色
 async def get_chara():
-    current_dir = os.path.join(os.path.dirname(__file__), 'config_v2.json')
+    config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
+    current_dir = os.path.join(config_dir, 'config_v2.json')
     with open(current_dir, 'r', encoding='UTF-8') as file:
         f_data = json.load(file)
-    rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
+    rep_dir = os.path.join(config_dir, 'replace_dict.json')
     with open(rep_dir, 'r', encoding='UTF-8') as file:
         replace_data = json.load(file)
 

@@ -65,10 +65,11 @@ async def download_img(face_id, url):
 
 
 async def get_en_name(name_tmp):
-    current_dir = os.path.join(os.path.dirname(__file__), 'config_v2.json')
+    config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
+    current_dir = os.path.join(config_dir, 'config_v2.json')
     with open(current_dir, 'r', encoding='UTF-8') as file:
         f_data = json.load(file)
-    rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
+    rep_dir = os.path.join(config_dir, 'replace_dict.json')
     with open(rep_dir, 'r', encoding='UTF-8') as file:
         replace_data = json.load(file)
 
