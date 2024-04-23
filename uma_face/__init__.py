@@ -23,7 +23,7 @@ async def get_help(bot, ev):
 # 支持1到10个字符的马娘名字
 @sv.on_rex(r'^(\S{1,10})表情包$')
 async def get_uma_face(bot, ev):
-    uma_name_tmp = ev['match'].group(1)
+    uma_name_tmp = ev['match'].group(1).strip()
     if uma_name_tmp == '马娘':
         msg = await get_face_random()
     elif uma_name_tmp.endswith('号'):
@@ -41,7 +41,7 @@ async def get_uma_face(bot, ev):
 
 @sv.on_prefix(('查表情包含义', '查表情包涵义'))
 async def check_meanings(bot, ev):
-    uma_name_tmp = str(ev.message)
+    uma_name_tmp = str(ev.message).strip()
     if uma_name_tmp.endswith('号'):
         try:
             face_id = int(uma_name_tmp.replace('号', ''))

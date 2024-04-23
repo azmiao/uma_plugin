@@ -32,8 +32,8 @@ async def get_img_url():
         img_id = str(img_id)
         img_dict[img_id] = {}
         img_dict[img_id]['url'] = await adjust_url(gallery.get('src'))
-        en_name = await get_en_name(img_name)
-        img_dict[img_id]['en_name'] = en_name
+        uma_id = await get_uma_id(img_name)
+        img_dict[img_id]['en_name'] = uma_id
         img_id = int(img_id)
         img_id += 1
     return img_dict
@@ -70,7 +70,7 @@ async def download_img(comic_id, url):
 
 
 # 获取英文名
-async def get_en_name(name_tmp):
+async def get_uma_id(name_tmp):
     config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
     current_dir = os.path.join(config_dir, 'config_v2.json')
     with open(current_dir, 'r', encoding='UTF-8') as file:
@@ -80,20 +80,20 @@ async def get_en_name(name_tmp):
         replace_data = json.load(file)
 
     uma = await query_uma_by_name(name_tmp, f_data, replace_data)
-    return uma.en
+    return uma.id
 
 
 # 按马娘名字的漫画
 async def get_comic_uma(uma_name_tmp):
-    uma_name = await get_en_name(uma_name_tmp)
-    if not uma_name:
+    uma_id = await get_uma_id(uma_name_tmp)
+    if not uma_id:
         return ''
     path = os.path.join(R.img('umamusume').path, 'uma_comic')
     current_dir = os.path.join(os.path.dirname(__file__), f'comic_config.json')
     with open(current_dir, 'r', encoding='UTF-8') as f:
         img_data = json.load(f)
     for comic_id in list(img_data.keys()):
-        if img_data[comic_id]['en_name'] == uma_name:
+        if img_data[comic_id]['en_name'] == uma_id:
             img_path = os.path.join(path, f'uma_comic_{comic_id}.jpg')
             # 当文件丢失就重新下载
             if not os.path.exists(img_path):

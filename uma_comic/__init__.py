@@ -22,7 +22,7 @@ async def get_help(bot, ev):
 
 @sv.on_prefix('马娘漫画')
 async def check_meanings(bot, ev):
-    uma_name_tmp = str(ev.message)
+    uma_name_tmp = str(ev.message).strip()
     if not uma_name_tmp:
         msg = await get_comic_random()
     elif uma_name_tmp.endswith('号'):

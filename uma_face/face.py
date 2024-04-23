@@ -64,7 +64,7 @@ async def download_img(face_id, url):
         hoshino.logger.info(f'检测到马娘表情包 {face_id}.png 已存在，将不会重新下载')
 
 
-async def get_en_name(name_tmp):
+async def get_uma_id(name_tmp):
     config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
     current_dir = os.path.join(config_dir, 'config_v2.json')
     with open(current_dir, 'r', encoding='UTF-8') as file:
@@ -74,20 +74,20 @@ async def get_en_name(name_tmp):
         replace_data = json.load(file)
 
     uma = await query_uma_by_name(name_tmp, f_data, replace_data)
-    return uma.en
+    return uma.id
 
 
 # 按马娘名字的表情包
 async def get_face_uma(uma_name_tmp):
-    uma_name = await get_en_name(uma_name_tmp)
-    if not uma_name:
+    uma_id = await get_uma_id(uma_name_tmp)
+    if not uma_id:
         return ''
     path = os.path.join(R.img('umamusume').path, 'uma_face')
     current_dir = os.path.join(os.path.dirname(__file__), f'img_config.json')
     with open(current_dir, 'r', encoding='UTF-8') as f:
         img_data = json.load(f)
     for face_id in list(img_data.keys()):
-        if img_data[face_id]['en_name'] == uma_name:
+        if img_data[face_id]['en_name'] == uma_id:
             img_path = os.path.join(path, f'{face_id}.png')
             # 当文件丢失就重新下载
             if not os.path.exists(img_path):
@@ -140,15 +140,15 @@ async def get_mean_id(face_id):
 
 # 按马娘名字查含义
 async def get_mean_uma(uma_name_tmp):
-    uma_name = await get_en_name(uma_name_tmp)
-    if not uma_name:
+    uma_id = await get_uma_id(uma_name_tmp)
+    if not uma_id:
         return ''
     current_dir = os.path.join(os.path.dirname(__file__), f'img_config.json')
     with open(current_dir, 'r', encoding='UTF-8') as f:
         img_data = json.load(f)
     for face_id in list(img_data.keys()):
         en_name = img_data[face_id]['en_name']
-        if en_name == uma_name:
+        if en_name == uma_id:
             meanings = img_data[face_id]['meanings']
             face_id = str(int(face_id) - 100000)
             msg = f'该id: {face_id} 表情包的含义是：\n{meanings}'
