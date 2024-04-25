@@ -12,14 +12,14 @@ from ..uma_info.info_utils import *
 
 
 async def update_info():
-    img_dict = await get_imgurl()
+    img_dict = await get_img_dict()
     for img_id in list(img_dict.keys()):
         await download_img(img_id, img_dict[img_id]['url'])
     await create_config(img_dict)
 
 
 # 获取表情包的url字典
-async def get_imgurl():
+async def get_img_dict():
     url = 'https://wiki.biligame.com/umamusume/表情包'
     res = httpx.get(url, timeout=15)
     soup = BeautifulSoup(res.text, 'lxml')
@@ -74,7 +74,7 @@ async def get_uma_id(name_tmp):
         replace_data = json.load(file)
 
     uma = await query_uma_by_name(name_tmp, f_data, replace_data)
-    return uma.id
+    return uma.id if uma else None
 
 
 # 按马娘名字的表情包
@@ -95,7 +95,7 @@ async def get_face_uma(uma_name_tmp):
                 await download_img(face_id, url)
             face_id = str(int(face_id) - 100000)
             img = await get_img_cq(img_path)
-            msg = f'id: {face_id}{img}'
+            msg = f'> Face Id: {face_id}{img}'
             return msg
     return ''
 
@@ -121,7 +121,7 @@ async def get_face_random():
     face_id = file_name.replace('.png', '')
     face_id = str(int(face_id) - 100000)
     img = await get_img_cq(img_path)
-    return f'id: {face_id}{img}'
+    return f'> Face Id: {face_id}{img}'
 
 
 # 按编号查含义
@@ -134,7 +134,7 @@ async def get_mean_id(face_id):
         return f'此编号的表情包不存在哦，目前有的编号范围为 1 到 {length}'
     meanings = img_data[face_id]['meanings']
     face_id = str(int(face_id) - 100000)
-    msg = f'该id: {face_id} 表情包的含义是：\n{meanings}'
+    msg = f'> Face Id: {face_id} 表情包的含义是：\n{meanings}'
     return msg
 
 
@@ -151,6 +151,6 @@ async def get_mean_uma(uma_name_tmp):
         if en_name == uma_id:
             meanings = img_data[face_id]['meanings']
             face_id = str(int(face_id) - 100000)
-            msg = f'该id: {face_id} 表情包的含义是：\n{meanings}'
+            msg = f'> Face Id: {face_id} 表情包的含义是：\n{meanings}'
             return msg
     return ''

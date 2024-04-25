@@ -13,30 +13,37 @@ from ..uma_info.info_utils import *
 
 
 async def update_info():
-    img_dict = await get_img_url()
-    for img_id in list(img_dict.keys()):
-        await download_img(img_id, img_dict[img_id]['url'])
+    img_dict = await get_img_dict()
+    for image in img_dict:
+        await download_img(image.get('comic_id'), image.get('url'))
     await create_config(img_dict)
 
 
 # 获取漫画的url字典
-async def get_img_url():
+async def get_img_dict():
     url = 'https://wiki.biligame.com/umamusume/1格漫画'
     res = httpx.get(url, timeout=15)
     soup = BeautifulSoup(res.text, 'lxml')
-    img_dict = {}
+    img_list = []
     all_gallery = soup.find('ul', {"class": "gallery mw-gallery-slideshow"}).find_all('img')
-    img_id = 1
+    comic_id = 1
     for gallery in all_gallery:
-        img_name = gallery.get('alt').replace('.jpg', '').replace('.png', '').replace('一格', '')
-        img_id = str(img_id)
-        img_dict[img_id] = {}
-        img_dict[img_id]['url'] = await adjust_url(gallery.get('src'))
+        img_name_raw = gallery.get('alt').replace('.jpg', '').replace('.png', '').replace('一格', '')
+        match = re.match(r'^(\S+?)(\d*)$', img_name_raw)
+        img_name = match.group(1)
+
         uma_id = await get_uma_id(img_name)
-        img_dict[img_id]['en_name'] = uma_id
-        img_id = int(img_id)
-        img_id += 1
-    return img_dict
+        if not uma_id:
+            continue
+
+        img_list.append({
+            'comic_id': comic_id,
+            'url': await adjust_url(gallery.get('src')),
+            'uma_id': uma_id
+        })
+
+        comic_id += 1
+    return img_list
 
 
 # 调整url
@@ -49,7 +56,7 @@ async def adjust_url(url):
 
 # 创建json配置文件
 async def create_config(img_dict):
-    current_dir = os.path.join(os.path.dirname(__file__), f'comic_config.json')
+    current_dir = os.path.join(os.path.dirname(__file__), f'comic_config_v2.json')
     with open(current_dir, 'w', encoding='UTF-8') as af:
         json.dump(img_dict, af, indent=4, ensure_ascii=False)
 
@@ -80,7 +87,7 @@ async def get_uma_id(name_tmp):
         replace_data = json.load(file)
 
     uma = await query_uma_by_name(name_tmp, f_data, replace_data)
-    return uma.id
+    return uma.id if uma else None
 
 
 # 按马娘名字的漫画
@@ -89,20 +96,21 @@ async def get_comic_uma(uma_name_tmp):
     if not uma_id:
         return ''
     path = os.path.join(R.img('umamusume').path, 'uma_comic')
-    current_dir = os.path.join(os.path.dirname(__file__), f'comic_config.json')
+    current_dir = os.path.join(os.path.dirname(__file__), f'comic_config_v2.json')
     with open(current_dir, 'r', encoding='UTF-8') as f:
         img_data = json.load(f)
-    for comic_id in list(img_data.keys()):
-        if img_data[comic_id]['en_name'] == uma_id:
+    msg_list = []
+    for comic in img_data:
+        if comic.get('uma_id') == uma_id:
+            comic_id = comic.get('comic_id')
             img_path = os.path.join(path, f'uma_comic_{comic_id}.jpg')
             # 当文件丢失就重新下载
             if not os.path.exists(img_path):
-                url = img_data[comic_id]['url']
-                await download_img(comic_id, url)
+                await download_img(comic_id, comic.get('url'))
             img = await get_img_cq(img_path)
-            msg = f'id: {comic_id}{img}'
-            return msg
-    return ''
+            msg = f'> Comic Id: {comic_id}{img}'
+            msg_list.append(msg)
+    return '\n'.join(msg_list) if msg_list else None
 
 
 # 按编号的漫画
@@ -110,8 +118,7 @@ async def get_comic_id(comic_id):
     path = os.path.join(R.img('umamusume').path, 'uma_comic')
     img_path = os.path.join(path, f'uma_comic_{comic_id}.jpg')
     if not os.path.exists(img_path):
-        length = len(os.listdir(path))
-        return f'此编号的漫画不存在哦，目前有的编号范围为 1 到 {length}'
+        return f'此编号的漫画不存在哦'
     msg = await get_img_cq(img_path)
     return msg
 
