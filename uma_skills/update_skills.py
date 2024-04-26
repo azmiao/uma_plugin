@@ -13,8 +13,16 @@ current_dir = os.path.join(os.path.dirname(__file__), f'skills_config.json')
 
 # 获取最新的更新时间
 async def get_update_time():
+    headers = {
+        'Host': 'wiki.biligame.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit'
+                      '/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image'
+                  '/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Encoding': 'gzip, deflate, br, zstd'
+    }
     update_url = 'https://wiki.biligame.com/umamusume/index.php?title=技能速查表&action=history'
-    rep = await aiorequests.get(update_url, timeout=10)
+    rep = await aiorequests.get(update_url, timeout=10, headers=headers)
     soup = BeautifulSoup(await rep.text, 'lxml')
     last_time_tmp = soup.find('a', {'class': 'mw-changeslist-date'}).text.replace(' ', '')
     group = re.search(r'^([0-9]{4})年([0-9]{1,2})月([0-9]{1,2})日\S*([0-9]{2}):([0-9]{2})$', last_time_tmp)
