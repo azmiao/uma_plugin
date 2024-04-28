@@ -37,6 +37,8 @@ def from_list(f: Callable[[Any], T], x: Any) -> List[T]:
 
 
 def from_bool(x: Any) -> bool:
+    if not x:
+        return x
     assert isinstance(x, bool)
     return x
 
