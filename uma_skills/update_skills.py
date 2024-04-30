@@ -25,7 +25,7 @@ async def get_update_time():
     rep = await aiorequests.get(update_url, timeout=10, headers=headers)
     soup = BeautifulSoup(await rep.text, 'lxml')
     last_time_tmp = soup.find('a', {'class': 'mw-changeslist-date'}).text.replace(' ', '')
-    group = re.search(r'^([0-9]{4})年([0-9]{1,2})月([0-9]{1,2})日\S*([0-9]{2}):([0-9]{2})$', last_time_tmp)
+    group = re.search(r'^([0-9]{4})年([0-9]{1,2})月([0-9]{1,2})日[\S\s]*([0-9]{2}):([0-9]{2})$', last_time_tmp)
     last_time = datetime(int(group.group(1)), int(group.group(2)), int(group.group(3)), int(group.group(4)),
                          int(group.group(5)))
     return last_time
