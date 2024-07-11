@@ -159,11 +159,16 @@ async def select_target_on_full(bot, ev):
     chart_up_id_dict = await get_current_up_id_dict(group_id)
     if not target_raw:
         # 没选目标就展示可选列表
-        msg = '您未输入目标，请从以下目标选择，输入数字ID即可，多个目标用英文逗号间隔，输错将会跳过：\n'
+        msg = '您未输入目标，请从以下目标选择，输入数字ID即可，多个目标用英文逗号间隔，需要添加全部UP请输入"all"，输错将会跳过：\n'
         msg += '\n'.join([f'> {key}: {value}' for key, value in chart_up_id_dict.items()])
     else:
         # 选目标就按照目标存入
-        raw_id_list = target_raw.split(',')
+        if target_raw == 'all':
+            # 全部UP
+            chart_up_id_dict = await get_current_up_id_dict(group_id)
+            raw_id_list = list(chart_up_id_dict.keys())
+        else:
+            raw_id_list = target_raw.split(',')
         await set_target_config(user_id, raw_id_list)
         chart_name_list = [chart_up_id_dict.get(x, '') for x in raw_id_list]
         if '' in chart_name_list:

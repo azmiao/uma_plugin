@@ -17,7 +17,7 @@
 #### 如果想快速从零开始搭建一个这样的机器人，可以看我的教程哦：[让我栞栞](https://www.594594.xyz/2022/03/05/uma_bot/)
 
 [![image](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/azmiao/uma_plugin/main/LICENSE)
-[![image](https://img.shields.io/badge/release-2.9.0-orange.svg)](https://github.com/azmiao/uma_plugin)
+[![image](https://img.shields.io/badge/release-2.9.1-orange.svg)](https://github.com/azmiao/uma_plugin)
 [![image](https://img.shields.io/badge/auther-AZMIAO-blue.svg)](https://github.com/azmiao/uma_plugin)
 
 </div>
@@ -94,6 +94,7 @@ https://github.com/azmiao/uma_plugin/
 
 |   更新时间   |   版本号   | 更新日志&备注                                                                                                                                                                     |
 |:--------:|:-------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 24-04-18 | v2.9.1  | 马娘抽卡功能新增支持自选育成目标，[issue 72](https://github.com/azmiao/uma_plugin/issues/72)                                                                                                 |
 | 24-04-18 | v2.9.0  | 适配最新的V2数据库，适配新版官网数据，优化代码，[issue 69](https://github.com/azmiao/uma_plugin/issues/69)                                                                                         |
 | 24-02-20 | v2.8.7  | 修复特殊卡池导致的更新卡池错误，[issue 67](https://github.com/azmiao/uma_plugin/issues/67)                                                                                                  |
 | 24-01-22 | v2.8.6f | 一些代码优化，以及由于镜像源问题，修改插件的更新源为官方源.<br>此次更新请在插件目录下检查`/.git/config`文件中，<br>`[remote "origin"]`后面的`url: xxxx...`改为<br><https://github.com/azmiao/uma_plugin>后手动使用`git pull -f`强制更新 |
