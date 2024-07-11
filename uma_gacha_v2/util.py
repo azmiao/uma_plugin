@@ -105,8 +105,12 @@ async def update_select_data():
         with open(select_data_path, 'r', encoding='utf-8') as f:
             select_data = json.load(f)
         # 修改默认池子的ID
+        old_pool_id = select_data['default']['pool_id']
         server_default = select_data['default']['server']
         pool_id_default = await get_new_pool_id(server_default)
+        if old_pool_id != pool_id_default:
+            # 新ID和旧ID不一致 | 需要重置目标选择
+            await reset_all_target()
         select_data['default']['pool_id'] = pool_id_default
         # 修改分群的池子的ID
         group_list = list(select_data['group'].keys())
@@ -123,8 +127,17 @@ async def update_select_data():
             },
             'group': {}
         }
+        # 首次使用需要创建目标选择文件
+        await reset_all_target()
     with open(select_data_path, 'w', encoding='utf-8') as f:
         json.dump(select_data, f, ensure_ascii=False, indent=4)
+
+
+# 重置所有目标选择
+async def reset_all_target():
+    target_path = os.path.join(os.path.dirname(__file__), 'gacha_target.json')
+    with open(target_path, 'w', encoding='utf-8') as f:
+        json.dump({}, f, ensure_ascii=False, indent=4)
 
 
 # 获取当前群使用的卡池
@@ -222,6 +235,7 @@ async def switch_server(group_id, server):
     select_data['group'][group_id] = group_data
     with open(select_data_path, 'w', encoding='utf-8') as f:
         json.dump(select_data, f, ensure_ascii=False, indent=4)
+    await reset_all_target()
     msg = f'本群已成功切换到服务器{server}，并默认选取该服务器最新卡池'
     if server == 'bili':
         msg = f'本群已成功切换到服务器{server}，但由于目前暂未开服，仅提供开服卡池供娱乐，开服后会自动同步'
@@ -253,6 +267,7 @@ async def switch_pool_id(group_id, pool_id):
     select_data['group'][group_id] = group_data
     with open(select_data_path, 'w', encoding='utf-8') as f:
         json.dump(select_data, f, ensure_ascii=False, indent=4)
+    await reset_all_target()
     return f'本群已成功切换到{now_server}服的卡池{pool_id}'
 
 

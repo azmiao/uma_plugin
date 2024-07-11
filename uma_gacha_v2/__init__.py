@@ -5,7 +5,8 @@ from hoshino import Service, priv
 from hoshino.util import DailyNumberLimiter, FreqLimiter
 
 from .gacha_class import Gacha
-from .gacha_target import set_target_config, get_current_up_id_dict, get_current_target_name_list, reset_target_config
+from .gacha_target import set_target_config, get_current_up_id_dict, reset_target_config, \
+    query_target_config
 from .update_init import auto_update
 from .util import get_pool, get_img_path, generate_img, random_comment, server_list, \
     switch_server, switch_pool_id, get_pool_detail
@@ -176,7 +177,7 @@ async def select_target_on_full(bot, ev):
 @sv.on_fullmatch(('育成卡查询满破目标', '支援卡查询满破目标'), only_to_me=True)
 async def query_target_on_full(bot, ev):
     user_id = str(ev.user_id)
-    current_name_list = await get_current_target_name_list(user_id)
+    current_name_list = await query_target_config(user_id)
     if not current_name_list:
         msg = '您当前没有任何满破目标呢！'
     else:
@@ -212,7 +213,7 @@ async def change_pool(bot, ev):
     group_id = str(ev.group_id)
     if not priv.check_priv(ev, priv.ADMIN):
         await bot.finish(ev, '切换卡池仅限群管理员操作哦~')
-    pool_id = str(ev.message)
+    pool_id = str(ev.message).strip()
     msg = await switch_pool_id(group_id, pool_id)
     await bot.send(ev, msg)
 
@@ -286,13 +287,21 @@ async def full_singer_gacha(group_id, user_id, gacha_type):
         return '初始卡池00000000不支持该功能哦'
     gacha = Gacha(pool_id, gacha_type, server)
     try:
-        select_chart, up_num, ten_num, exchange, first_up, result = gacha.gacha_full_singer(gacha.result,
-                                                                                            gacha.first_up)
+        # 选择的目标
+        chart_name_list = await query_target_config(user_id)
+        need_dict, ten_num, exchange, first_up, result = gacha.gacha_full_singer(
+            gacha.result,
+            gacha.first_up,
+            chart_name_list
+        )
+        up_msg_tmp = [f'✦ 获得{str(value)}张{key}' for key, value in need_dict.items()]
+        up_msg = '\n'.join(up_msg_tmp)
         result_list = result['up'] + result['s3']
         result_image = await generate_img(result_list, gacha_type)
         msg_com = await random_comment(result, gacha_type, first_up, '抽满破')
+
         msg = f'[CQ:image,file={result_image}]\n[CQ:at,qq={user_id}]\n{msg_com}\n'
-        msg += f'▼目标：{select_chart}\n最终获得{up_num}张\n其中兑换了{exchange}张\n总共花费{ten_num * 10}抽'
+        msg += f'{up_msg}\n✦ 其中兑换了{exchange}张\n总共花费{ten_num * 10}抽'
     except IndexError as _:
         msg = f'卡池数据还未自动更新完全，请耐心等待几小时后再尝试'
     return msg

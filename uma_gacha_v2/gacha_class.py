@@ -1,6 +1,7 @@
 import json
 import os
 import random
+from typing import List
 
 from hoshino import R
 
@@ -56,8 +57,8 @@ class Gacha(object):
         return pool
 
     # 抽卡并整理数据
-    def sort_result(self, i: int, first_up: int, result: dict, select: str = None):
-        is_select = False
+    def sort_result(self, i: int, first_up: int, result: dict, select: List[str] = None):
+        select_chara = None
         if i % 10:
             chara, res_type = self.gacha_one(up_prob_default, s3_prob_default, s2_prob_default, s1_prob_default)
         # 十连保底
@@ -67,11 +68,11 @@ class Gacha(object):
             result['up'].append(chara)
             first_up = min(i, first_up)
             # 想要的选择UP卡
-            if chara == select:
-                is_select = True
+            if select and chara in select:
+                select_chara = chara
         else:
             result[res_type].append(chara)
-        return first_up, result, is_select
+        return first_up, result, select_chara
 
     # 单抽
     def gacha_one(self, up_prob: int, s3_prob: int, s2_prob: int, s1_prob: int = None):
@@ -102,18 +103,26 @@ class Gacha(object):
         first_up = 0 if first_up == 999999 else first_up
         return first_up, result
 
-    # 单卡满破，即抽五张
-    def gacha_full_singer(self, result, first_up):
-        select_chart = random.choice(self.up)
-        up_num, ten_num, exchange = 0, -1, 0
-        while up_num < 5:
+    # 抽满破，即抽五张
+    def gacha_full_singer(self, result, first_up, chart_name_list):
+        select_chart_list = chart_name_list if chart_name_list else [random.choice(self.up)]
+        need_dict = {chara_name: 0 for chara_name in select_chart_list}
+        ten_num, exchange = -1, 0
+        while True:
+            # 检查循环退出条件，所有的值都应大于等于 5 时退出
+            if all(value >= 5 for value in need_dict.values()):
+                break
+            # 开始十连抽
             ten_num += 1
             for i in range(1, 11, 1):
                 k = ten_num * 10 + i
-                first_up, result, is_select = self.sort_result(k, first_up, result, select_chart)
-                if is_select:
-                    up_num += 1
+                first_up, result, select_chara = self.sort_result(k, first_up, result, select_chart_list)
+                if select_chara:
+                    # 抽到了某一个目标
+                    need_dict[select_chara] += 1
             if ten_num and not ten_num % (max_gacha // 10):
                 exchange += 1
-                up_num += 1
-        return select_chart, up_num, ten_num, exchange, first_up, result
+                # 抽井了给数量最少的卡兑换一张
+                min_key = min(need_dict, key=need_dict.get)
+                need_dict[min_key] += 1
+        return need_dict, ten_num, exchange, first_up, result
