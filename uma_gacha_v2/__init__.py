@@ -5,6 +5,7 @@ from hoshino import Service, priv
 from hoshino.util import DailyNumberLimiter, FreqLimiter
 
 from .gacha_class import Gacha
+from .gacha_target import set_target_config, get_current_up_id_dict, get_current_target_name_list, reset_target_config
 from .update_init import auto_update
 from .util import get_pool, get_img_path, generate_img, random_comment, server_list, \
     switch_server, switch_pool_id, get_pool_detail
@@ -145,6 +146,51 @@ async def full_singer_gacha_chart(bot, ev):
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await full_singer_gacha(group_id, user_id, 'chart')
     await bot.send(ev, msg)
+
+
+# 选择支援卡满破目标
+@sv.on_prefix(('育成卡选择满破目标', '支援卡选择满破目标'), only_to_me=True)
+async def select_target_on_full(bot, ev):
+    user_id = str(ev.user_id)
+    group_id = str(ev.group_id)
+    target_raw = str(ev.message).strip()
+
+    chart_up_id_dict = await get_current_up_id_dict(group_id)
+    if not target_raw:
+        # 没选目标就展示可选列表
+        msg = '您未输入目标，请从以下目标选择，输入数字ID即可，多个目标用英文逗号间隔，输错将会跳过：\n'
+        msg += '\n'.join([f'> {key}: {value}' for key, value in chart_up_id_dict.items()])
+    else:
+        # 选目标就按照目标存入
+        raw_id_list = target_raw.split(',')
+        await set_target_config(user_id, raw_id_list)
+        chart_name_list = [chart_up_id_dict.get(x, '') for x in raw_id_list]
+        if '' in chart_name_list:
+            chart_name_list.remove('')
+        msg = '已将以下目标设置为您的目标，注意卡池更新后将会重置，需要清除目标请使用“支援卡清除满破目标”命令：\n'
+        msg += '\n'.join(chart_name_list)
+    await bot.send(ev, msg, at_sender=True)
+
+
+# 查询支援卡满破目标
+@sv.on_fullmatch(('育成卡查询满破目标', '支援卡查询满破目标'), only_to_me=True)
+async def query_target_on_full(bot, ev):
+    user_id = str(ev.user_id)
+    current_name_list = await get_current_target_name_list(user_id)
+    if not current_name_list:
+        msg = '您当前没有任何满破目标呢！'
+    else:
+        msg = '当前您的目标为下列支援卡，需要清除目标请使用“支援卡清除满破目标”命令：\n'
+        msg += '\n'.join(current_name_list)
+    await bot.send(ev, msg, at_sender=True)
+
+
+@sv.on_fullmatch(('育成卡清除满破目标', '支援卡清除满破目标'), only_to_me=True)
+async def clear_target_on_full(bot, ev):
+    user_id = str(ev.user_id)
+    await reset_target_config(user_id)
+    msg = '已为你清除满破目标选择'
+    await bot.send(ev, msg, at_sender=True)
 
 
 # 选择卡池

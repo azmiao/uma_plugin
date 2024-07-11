@@ -37,7 +37,7 @@
 
 这是一个适用[hoshinoBot](https://github.com/Ice-Cirno/HoshinoBot)的赛马娘功能插件，数据来自：
 
- + [马娘官网](https://github.com/azmiao/uma_info_data)
+ + [马娘官网](https://umamusume.jp/)
  + [BWiki](https://wiki.biligame.com/umamusume)
  + [马娘基础数据库](https://github.com/azmiao/uma_info_data)
  + [台服马娘官网](https://uma.komoejoy.com/)
@@ -51,7 +51,6 @@
  + 有空的话建议先看看已关闭的历史issue有没有类似的参考一下
  + 可直接在本仓库提交issue，但最好带上报错的日志完整截图，并说明清楚哦，因为部分从网页获取，所以有BUG请及时反馈适配新页面
  + 目前由于时间关系主要做BUG修改和优化，如果有好的建议/新特性，可以直接提交issue，有空的话会考虑修改/增加
- + 如果按照我的教程搭建机器人遇到的问题可以前往 [Discussions](https://github.com/azmiao/uma_plugin/discussions) 进行讨论
 
 </details>
 

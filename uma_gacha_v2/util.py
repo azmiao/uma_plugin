@@ -146,9 +146,23 @@ async def get_img_path(chara, gacha_type):
     with open(res_data_path, 'r', encoding='utf-8') as f:
         res_data = json.load(f)
     filename = res_data[f'{gacha_type}_res'][chara]['filename']
-    img_path = os.path.join(gacha_path, f'{gacha_type}_res/{filename}')
+    img_path = os.path.join(gacha_path, f'{gacha_type}_res', filename)
     img_path_abs = os.path.abspath(img_path)
     return img_path_abs
+
+
+# 将支援卡名称和ID映射成字典
+async def get_chart_name_dict():
+    res_data_path = os.path.join(gacha_path, 'uma_res.json')
+    with open(res_data_path, 'r', encoding='utf-8') as f:
+        res_data = json.load(f)
+    res_dict = res_data.get('chart_res', {})
+    # 名称-ID
+    chart_name_dict = {key: value.get('filename', '').replace('Support_thumb_', '').replace('.png', '')
+                       for key, value in res_dict.items()}
+    # ID-名称
+    chart_id_dict = {value: key for key, value in chart_name_dict.items()}
+    return chart_name_dict, chart_id_dict
 
 
 # 生成多抽的图片
