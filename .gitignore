@@ -44,3 +44,6 @@ data/*
 
 # IDEA/Pycharm
 .idea/*
+
+# 抽卡目标
+/uma_gacha_v2/gacha_target.json
