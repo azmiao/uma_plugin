@@ -175,20 +175,22 @@ async def get_pool_data():
         # 马娘
         uma_title, uma_title_id, uma_title_img, uma_up_list = '', '', '', []
         if pool[0]:
-            uma_title = pool[0].find('div', {"class": "floatnone"}).find('a').get('title')
-            uma_title_id = pool[0].find('div', {"class": "floatnone"}).find('img').get('alt').replace(' ', '_')
-            uma_title_img = pool[0].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '') \
-                .replace('/400px-' + uma_title_id, '')
+            pool_find = pool[0].find('div', {"class": "floatnone"})
+            uma_title = pool_find.find('a').get('title') if pool_find.find('a') else None
+            uma_title_id = pool_find.find('img').get('alt').replace(' ', '_') if pool_find.find('img') else None
+            uma_title_img = pool_find.find('img').get('src').replace('thumb/', '') \
+                .replace('/400px-' + uma_title_id, '') if pool_find.find('img') else None
             uma_up_list = [span.find('a').get('title') for span in
                            pool[0].find_all('span', {"style": "display: table-cell;"})]
         uma_up = {'3': uma_up_list, '2': [], '1': []}
         # 支援卡
         chart_title, chart_title_id, chart_title_img, chart_up_list, chart_up_img_list = '', '', '', [], []
         if pool[1]:
-            chart_title = pool[1].find('div', {"class": "floatnone"}).find('a').get('title')
-            chart_title_id = pool[1].find('div', {"class": "floatnone"}).find('img').get('alt').replace(' ', '_')
-            chart_title_img = pool[1].find('div', {"class": "floatnone"}).find('img').get('src').replace('thumb/', '') \
-                .replace('/400px-' + chart_title_id, '')
+            pool_find = pool[1].find('div', {"class": "floatnone"})
+            chart_title = pool_find.find('a').get('title') if pool_find.find('a') else None
+            chart_title_id = pool_find.find('img').get('alt').replace(' ', '_') if pool_find.find('img') else None
+            chart_title_img = pool_find.find('img').get('src').replace('thumb/', '') \
+                .replace('/400px-' + chart_title_id, '') if pool_find.find('img') else None
             chart_up_list = [span.find('a').get('title') for span in
                              pool[1].find_all('span', {"style": "display:inline-block;"})]
             chart_up_img_list = [span.find('img').get('alt') for span in
