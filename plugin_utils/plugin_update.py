@@ -3,6 +3,7 @@ import os
 import re
 from datetime import datetime, timedelta
 
+import pytz
 import requests
 from bs4 import BeautifulSoup
 from git.repo import Repo
@@ -90,10 +91,12 @@ async def judge_update(rep_url):
 
 # 调整太平洋时间
 async def change_time(raw_time):
-    raw_time = str(raw_time).replace('Z', '')
-    txt_fmt = raw_time[:10] + " " + raw_time[11:19]
-    dt = datetime.strptime(txt_fmt, "%Y-%m-%d %H:%M:%S")
-    cur_time = dt + timedelta(hours=8)
+    utc_time_obj = datetime.strptime(raw_time, "%Y-%m-%dT%H:%M:%S.%fZ")
+    # 设置时区
+    utc_zone = pytz.utc
+    beijing_zone = pytz.timezone('Asia/Shanghai')
+    utc_time_with_zone = utc_zone.localize(utc_time_obj)
+    cur_time = utc_time_with_zone.astimezone(beijing_zone)
     return cur_time
 
 
