@@ -33,7 +33,7 @@ async def update():
             await delete_old_folder()
             logger.info('====马娘抽卡信息更新完成====')
         except Exception as e:
-            logger.info(f'马娘卡池信息初始化失败：{e}')
+            logger.error(f'马娘卡池信息初始化失败：{e}')
 
 
 # 自动更新
@@ -54,7 +54,7 @@ async def auto_update():
         logger.info('====马娘抽卡信息更新完成====')
         return '马娘抽卡信息更新完成'
     except Exception as e:
-        logger.info(f'马娘卡池信息更新失败：{e}')
+        logger.error(f'马娘卡池信息更新失败：{e}')
         return f'马娘卡池信息更新失败：{e}'
 
 
