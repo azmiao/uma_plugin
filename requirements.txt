@@ -10,3 +10,4 @@ prettytable==3.2.0
 GitPython==3.1.27
 fuzzywuzzy==0.18.0
 python-dateutil~=2.8.2
+pytz~=2024.1
