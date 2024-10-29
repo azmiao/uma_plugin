@@ -90,14 +90,12 @@ async def judge_update(rep_url):
 
 
 # 调整太平洋时间
-async def change_time(raw_time):
-    utc_time_obj = datetime.strptime(raw_time, "%Y-%m-%dT%H:%M:%S.%fZ")
+async def change_time(raw_time) -> str:
+    dt = datetime.fromisoformat(raw_time)
     # 设置时区
-    utc_zone = pytz.utc
     beijing_zone = pytz.timezone('Asia/Shanghai')
-    utc_time_with_zone = utc_zone.localize(utc_time_obj)
-    cur_time = utc_time_with_zone.astimezone(beijing_zone)
-    return cur_time
+    cur_time = dt.astimezone(beijing_zone)
+    return cur_time.strftime('%Y-%m-%d %H:%M:%S')
 
 
 # 获取commits的信息和版本号 | 最近10条
