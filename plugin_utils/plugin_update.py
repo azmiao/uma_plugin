@@ -68,6 +68,8 @@ async def judge_update(rep_url):
     with open(version_path, 'r', encoding="UTF-8") as f:
         version_data = json.load(f)
     old_time = datetime.strptime(version_data['commit_time'], "%Y-%m-%d %H:%M:%S")
+    beijing_zone = pytz.timezone('Asia/Shanghai')
+    old_time = old_time.astimezone(beijing_zone)
     old_version = version_data['version']
     data_list, version = await get_commits(rep_url)
     new_time = data_list[0]['time']
