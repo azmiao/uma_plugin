@@ -1,7 +1,7 @@
 import json
 import os
 import re
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pytz
 import requests
@@ -25,7 +25,8 @@ async def init_plugin(is_force):
         with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'README.md'), 'r', encoding='utf-8') as f:
             text = f.read()
         version = re.search(r'release-([0-9]+\.[0-9]+\.[0-9]+f?)-orange\.svg', text).group(1)
-        commit_time = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
+        beijing_zone = pytz.timezone('Asia/Shanghai')
+        commit_time = datetime.now().astimezone(beijing_zone)
     else:
         logger.info('【马娘插件】正在在线获取马娘插件版本...')
         data_list, version = await get_commits(url)
@@ -67,7 +68,7 @@ async def plugin_update_auto():
 async def judge_update(rep_url):
     with open(version_path, 'r', encoding="UTF-8") as f:
         version_data = json.load(f)
-    old_time = datetime.strptime(version_data['commit_time'], "%Y-%m-%d %H:%M:%S")
+    old_time = await change_time(version_data['commit_time'])
     beijing_zone = pytz.timezone('Asia/Shanghai')
     old_time = old_time.astimezone(beijing_zone)
     old_version = version_data['version']
