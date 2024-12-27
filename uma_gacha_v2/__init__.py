@@ -1,9 +1,9 @@
-import base64
 import os
 
-from hoshino import Service, priv
-from hoshino.util import DailyNumberLimiter, FreqLimiter
-
+from yuiChyan import LakePermissionException
+from yuiChyan.permission import check_permission, ADMIN, SUPERUSER
+from yuiChyan.service import Service
+from yuiChyan.util import FreqLimiter, DailyNumberLimiter
 from .gacha_class import Gacha
 from .gacha_target import set_target_config, get_current_up_id_dict, reset_target_config, \
     query_target_config
@@ -36,14 +36,10 @@ FULL_EXCEED_NOTICE = f'您今天已经抽过{full_limit.max}次支援卡满破�
 
 
 sv = Service('uma_gacha_v2')
-with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
-    base64_data = base64.b64encode(f.read())
-    s = base64_data.decode()
-sv.help = f'![](data:image/jpeg;base64,{s})'
 
 
 # 帮助界面
-@sv.on_fullmatch("马娘抽卡帮助")
+@sv.on_match("马娘抽卡帮助")
 async def sv_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help_img = await get_img_cq(img_path)
@@ -51,7 +47,7 @@ async def sv_help(bot, ev):
 
 
 # 马娘单抽
-@sv.on_fullmatch(('马娘单抽', '单抽马娘'), only_to_me=True)
+@sv.on_match(('马娘单抽', '单抽马娘'), only_to_me=True)
 async def one_gacha_uma(bot, ev):
     if not lmt.check(ev.user_id):
         await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
@@ -65,7 +61,7 @@ async def one_gacha_uma(bot, ev):
 
 
 # 支援卡单抽
-@sv.on_fullmatch(('育成卡单抽', '支援卡单抽', 's卡单抽', 'S卡单抽'), only_to_me=True)
+@sv.on_match(('育成卡单抽', '支援卡单抽', 's卡单抽', 'S卡单抽'), only_to_me=True)
 async def one_gacha_chart(bot, ev):
     if not lmt.check(ev.user_id):
         await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
@@ -79,7 +75,7 @@ async def one_gacha_chart(bot, ev):
 
 
 # 马娘十连
-@sv.on_fullmatch(('马娘十连', '马十连'), only_to_me=True)
+@sv.on_match(('马娘十连', '马十连'), only_to_me=True)
 async def ten_gacha_uma(bot, ev):
     if not lmt.check(ev.user_id):
         await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
@@ -93,7 +89,7 @@ async def ten_gacha_uma(bot, ev):
 
 
 # 育成卡十连
-@sv.on_fullmatch(('育成卡十连', '支援卡十连', 's卡十连', 'S卡十连'), only_to_me=True)
+@sv.on_match(('育成卡十连', '支援卡十连', 's卡十连', 'S卡十连'), only_to_me=True)
 async def ten_gacha_chart(bot, ev):
     if not lmt.check(ev.user_id):
         await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
@@ -107,7 +103,7 @@ async def ten_gacha_chart(bot, ev):
 
 
 # 马娘井
-@sv.on_fullmatch(('马之井', '马娘井', '马娘一井'), only_to_me=True)
+@sv.on_match(('马之井', '马娘井', '马娘一井'), only_to_me=True)
 async def tenjou_gacha_uma(bot, ev):
     if not lmt.check(ev.user_id):
         await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
@@ -121,8 +117,8 @@ async def tenjou_gacha_uma(bot, ev):
 
 
 # 育成卡井
-@sv.on_fullmatch(('育成卡井', '育成卡一井', '支援卡井', '支援卡一井', 's卡井', 's卡一井', 'S卡井', 'S卡一井'),
-                 only_to_me=True)
+@sv.on_match(('育成卡井', '育成卡一井', '支援卡井', '支援卡一井', 's卡井', 's卡一井', 'S卡井', 'S卡一井'),
+             only_to_me=True)
 async def tenjou_gacha_chart(bot, ev):
     if not lmt.check(ev.user_id):
         await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
@@ -136,7 +132,7 @@ async def tenjou_gacha_chart(bot, ev):
 
 
 # 育成卡抽满破
-@sv.on_fullmatch(('育成卡抽满破', '支援卡抽满破'), only_to_me=True)
+@sv.on_match(('育成卡抽满破', '支援卡抽满破'), only_to_me=True)
 async def full_singer_gacha_chart(bot, ev):
     if not lmt.check(ev.user_id):
         await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
@@ -179,7 +175,7 @@ async def select_target_on_full(bot, ev):
 
 
 # 查询支援卡满破目标
-@sv.on_fullmatch(('育成卡查询满破目标', '支援卡查询满破目标'), only_to_me=True)
+@sv.on_match(('育成卡查询满破目标', '支援卡查询满破目标'), only_to_me=True)
 async def query_target_on_full(bot, ev):
     user_id = str(ev.user_id)
     current_name_list = await query_target_config(user_id)
@@ -191,7 +187,7 @@ async def query_target_on_full(bot, ev):
     await bot.send(ev, msg, at_sender=True)
 
 
-@sv.on_fullmatch(('育成卡清除满破目标', '支援卡清除满破目标'), only_to_me=True)
+@sv.on_match(('育成卡清除满破目标', '支援卡清除满破目标'), only_to_me=True)
 async def clear_target_on_full(bot, ev):
     user_id = str(ev.user_id)
     await reset_target_config(user_id)
@@ -203,8 +199,8 @@ async def clear_target_on_full(bot, ev):
 @sv.on_prefix('切换马娘服务器')
 async def change_server(bot, ev):
     group_id = str(ev.group_id)
-    if not priv.check_priv(ev, priv.ADMIN):
-        await bot.finish(ev, '切换服务器仅限群管理员操作哦~')
+    if not check_permission(ev, ADMIN):
+        raise LakePermissionException(ev, '切换服务器仅限群管理员操作哦~')
     server = str(ev.message)
     if server not in server_list:
         await bot.finish(ev, f'切换失败！目前仅支持服务器：\n{" | ".join(server_list)}')
@@ -216,15 +212,15 @@ async def change_server(bot, ev):
 @sv.on_prefix('切换马娘卡池')
 async def change_pool(bot, ev):
     group_id = str(ev.group_id)
-    if not priv.check_priv(ev, priv.ADMIN):
-        await bot.finish(ev, '切换卡池仅限群管理员操作哦~')
+    if not check_permission(ev, ADMIN):
+        raise LakePermissionException(ev, '切换卡池仅限群管理员操作哦~')
     pool_id = str(ev.message).strip()
     msg = await switch_pool_id(group_id, pool_id)
     await bot.send(ev, msg)
 
 
 # 查看卡池
-@sv.on_fullmatch('查看马娘卡池')
+@sv.on_match('查看马娘卡池')
 async def change_pool(bot, ev):
     group_id = str(ev.group_id)
     msg = await get_pool_detail(group_id)
@@ -232,11 +228,10 @@ async def change_pool(bot, ev):
 
 
 # 手动更新卡池
-@sv.on_fullmatch('更新马娘卡池')
+@sv.on_match('更新马娘卡池')
 async def uma_gacha_update(bot, ev):
-    if not priv.check_priv(ev, priv.SUPERUSER):
-        msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
-        await bot.finish(ev, msg)
+    if not check_permission(ev, SUPERUSER):
+        raise LakePermissionException(ev, None, SUPERUSER)
     msg = await auto_update()
     await bot.send(ev, msg)
 

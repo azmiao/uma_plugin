@@ -3,11 +3,10 @@ import os
 import random
 import re
 
-import hoshino
 import httpx
 from bs4 import BeautifulSoup
-from hoshino import R
 
+from yuiChyan import base_res_path, logger
 from ..plugin_utils.base_util import get_img_cq
 from ..uma_info.info_utils import *
 
@@ -58,12 +57,14 @@ async def adjust_url(url):
 async def create_config(img_dict):
     current_dir = os.path.join(os.path.dirname(__file__), f'comic_config_v2.json')
     with open(current_dir, 'w', encoding='UTF-8') as af:
+        # noinspection PyTypeChecker
         json.dump(img_dict, af, indent=4, ensure_ascii=False)
 
 
 # 下载图片
 async def download_img(comic_id, url):
-    img_path = os.path.join(R.img('umamusume').path, 'uma_comic')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    img_path = os.path.join(res_path, 'uma_comic')
     if not os.path.exists(img_path):
         os.mkdir(img_path)
     current_dir = os.path.join(img_path, f'uma_comic_{comic_id}.jpg')
@@ -71,9 +72,9 @@ async def download_img(comic_id, url):
         response = httpx.get(url, timeout=10)
         with open(current_dir, 'wb') as f:
             f.write(response.read())
-        hoshino.logger.info(f'未检测到马娘漫画 uma_comic_{comic_id}.jpg ，现已下载成功')
+        logger.info(f'未检测到马娘漫画 uma_comic_{comic_id}.jpg ，现已下载成功')
     else:
-        hoshino.logger.info(f'检测到马娘漫画 uma_comic_{comic_id}.jpg 已存在，将不会重新下载')
+        logger.info(f'检测到马娘漫画 uma_comic_{comic_id}.jpg 已存在，将不会重新下载')
 
 
 # 获取英文名
@@ -95,7 +96,8 @@ async def get_comic_uma(uma_name_tmp):
     uma_id = await get_uma_id(uma_name_tmp)
     if not uma_id:
         return ''
-    path = os.path.join(R.img('umamusume').path, 'uma_comic')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    path = os.path.join(res_path, 'uma_comic')
     current_dir = os.path.join(os.path.dirname(__file__), f'comic_config_v2.json')
     with open(current_dir, 'r', encoding='UTF-8') as f:
         img_data = json.load(f)
@@ -115,7 +117,8 @@ async def get_comic_uma(uma_name_tmp):
 
 # 按编号的漫画
 async def get_comic_id(comic_id):
-    path = os.path.join(R.img('umamusume').path, 'uma_comic')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    path = os.path.join(res_path, 'uma_comic')
     img_path = os.path.join(path, f'uma_comic_{comic_id}.jpg')
     if not os.path.exists(img_path):
         return f'此编号的漫画不存在哦'
@@ -125,7 +128,8 @@ async def get_comic_id(comic_id):
 
 # 随机漫画
 async def get_comic_random():
-    path = os.path.join(R.img('umamusume').path, 'uma_comic')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    path = os.path.join(res_path, 'uma_comic')
     if not os.listdir(path):
         return 'res/img/uma_comic/下没有漫画文件呢，请联系维护组检查'
     file_name = random.choice(os.listdir(path))

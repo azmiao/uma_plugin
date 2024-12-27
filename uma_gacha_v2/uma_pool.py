@@ -5,11 +5,11 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
-from hoshino import R
 
+from yuiChyan import base_res_path
 from .util import server_list, init_data, get_differ, get_correspond
 
-gacha_path = os.path.join(R.img('umamusume').path, 'uma_gacha')
+gacha_path = os.path.join(os.path.join(base_res_path, 'umamusume'), 'uma_gacha')
 type_list = ['支援卡卡池', '赛马娘卡池']
 
 
@@ -230,4 +230,5 @@ async def get_pool_data():
         pool_data = await get_other_uma(pool_data, server)
     pool_data = await UP_modify(pool_data)
     with open(os.path.join(gacha_path, 'uma_pool.json'), 'w', encoding='utf-8') as f:
+        # noinspection PyTypeChecker
         json.dump(pool_data, f, ensure_ascii=False, indent=4)

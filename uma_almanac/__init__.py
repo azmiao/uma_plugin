@@ -1,14 +1,13 @@
 import os
 import shutil
 
-from hoshino import Service
-
+from yuiChyan.service import Service
 from .get_all_info import judge, get_msg, get_almanac_info
 
-sv = Service('uma_almanac', bundle='马娘黄历', help_='[马娘签到] 查看今日马娘运势')
+sv = Service('uma_almanac')
 
 
-@sv.on_fullmatch('马娘签到')
+@sv.on_match('马娘签到')
 async def get_calendar(bot, ev):
     user_id = ev.user_id
     group_id = ev.group_id
@@ -21,7 +20,7 @@ async def get_calendar(bot, ev):
 
 
 # 独立于主服务的自动任务
-@sv.scheduled_job('cron', hour='0', minute='00')
+@sv.scheduled_job(hour='0', minute='00')
 async def clean_dir():
     current_dir = os.path.join(os.path.dirname(__file__), f'data')
     if os.path.exists(current_dir):

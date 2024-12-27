@@ -8,6 +8,7 @@ from .util import get_pool, get_chart_name_dict
 target_path = os.path.join(os.path.dirname(__file__), 'gacha_target.json')
 if not os.path.exists(target_path):
     with open(target_path, 'w', encoding='utf-8') as default_f:
+        # noinspection PyTypeChecker
         json.dump({}, default_f, ensure_ascii=False, indent=4)
 
 
@@ -17,6 +18,7 @@ async def set_target_config(user_id: str, target_id_list: list):
         target_config = json.load(f)
     target_config[user_id] = target_id_list
     with open(target_path, 'w', encoding='utf-8') as f:
+        # noinspection PyTypeChecker
         json.dump(target_config, f, ensure_ascii=False, indent=4)
 
 
@@ -26,6 +28,7 @@ async def reset_target_config(user_id: str):
         target_config = json.load(f)
     target_config[user_id] = []
     with open(target_path, 'w', encoding='utf-8') as f:
+        # noinspection PyTypeChecker
         json.dump(target_config, f, ensure_ascii=False, indent=4)
 
 

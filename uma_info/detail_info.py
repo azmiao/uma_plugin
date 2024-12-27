@@ -1,8 +1,8 @@
 from typing import Dict, Tuple
 
 from PIL import Image, ImageDraw, ImageFont, ImageColor
-from hoshino import R
 
+from yuiChyan import base_res_path
 from .adaptability import get_adaptability
 from .detail_class import Uma, uma_from_dict
 from ..plugin_utils.base_util import *
@@ -38,7 +38,7 @@ async def get_detail(en_name: str, f_data: Dict[str, Uma]):
 
     # 角色看板图片就放在额外数据里
     if uniform_img.url:
-        top_path = os.path.join(R.img('umamusume').path, 'extra_data', 'top_thumb')
+        top_path = os.path.join(os.path.join(base_res_path, 'umamusume'), 'extra_data', 'top_thumb')
         # 创建文件夹
         if not os.path.exists(top_path):
             os.mkdir(top_path)

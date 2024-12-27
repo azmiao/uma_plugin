@@ -7,6 +7,7 @@ async def create_json(_current_dir):
     if not os.path.exists(_current_dir):
         data = {}
         with open(_current_dir, "w", encoding="UTF-8") as f:
+            # noinspection PyTypeChecker
             json.dump(data, f)
         return data
     else:

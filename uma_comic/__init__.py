@@ -1,8 +1,9 @@
 import base64
 import os
 
-from hoshino import Service, priv
-
+from yuiChyan import LakePermissionException
+from yuiChyan.permission import check_permission, SUPERUSER
+from yuiChyan.service import Service
 from .comic import update_info, get_comic_random, get_comic_id, get_comic_uma
 from ..plugin_utils.base_util import get_img_cq
 
@@ -13,7 +14,7 @@ with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') 
 sv.help = f'![](data:image/jpeg;base64,{s})'
 
 
-@sv.on_fullmatch('马娘漫画帮助')
+@sv.on_match('马娘漫画帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
@@ -39,11 +40,9 @@ async def check_meanings(bot, ev):
 
 
 # 手动更新，已存在图片的话会自动跳过
-@sv.on_fullmatch('手动更新马娘漫画')
+@sv.on_match('手动更新马娘漫画')
 async def force_update(bot, ev):
-    if not priv.check_priv(ev, priv.SUPERUSER):
-        msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
-        await bot.send(ev, msg)
-        return
+    if not check_permission(ev,  SUPERUSER):
+        raise LakePermissionException(ev, None, SUPERUSER)
     await update_info()
     await bot.send(ev, '马娘漫画更新完成')

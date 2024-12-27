@@ -4,7 +4,8 @@ import os
 import shutil
 
 import httpx
-from hoshino import logger
+
+from yuiChyan import logger
 
 prop_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'properties.json')
 
@@ -42,6 +43,7 @@ async def get_server_default():
         logger.critical(f'马娘插件默认服务器填写错误：{config["default_server"]["current"]}，现已将其恢复默认值jp')
         config['default_server']['current'] = 'jp'
         with open(prop_path, 'w', encoding='utf-8') as f:
+            # noinspection PyTypeChecker
             json.dump(config, f, indent=4, ensure_ascii=False)
     return config['default_server']['current']
 
@@ -55,6 +57,7 @@ def get_interval():
             f'马娘插件资源自动更新的时间间隔填写错误：{config["res_update_cycle"]["current"]}，现已将其恢复默认值1')
         config['res_update_cycle']['current'] = 1
         with open(prop_path, 'w', encoding='utf-8') as f:
+            # noinspection PyTypeChecker
             json.dump(config, f, indent=4, ensure_ascii=False)
     return config['res_update_cycle']['current']
 
@@ -81,6 +84,7 @@ async def get_update_type():
             f'马娘插件代码自动更新类型填写错误：{config["code_auto_update"]["current"]}，现已将其恢复默认值auto')
         config['code_auto_update']['current'] = 'auto'
         with open(prop_path, 'w', encoding='utf-8') as f:
+            # noinspection PyTypeChecker
             json.dump(config, f, indent=4, ensure_ascii=False)
     return config['code_auto_update']['current']
 

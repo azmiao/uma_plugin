@@ -1,13 +1,12 @@
 import os
 import shutil
 
-from hoshino import R, logger
-
+from yuiChyan import logger, base_res_path
 from .res_spider import get_res
 from .uma_pool import get_pool_data
 from .util import update_select_data
 
-gacha_path = os.path.join(R.img('umamusume').path, 'uma_gacha/')
+gacha_path = os.path.join(os.path.join(base_res_path, 'umamusume'), 'uma_gacha')
 
 
 # 首次启动函数

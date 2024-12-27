@@ -1,8 +1,7 @@
 import json
 import os
 
-from hoshino import logger
-
+from yuiChyan import logger
 from .comic import update_info, get_img_dict
 from ..plugin_utils.base_util import delete_file
 

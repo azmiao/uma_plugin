@@ -2,8 +2,9 @@ import base64
 import json
 import os
 
-from hoshino import Service, priv
-
+from yuiChyan import LakePermissionException
+from yuiChyan.permission import check_permission, SUPERUSER
+from yuiChyan.service import Service
 from .caculate import get_relation
 from .update_type import update as com_update
 from ..plugin_utils.base_util import get_img_cq
@@ -20,7 +21,7 @@ current_dir = os.path.join(config_dir, 'config_v2.json')
 
 
 # 帮助界面
-@sv.on_fullmatch("马娘相性帮助")
+@sv.on_match("马娘相性帮助")
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
@@ -156,10 +157,9 @@ async def best_com(bot, ev):
     await bot.send(ev, msg)
 
 
-@sv.on_fullmatch("手动更新相性信息")
+@sv.on_match("手动更新相性信息")
 async def update_com(bot, ev):
-    if not priv.check_priv(ev, priv.SUPERUSER):
-        msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
-        await bot.finish(ev, msg)
+    if not check_permission(ev,  SUPERUSER):
+        raise LakePermissionException(ev, None, SUPERUSER)
     await com_update()
     await bot.send(ev, f'已更新至最新相性组文件')

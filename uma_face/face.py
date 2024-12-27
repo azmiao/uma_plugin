@@ -2,11 +2,10 @@ import json
 import os
 import random
 
-import hoshino
 import httpx
 from bs4 import BeautifulSoup
-from hoshino import R
 
+from yuiChyan import logger, base_res_path
 from ..plugin_utils.base_util import get_img_cq
 from ..uma_info.info_utils import *
 
@@ -46,12 +45,14 @@ async def create_config(img_dict):
             img_dict[img_id]['meanings'] = ''
     current_dir = os.path.join(os.path.dirname(__file__), f'img_config.json')
     with open(current_dir, 'w', encoding='UTF-8') as af:
+        # noinspection PyTypeChecker
         json.dump(img_dict, af, indent=4, ensure_ascii=False)
 
 
 # 下载图片
 async def download_img(face_id, url):
-    img_path = os.path.join(R.img('umamusume').path, 'uma_face')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    img_path = os.path.join(res_path, 'uma_face')
     if not os.path.exists(img_path):
         os.mkdir(img_path)
     current_dir = os.path.join(img_path, f'{face_id}.png')
@@ -59,9 +60,9 @@ async def download_img(face_id, url):
         response = httpx.get(url, timeout=10)
         with open(current_dir, 'wb') as f:
             f.write(response.read())
-        hoshino.logger.info(f'未检测到马娘表情包 {face_id}.png ，现已下载成功')
+        logger.info(f'未检测到马娘表情包 {face_id}.png ，现已下载成功')
     else:
-        hoshino.logger.info(f'检测到马娘表情包 {face_id}.png 已存在，将不会重新下载')
+        logger.info(f'检测到马娘表情包 {face_id}.png 已存在，将不会重新下载')
 
 
 async def get_uma_id(name_tmp):
@@ -82,7 +83,8 @@ async def get_face_uma(uma_name_tmp):
     uma_id = await get_uma_id(uma_name_tmp)
     if not uma_id:
         return ''
-    path = os.path.join(R.img('umamusume').path, 'uma_face')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    path = os.path.join(res_path, 'uma_face')
     current_dir = os.path.join(os.path.dirname(__file__), f'img_config.json')
     with open(current_dir, 'r', encoding='UTF-8') as f:
         img_data = json.load(f)
@@ -102,7 +104,8 @@ async def get_face_uma(uma_name_tmp):
 
 # 按编号的表情包
 async def get_face_id(face_id):
-    path = os.path.join(R.img('umamusume').path, 'uma_face')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    path = os.path.join(res_path, 'uma_face')
     img_path = os.path.join(path, f'{face_id}.png')
     if not os.path.exists(img_path):
         length = len(os.listdir(path))
@@ -113,7 +116,8 @@ async def get_face_id(face_id):
 
 # 随机表情包
 async def get_face_random():
-    path = os.path.join(R.img('umamusume').path, 'uma_face')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    path = os.path.join(res_path, 'uma_face')
     if not os.listdir(path):
         return 'res/img/uma_face/下没有表情包文件呢，请联系维护组检查'
     file_name = random.choice(os.listdir(path))

@@ -7,8 +7,9 @@ import pytz
 import requests
 from bs4 import BeautifulSoup
 from git.repo import Repo
-from hoshino import logger, config, get_bot
 
+from yuiChyan import logger, get_bot
+from yuiChyan.config import SUPERUSERS
 from ..plugin_utils.base_util import get_proxy, get_update_type
 
 version_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'version.json')
@@ -36,6 +37,7 @@ async def init_plugin(is_force):
         'commit_time': str(commit_time)
     }
     with open(version_path, 'w', encoding='utf-8') as f:
+        # noinspection PyTypeChecker
         json.dump(version_data, f, indent=4, ensure_ascii=False)
     logger.info(f'【马娘插件】马娘插件版本获取成功，当前版本[{version}]')
 
@@ -59,7 +61,7 @@ async def plugin_update_auto():
             repo.remote('origin').set_url(url)
         repo.git.pull()
         logger.info('【马娘插件】已更新至最新！')
-    super_id = config.SUPERUSERS[0]
+    super_id = SUPERUSERS[0]
     bot = get_bot()
     await bot.send_private_msg(user_id=super_id, message=msg)
 
@@ -88,6 +90,7 @@ async def judge_update(rep_url):
     version_data['commit_time'] = str(new_time)
     version_data['version'] = version
     with open(version_path, 'w', encoding="UTF-8") as f:
+        # noinspection PyTypeChecker
         json.dump(version_data, f, indent=4, ensure_ascii=False)
     return True, version.endswith('f') and old_version != version, msg
 

@@ -3,9 +3,9 @@ import json
 import os
 
 from PIL import Image
-from hoshino import R
-from hoshino.util import pic2b64
 
+from yuiChyan import base_res_path
+from yuiChyan.util import pic2b64
 from ..plugin_utils.base_util import get_server_default
 
 # =====可调整数据=====
@@ -21,7 +21,7 @@ server_data = {
 
 # ===================
 
-gacha_path = os.path.join(R.img('umamusume').path, 'uma_gacha')
+gacha_path = os.path.join(os.path.join(base_res_path, 'umamusume'), 'uma_gacha')
 server_list = list(server_data.keys())
 
 # 梦开始的地方
@@ -130,6 +130,7 @@ async def update_select_data():
         # 首次使用需要创建目标选择文件
         await reset_all_target()
     with open(select_data_path, 'w', encoding='utf-8') as f:
+        # noinspection PyTypeChecker
         json.dump(select_data, f, ensure_ascii=False, indent=4)
 
 
@@ -137,6 +138,7 @@ async def update_select_data():
 async def reset_all_target():
     target_path = os.path.join(os.path.dirname(__file__), 'gacha_target.json')
     with open(target_path, 'w', encoding='utf-8') as f:
+        # noinspection PyTypeChecker
         json.dump({}, f, ensure_ascii=False, indent=4)
 
 
@@ -234,6 +236,7 @@ async def switch_server(group_id, server):
     group_data['pool_id'] = pool_id
     select_data['group'][group_id] = group_data
     with open(select_data_path, 'w', encoding='utf-8') as f:
+        # noinspection PyTypeChecker
         json.dump(select_data, f, ensure_ascii=False, indent=4)
     await reset_all_target()
     msg = f'本群已成功切换到服务器{server}，并默认选取该服务器最新卡池'
@@ -266,6 +269,7 @@ async def switch_pool_id(group_id, pool_id):
     group_data['pool_id'] = pool_id
     select_data['group'][group_id] = group_data
     with open(select_data_path, 'w', encoding='utf-8') as f:
+        # noinspection PyTypeChecker
         json.dump(select_data, f, ensure_ascii=False, indent=4)
     await reset_all_target()
     return f'本群已成功切换到{now_server}服的卡池{pool_id}'

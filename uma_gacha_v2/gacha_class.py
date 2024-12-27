@@ -3,7 +3,7 @@ import os
 import random
 from typing import List
 
-from hoshino import R
+from yuiChyan import base_res_path
 
 # =====可调整数据=====
 
@@ -47,7 +47,7 @@ class Gacha(object):
     # 获取卡池信息
     @staticmethod
     def get_pool(pool_id, server):
-        gacha_path = os.path.join(R.img('umamusume').path, 'uma_gacha')
+        gacha_path = os.path.join(os.path.join(base_res_path, 'umamusume'), 'uma_gacha')
         with open(os.path.join(gacha_path, 'uma_pool.json'), 'r', encoding='utf-8') as f:
             config = json.load(f)
         server_pool = config[server]

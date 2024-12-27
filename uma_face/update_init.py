@@ -1,8 +1,7 @@
 import json
 import os
 
-from hoshino import logger
-
+from yuiChyan import logger
 from .face import update_info, get_img_dict
 
 

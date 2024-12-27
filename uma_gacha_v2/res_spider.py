@@ -3,9 +3,10 @@ import os
 
 import httpx
 from bs4 import BeautifulSoup
-from hoshino import R, logger
 
-gacha_path = os.path.join(R.img('umamusume').path, 'uma_gacha')
+from yuiChyan import base_res_path, logger
+
+gacha_path = os.path.join(os.path.join(base_res_path, 'umamusume'), 'uma_gacha')
 
 
 # 下载图片资源
@@ -44,4 +45,5 @@ async def get_res():
             }
             await download_img(res_type_f, filename, img_url)
     with open(os.path.join(gacha_path, 'uma_res.json'), 'w', encoding='utf-8') as f:
+        # noinspection PyTypeChecker
         json.dump(res_data, f, ensure_ascii=False, indent=4)

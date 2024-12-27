@@ -1,8 +1,7 @@
 import base64
 import os
 
-from hoshino import Service
-
+from yuiChyan.service import Service
 from .caculate import *
 from ..plugin_utils.base_util import get_img_cq
 
@@ -14,7 +13,7 @@ sv.help = f'![](data:image/jpeg;base64,{s})'
 
 
 # 帮助界面
-@sv.on_fullmatch("马娘耐力帮助")
+@sv.on_match("马娘耐力帮助")
 async def sv_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help_ = await get_img_cq(img_path)
@@ -66,7 +65,7 @@ async def get_endurance(bot, ev):
     # 速度上限补正
     speed_limit_patch = await judge_speed(speed_limit, site_type, feeling, situation)
     # 体力补正
-    hp_bonus = await judge_hp_bonus(run_type)
+    _ = await judge_hp_bonus(run_type)
     # 力量补正
     power_patch = await judge_power(power, site_type, feeling, situation)
     # 根性补正

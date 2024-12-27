@@ -1,7 +1,6 @@
 import os
 
-from hoshino import logger
-
+from yuiChyan import logger
 from .update_type import update as com_update
 
 
