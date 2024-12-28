@@ -2,8 +2,9 @@ import base64
 import json
 import os
 
-from hoshino import Service, priv, R
-
+from yuiChyan import LakePermissionException
+from yuiChyan.permission import check_permission, SUPERUSER
+from yuiChyan.service import Service
 from .generate import get_skill_list, get_skill_info
 from .update_skills import del_img, update_info, del_img
 from ..plugin_utils.base_util import get_img_cq
@@ -28,7 +29,7 @@ with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') 
 sv.help = f'![](data:image/jpeg;base64,{s})'
 
 
-@sv.on_fullmatch('马娘技能帮助')
+@sv.on_match('马娘技能帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
@@ -78,14 +79,13 @@ async def check_skill(bot, ev):
 
 
 # 手动更新本地数据
-@sv.on_fullmatch('手动更新马娘技能')
+@sv.on_match('手动更新马娘技能')
 async def force_update(bot, ev):
-    if not priv.check_priv(ev, priv.SUPERUSER):
-        msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
-        await bot.finish(ev, msg)
+    if not check_permission(ev,  SUPERUSER):
+        raise LakePermissionException(ev, None, SUPERUSER)
     try:
         await update_info()
-        await del_img(R.img('umamusume').path)
+        await del_img()
         await bot.send(ev, '马娘技能信息刷新完成')
     except Exception as e:
         await bot.send(ev, f'马娘技能信息刷新失败：{e}')

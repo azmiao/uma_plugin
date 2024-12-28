@@ -1,7 +1,3 @@
-import base64
-import json
-import os
-
 from yuiChyan import LakePermissionException
 from yuiChyan.permission import check_permission, SUPERUSER
 from yuiChyan.service import Service
@@ -11,10 +7,6 @@ from ..plugin_utils.base_util import get_img_cq
 from ..uma_info.info_utils import *
 
 sv = Service('uma_compatibility')
-with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
-    base64_data = base64.b64encode(f.read())
-    s = base64_data.decode()
-sv.help = f'![](data:image/jpeg;base64,{s})'
 
 config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
 current_dir = os.path.join(config_dir, 'config_v2.json')
@@ -40,10 +32,10 @@ async def calculate(bot, ev):
         await bot.send(ev, '格式错误，请参考“马娘相性帮助”')
         return
 
-    with open(current_dir, 'r', encoding='UTF-8') as file:
+    with open(current_dir, 'r', encoding='utf-8') as file:
         f_data = json.load(file)
     rep_dir = os.path.join(config_dir, 'replace_dict.json')
-    with open(rep_dir, 'r', encoding='UTF-8') as file:
+    with open(rep_dir, 'r', encoding='utf-8') as file:
         replace_data = json.load(file)
     with open(os.path.join(os.path.dirname(__file__), 'relation_type.json'), 'r', encoding='UTF-8') as sf:
         r_data_list = json.load(sf)

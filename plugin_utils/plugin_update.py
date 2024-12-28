@@ -3,14 +3,14 @@ import os
 import re
 from datetime import datetime
 
+import httpx
 import pytz
-import requests
 from bs4 import BeautifulSoup
 from git.repo import Repo
 
 from yuiChyan import logger, get_bot
-from yuiChyan.config import SUPERUSERS
-from ..plugin_utils.base_util import get_proxy, get_update_type
+from yuiChyan.config import SUPERUSERS, PROXY
+from ..plugin_utils.base_util import get_update_type
 
 version_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'version.json')
 url = 'https://github.com/azmiao/uma_plugin'
@@ -108,11 +108,11 @@ async def change_time(raw_time) -> datetime:
 async def get_commits(rep_url):
     data_list = []
     # version
-    res = requests.get(rep_url, proxies=get_proxy(), timeout=20)
+    res = httpx.get(rep_url, proxy=PROXY, timeout=20)
     version = re.search(r'release-([0-9]+\.[0-9]+\.[0-9]+f?)-orange\.svg', res.text)
     logger.info(f'version=[{version.group(1)}]')
     # commit
-    resp = requests.get(rep_url + "/commits", proxies=get_proxy(), timeout=20)
+    resp = httpx.get(rep_url + "/commits", proxy=PROXY, timeout=20)
     soup = BeautifulSoup(resp.text, 'lxml')
     soup_find = soup.find('script', {"data-target": "react-app.embeddedData"})
     raw_info = json.loads(soup_find.text.strip())

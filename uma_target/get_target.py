@@ -3,8 +3,8 @@ import os
 import httpx
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 from bs4 import BeautifulSoup
-from hoshino import R, logger
 
+from yuiChyan import base_res_path, logger
 from ..plugin_utils.base_util import get_img_cq
 
 
@@ -63,9 +63,10 @@ async def generate_img(uma_name):
 
 # 返回目标图片
 async def get_tar(uma_name, is_force):
-    if not os.path.exists(os.path.join(R.img('umamusume').path, f'uma_target/')):
-        os.mkdir(os.path.join(R.img('umamusume').path, f'uma_target/'))
-    img_path = os.path.join(R.img('umamusume').path, f'uma_target/target_{uma_name}.png')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    if not os.path.exists(os.path.join(res_path, f'uma_target')):
+        os.mkdir(os.path.join(res_path, f'uma_target'))
+    img_path = os.path.join(res_path, f'uma_target', f'target_{uma_name}.png')
     if not os.path.exists(img_path) or is_force:
         img = await generate_img(uma_name)
         img.save(img_path, 'PNG')

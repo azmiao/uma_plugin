@@ -1,5 +1,3 @@
-import json
-import os
 import random
 
 from .update_data import write_info
@@ -57,8 +55,7 @@ async def get_msg(group_id, user_id):
 # 获取角色
 async def get_chara():
     config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
-    current_dir = os.path.join(config_dir, 'config_v2.json')
-    with open(current_dir, 'r', encoding='UTF-8') as file:
+    with open(os.path.join(config_dir, 'config_v2.json'), 'r', encoding='UTF-8') as file:
         f_data = json.load(file)
     rep_dir = os.path.join(config_dir, 'replace_dict.json')
     with open(rep_dir, 'r', encoding='UTF-8') as file:

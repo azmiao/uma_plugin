@@ -57,9 +57,9 @@ class Affiliation:
     revised_at: datetime
     title: str
 
-    def __init__(self, id: str, created_at: datetime, updated_at: datetime, published_at: datetime,
+    def __init__(self, _id: str, created_at: datetime, updated_at: datetime, published_at: datetime,
                  revised_at: datetime, title: str) -> None:
-        self.id = id
+        self.id = _id
         self.created_at = created_at
         self.updated_at = updated_at
         self.published_at = published_at
@@ -70,13 +70,13 @@ class Affiliation:
     def from_dict(obj: Any) -> 'Affiliation':
         if not obj or not isinstance(obj, dict):
             return Affiliation(**{key: None for key in Affiliation.__annotations__.keys()})
-        id = from_str(obj.get('id'))
+        _id = from_str(obj.get('id'))
         created_at = from_datetime(obj.get('createdAt', None))
         updated_at = from_datetime(obj.get('updatedAt', None))
         published_at = from_datetime(obj.get('publishedAt', None))
         revised_at = from_datetime(obj.get('revisedAt', None))
         title = from_str(obj.get('title', ''))
-        return Affiliation(id, created_at, updated_at, published_at, revised_at, title)
+        return Affiliation(_id, created_at, updated_at, published_at, revised_at, title)
 
     def to_dict(self) -> dict:
         result: dict = {
@@ -286,13 +286,13 @@ class Uma:
     cn_name: str
     adapt: Adapt
 
-    def __init__(self, id: str, created_at: datetime, updated_at: datetime, published_at: datetime,
+    def __init__(self, _id: str, created_at: datetime, updated_at: datetime, published_at: datetime,
                  revised_at: datetime, name: str, en: str, catch: str, cv: str, category: List[str],
                  affiliation: Affiliation, earring: List[str], color_main: str, color_sub: str, birthday: str,
                  height: str, weight: str, size: str, detail: str, movie_id: str, is_top: bool, is_music: bool,
                  list_thumb: ListThumb, top_thumb: ListThumb, visual: List[Visual], voice: Voice,
                  download: Download, cn_name: str, adapt: Adapt) -> None:
-        self.id = id
+        self.id = _id
         self.created_at = created_at
         self.updated_at = updated_at
         self.published_at = published_at
@@ -326,7 +326,7 @@ class Uma:
     def from_dict(obj: Any) -> 'Uma':
         if not obj or not isinstance(obj, dict):
             return Uma(**{key: None for key in Uma.__annotations__.keys()})
-        id = from_str(obj.get('id', ''))
+        _id = from_str(obj.get('id', ''))
         created_at = from_datetime(obj.get('createdAt', None))
         updated_at = from_datetime(obj.get('updatedAt', None))
         published_at = from_datetime(obj.get('publishedAt', None))
@@ -355,7 +355,7 @@ class Uma:
         download = Download.from_dict(obj.get('download', {}))
         cn_name = from_str(obj.get('cn_name', ''))
         adapt = Adapt.from_dict(obj.get('adapt', {}))
-        return Uma(id, created_at, updated_at, published_at, revised_at, name, en, catch, cv, category, affiliation,
+        return Uma(_id, created_at, updated_at, published_at, revised_at, name, en, catch, cv, category, affiliation,
                    earring, color_main, color_sub, birthday, height, weight, size, detail, movie_id, is_top,
                    is_music, list_thumb, top_thumb, visual, voice, download, cn_name, adapt)
 

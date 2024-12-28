@@ -1,24 +1,15 @@
-import base64
-import json
-import os
-
-from hoshino import Service
-
+from yuiChyan.service import Service
 from .get_target import get_tar
 from ..plugin_utils.base_util import get_img_cq
 from ..uma_info.info_utils import *
 
 sv = Service('uma_target')
-with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
-    base64_data = base64.b64encode(f.read())
-    s = base64_data.decode()
-sv.help = f'![](data:image/jpeg;base64,{s})'
 
 config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
 current_dir = os.path.join(config_dir, 'config_v2.json')
 
 
-@sv.on_fullmatch('育成目标帮助')
+@sv.on_match('育成目标帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)

@@ -62,19 +62,6 @@ def get_interval():
     return config['res_update_cycle']['current']
 
 
-# 获取当前代理 | 不使用异步
-def get_proxy() -> dict:
-    with open(prop_path, 'r', encoding='utf-8') as f:
-        config = json.load(f)
-    proxy_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'proxy.json')
-    with open(proxy_path, 'r', encoding='utf-8') as f:
-        proxy_config = json.load(f)
-    if config['if_use_proxy']['current']:
-        return proxy_config
-    else:
-        return {}
-
-
 # 获取当前自动更新类型
 async def get_update_type():
     with open(prop_path, 'r', encoding='utf-8') as f:

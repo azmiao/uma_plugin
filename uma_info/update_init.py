@@ -2,8 +2,7 @@ import json
 import os
 import shutil
 
-from hoshino import logger, R
-
+from yuiChyan import logger, base_res_path
 from .spider import uma_update
 
 # 启动时自动更新至最新版马娘技能信息
@@ -15,6 +14,7 @@ async def update():
         logger.info('====未检测到马娘数据库文件，正在开始创建文件和更新信息====')
         init_data = {}
         with open(current_dir, 'w', encoding='UTF-8') as f:
+            # noinspection PyTypeChecker
             json.dump(init_data, f, indent=4, ensure_ascii=False)
         try:
             await uma_update(current_dir)
@@ -22,7 +22,7 @@ async def update():
         except Exception as e:
             # 更新失败就回退
             os.remove(current_dir)
-            download_path = os.path.join(R.img('umamusume').path, f'base_data')
+            download_path = os.path.join(os.path.join(base_res_path, 'umamusume'), f'base_data')
             if os.path.exists(download_path):
                 shutil.rmtree(download_path)
             logger.error(f'====马娘数据库更新失败：{e}。已回退====')

@@ -3,7 +3,7 @@ import json
 import os
 import re
 
-import requests
+import httpx
 from bs4 import BeautifulSoup
 
 from yuiChyan import base_res_path
@@ -132,7 +132,7 @@ def judge_pool_type(tr):
 # 获取卡池数据
 async def get_pool_data():
     pool_url = 'https://wiki.biligame.com/umamusume/卡池'
-    res = requests.get(pool_url, timeout=15)
+    res = httpx.get(pool_url, timeout=15)
     soup = BeautifulSoup(res.text, 'lxml')
     soup = soup.find('table', {"style": "width:100%;text-align:center"})
     tr_all = [tr for tr in soup.find_all('tr') if tr.find('div', {"class": "floatnone"}) and

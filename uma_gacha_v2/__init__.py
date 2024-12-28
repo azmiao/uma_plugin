@@ -1,6 +1,6 @@
 import os
 
-from yuiChyan import LakePermissionException
+from yuiChyan import LakePermissionException, FunctionException
 from yuiChyan.permission import check_permission, ADMIN, SUPERUSER
 from yuiChyan.service import Service
 from yuiChyan.util import FreqLimiter, DailyNumberLimiter
@@ -46,15 +46,20 @@ async def sv_help(bot, ev):
     await bot.send(ev, sv_help_img)
 
 
+# 频次限制
+async def limit_freq(ev, num: int):
+    if not lmt.check(ev.user_id):
+        raise FunctionException(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)')
+    if not single_limit.check(ev.user_id):
+        raise FunctionException(ev, SINGLE_EXCEED_NOTICE)
+    lmt.start_cd(ev.user_id)
+    single_limit.increase(ev.user_id, num)
+
+
 # 马娘单抽
 @sv.on_match(('马娘单抽', '单抽马娘'), only_to_me=True)
 async def one_gacha_uma(bot, ev):
-    if not lmt.check(ev.user_id):
-        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
-    if not single_limit.check(ev.user_id):
-        await bot.finish(ev, SINGLE_EXCEED_NOTICE, at_sender=True)
-    lmt.start_cd(ev.user_id)
-    single_limit.increase(ev.user_id, 150)
+    await limit_freq(ev, 150)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await one_gacha(group_id, user_id, 'uma')
     await bot.send(ev, msg)
@@ -63,12 +68,7 @@ async def one_gacha_uma(bot, ev):
 # 支援卡单抽
 @sv.on_match(('育成卡单抽', '支援卡单抽', 's卡单抽', 'S卡单抽'), only_to_me=True)
 async def one_gacha_chart(bot, ev):
-    if not lmt.check(ev.user_id):
-        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
-    if not single_limit.check(ev.user_id):
-        await bot.finish(ev, SINGLE_EXCEED_NOTICE, at_sender=True)
-    lmt.start_cd(ev.user_id)
-    single_limit.increase(ev.user_id, 150)
+    await limit_freq(ev, 150)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await one_gacha(group_id, user_id, 'chart')
     await bot.send(ev, msg)
@@ -77,12 +77,7 @@ async def one_gacha_chart(bot, ev):
 # 马娘十连
 @sv.on_match(('马娘十连', '马十连'), only_to_me=True)
 async def ten_gacha_uma(bot, ev):
-    if not lmt.check(ev.user_id):
-        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
-    if not single_limit.check(ev.user_id):
-        await bot.finish(ev, SINGLE_EXCEED_NOTICE, at_sender=True)
-    lmt.start_cd(ev.user_id)
-    single_limit.increase(ev.user_id, 1500)
+    await limit_freq(ev, 150)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await ten_gacha(group_id, user_id, 'uma')
     await bot.send(ev, msg)
@@ -91,12 +86,7 @@ async def ten_gacha_uma(bot, ev):
 # 育成卡十连
 @sv.on_match(('育成卡十连', '支援卡十连', 's卡十连', 'S卡十连'), only_to_me=True)
 async def ten_gacha_chart(bot, ev):
-    if not lmt.check(ev.user_id):
-        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
-    if not single_limit.check(ev.user_id):
-        await bot.finish(ev, SINGLE_EXCEED_NOTICE, at_sender=True)
-    lmt.start_cd(ev.user_id)
-    single_limit.increase(ev.user_id, 1500)
+    await limit_freq(ev, 1500)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await ten_gacha(group_id, user_id, 'chart')
     await bot.send(ev, msg)
@@ -105,12 +95,12 @@ async def ten_gacha_chart(bot, ev):
 # 马娘井
 @sv.on_match(('马之井', '马娘井', '马娘一井'), only_to_me=True)
 async def tenjou_gacha_uma(bot, ev):
-    if not lmt.check(ev.user_id):
-        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
     if not tenjou_limit.check(ev.user_id):
-        await bot.finish(ev, TENJOU_EXCEED_NOTICE, at_sender=True)
-    lmt.start_cd(ev.user_id)
+        raise FunctionException(ev, TENJOU_EXCEED_NOTICE)
     tenjou_limit.increase(ev.user_id)
+    if not lmt.check(ev.user_id):
+        raise FunctionException(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)')
+    lmt.start_cd(ev.user_id)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await tenjou_gacha(group_id, user_id, 'uma')
     await bot.send(ev, msg)
@@ -120,12 +110,12 @@ async def tenjou_gacha_uma(bot, ev):
 @sv.on_match(('育成卡井', '育成卡一井', '支援卡井', '支援卡一井', 's卡井', 's卡一井', 'S卡井', 'S卡一井'),
              only_to_me=True)
 async def tenjou_gacha_chart(bot, ev):
-    if not lmt.check(ev.user_id):
-        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
     if not tenjou_limit.check(ev.user_id):
-        await bot.finish(ev, TENJOU_EXCEED_NOTICE, at_sender=True)
-    lmt.start_cd(ev.user_id)
+        raise FunctionException(ev, TENJOU_EXCEED_NOTICE)
+    if not lmt.check(ev.user_id):
+        raise FunctionException(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)')
     tenjou_limit.increase(ev.user_id)
+    lmt.start_cd(ev.user_id)
     group_id, user_id = str(ev.group_id), str(ev.user_id)
     msg = await tenjou_gacha(group_id, user_id, 'chart')
     await bot.send(ev, msg)
@@ -134,10 +124,10 @@ async def tenjou_gacha_chart(bot, ev):
 # 育成卡抽满破
 @sv.on_match(('育成卡抽满破', '支援卡抽满破'), only_to_me=True)
 async def full_singer_gacha_chart(bot, ev):
-    if not lmt.check(ev.user_id):
-        await bot.finish(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)', at_sender=True)
     if not full_limit.check(ev.user_id):
-        await bot.finish(ev, FULL_EXCEED_NOTICE, at_sender=True)
+        raise FunctionException(ev, FULL_EXCEED_NOTICE)
+    if not lmt.check(ev.user_id):
+        raise FunctionException(ev, f'马娘抽卡功能冷却中(剩余 {int(lmt.left_time(ev.user_id)) + 1}秒)')
     lmt.start_cd(ev.user_id)
     full_limit.increase(ev.user_id)
     group_id, user_id = str(ev.group_id), str(ev.user_id)

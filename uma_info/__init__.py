@@ -1,12 +1,10 @@
-import base64
-import json
-import os
 import platform
 from collections import defaultdict
 
-from hoshino import Service, priv, R
-from hoshino.util import pic2b64
-
+from yuiChyan import base_res_path, LakePermissionException
+from yuiChyan.permission import check_permission, SUPERUSER
+from yuiChyan.service import Service
+from yuiChyan.util import pic2b64
 from .adaptability import get_adaptability
 from .detail_class import *
 from .detail_info import get_detail
@@ -17,22 +15,18 @@ from ..plugin_utils.base_util import get_img_cq
 current_dir = os.path.join(os.path.dirname(__file__), 'config_v2.json')
 date_format = '%#m月%#d日' if platform.system() == 'Windows' else '%-m月%-d日'
 
-sv = Service('uma_info', enable_on_default=True)
-with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
-    base64_data = base64.b64encode(f.read())
-    s = base64_data.decode()
-sv.help = f'![](data:image/jpeg;base64,{s})'
-sv_br = Service('uma_bir_push', enable_on_default=False)
+sv = Service('uma_info')
+sv_br = Service('uma_bir_push')
 
 
-@sv.on_fullmatch('马娘数据帮助')
+@sv.on_match('马娘数据帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
     await bot.send(ev, sv_help)
 
 
-@sv.on_fullmatch('查今天生日马娘')
+@sv.on_match('查今天生日马娘')
 async def get_tod(bot, ev):
     with open(current_dir, 'r', encoding='UTF-8') as file:
         f_data = json.load(file)
@@ -117,7 +111,7 @@ async def search_uma(bot, ev):
     await bot.send(ev, msg)
 
 
-@sv_br.scheduled_job('cron', hour='8', minute='31')
+@sv_br.scheduled_job(hour='8', minute='31')
 async def push_bir():
     group_list = await sv_br.get_enable_groups()
     if not group_list:
@@ -204,7 +198,8 @@ async def get_single_info(bot, ev):
         if not voice:
             msg = f'{uma_name_tmp}暂时还没有语音哟'
         else:
-            save_path = os.path.join(R.img('umamusume').path, 'base_data/voice_data')
+            res_path = os.path.join(base_res_path, 'umamusume')
+            save_path = os.path.join(res_path, 'base_data', 'voice_data')
             mp3_name = uma.id + '.mp3'
             voice_file = os.path.join(save_path, mp3_name)
             msg = f'[CQ:record,file=file:///{os.path.abspath(voice_file)}]'
@@ -276,12 +271,10 @@ async def get_single_info(bot, ev):
     await bot.send(ev, msg)
 
 
-@sv.on_fullmatch('手动更新马娘数据')
+@sv.on_match('手动更新马娘数据')
 async def update_info(bot, ev):
-    if not priv.check_priv(ev, priv.SUPERUSER):
-        msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
-        await bot.send(ev, msg)
-        return
+    if not check_permission(ev,  SUPERUSER):
+        raise LakePermissionException(ev, None, SUPERUSER)
 
     try:
         await uma_update(current_dir)

@@ -1,17 +1,18 @@
 import os
 
 from git.repo import Repo
-from hoshino import R, logger
 
+from yuiChyan import base_res_path, logger
 from ..plugin_utils.base_util import delete_dir, delete_file, copy_file
 
 # 基础数据源
 data_url = 'https://github.com/azmiao/uma_info_data.git'
+res_path = os.path.join(base_res_path, 'umamusume')
 
 
 # 由于数据量不小，因此采用clone形式下载数据，预计用时1分钟
 async def download_info_data() -> bool:
-    download_path = os.path.join(R.img('umamusume').path, f'base_data/')
+    download_path = os.path.join(res_path, f'base_data/')
     logger.info('> Updating base uma data...')
     try:
         if not os.path.exists(download_path):
@@ -38,8 +39,8 @@ async def download_info_data() -> bool:
 async def del_all_dir():
     # 需要删除的路径
     delete_path_list = [
-        os.path.join(R.img('umamusume').path, f'uma_bir'),
-        os.path.join(R.img('umamusume').path, f'uma_voice')
+        os.path.join(res_path, f'uma_bir'),
+        os.path.join(res_path, f'uma_voice')
     ]
     # 需要删除的文件
     delete_file_list = [
@@ -61,5 +62,5 @@ async def uma_update(current_dir):
     # 删除旧版文件
     await del_all_dir()
     # 复制配置文件
-    data_path = os.path.join(R.img('umamusume').path, f'base_data', 'config_v2.json')
+    data_path = os.path.join(res_path, f'base_data', 'config_v2.json')
     await copy_file(data_path, current_dir)

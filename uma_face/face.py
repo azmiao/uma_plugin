@@ -1,11 +1,9 @@
-import json
-import os
 import random
 
 import httpx
 from bs4 import BeautifulSoup
 
-from yuiChyan import logger, base_res_path
+from yuiChyan import base_res_path
 from ..plugin_utils.base_util import get_img_cq
 from ..uma_info.info_utils import *
 
@@ -63,19 +61,6 @@ async def download_img(face_id, url):
         logger.info(f'未检测到马娘表情包 {face_id}.png ，现已下载成功')
     else:
         logger.info(f'检测到马娘表情包 {face_id}.png 已存在，将不会重新下载')
-
-
-async def get_uma_id(name_tmp):
-    config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
-    current_dir = os.path.join(config_dir, 'config_v2.json')
-    with open(current_dir, 'r', encoding='UTF-8') as file:
-        f_data = json.load(file)
-    rep_dir = os.path.join(config_dir, 'replace_dict.json')
-    with open(rep_dir, 'r', encoding='UTF-8') as file:
-        replace_data = json.load(file)
-
-    uma = await query_uma_by_name(name_tmp, f_data, replace_data)
-    return uma.id if uma else None
 
 
 # 按马娘名字的表情包

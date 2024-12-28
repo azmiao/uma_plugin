@@ -2,9 +2,9 @@ import os
 
 from PIL import Image, ImageDraw, ImageFont
 from fuzzywuzzy import process
-from hoshino import R, logger
 from prettytable import PrettyTable
 
+from yuiChyan import logger, base_res_path
 from ..plugin_utils.base_util import get_img_cq
 
 
@@ -102,7 +102,8 @@ async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list: l
     filename_tmp = '_'.join(name_list) + '.png'
     data_dict['title'] = '检索：' + ' + '.join(name_list) + ' 的结果'
     # 图片文件不存在就创建图片
-    img_dir = os.path.join(R.img('umamusume').path, f'uma_skills/{filename_tmp}')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    img_dir = os.path.join(res_path, 'uma_skills', f'{filename_tmp}')
     if not os.path.exists(img_dir):
         logger.info(f'检测到{filename_tmp}图片不存在正在开始生成')
         await create_img(data_dict, filename_tmp)
@@ -153,7 +154,8 @@ async def create_img(info_data, filename_tmp):
     del im
     draw = ImageDraw.Draw(im_new, 'RGB')
     draw.multiline_text((space, space), table_info, fill=(0, 0, 0), font=font)
-    save_dir = os.path.join(R.img('umamusume').path, 'uma_skills/')
+    res_path = os.path.join(base_res_path, 'umamusume')
+    save_dir = os.path.join(res_path, 'uma_skills/')
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
     path_dir = os.path.join(save_dir, filename_tmp)

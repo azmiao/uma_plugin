@@ -5,9 +5,11 @@ import re
 import httpx
 from PIL import Image
 from bs4 import BeautifulSoup
-from hoshino import R, logger
 
+from yuiChyan import logger, base_res_path
 from ..plugin_utils.base_util import get_img_cq
+
+res_path = os.path.join(base_res_path, 'umamusume')
 
 
 # 获取各个节奏榜的链接
@@ -32,7 +34,7 @@ async def generate_url(sup_type, server_name):
     current_dir, _ = await get_config(server_name)
     with open(current_dir, 'r', encoding='UTF-8') as f:
         img_dict = json.load(f)
-    img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
+    img_path = os.path.join(res_path, 'uma_support_chart/')
     if not os.path.exists(img_path):
         os.mkdir(img_path)
     # 获取存储的链接
@@ -45,6 +47,7 @@ async def generate_url(sup_type, server_name):
     img_dict, is_update = await get_img(img_dict, sup_type, chart_url, server_name)
     # 写入新的信息
     with open(current_dir, 'w', encoding='UTF-8') as f:
+        # noinspection PyTypeChecker
         json.dump(img_dict, f, indent=4, ensure_ascii=False)
     return img_dict, is_update
 
@@ -101,7 +104,7 @@ async def get_image(img_dict, sup_type, img_soup_list):
 
 # 下载图片
 async def download_img(file_name, url):
-    img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
+    img_path = os.path.join(res_path, 'uma_support_chart/')
     current_dir = os.path.join(img_path, file_name)
     response = httpx.get(url, timeout=10)
     with open(current_dir, 'wb') as f:
@@ -117,7 +120,7 @@ async def download_img(file_name, url):
 
 # 删除旧版图片
 async def del_img(sup_type):
-    img_path = os.path.join(R.img('umamusume').path, 'uma_support_chart/')
+    img_path = os.path.join(res_path, 'uma_support_chart/')
     img_pattern = re.compile(fr'{sup_type}\S+\.png')
     for file in os.listdir(img_path):
         file_name = re.match(img_pattern, file)
@@ -132,7 +135,7 @@ async def del_img(sup_type):
 async def fix_img(img_dict, sup_type, server_name):
     data_dict = {}
     for img_name in list(img_dict[sup_type]['img_data'].keys()):
-        current_dir = os.path.join(os.path.join(R.img('umamusume').path, 'uma_support_chart/'), f'{img_name}')
+        current_dir = os.path.join(os.path.join(res_path, 'uma_support_chart/'), f'{img_name}')
         img = Image.open(current_dir)
         data_dict[img_name] = {}
         data_dict[img_name]['width'] = img.width
@@ -159,6 +162,7 @@ async def del_err_info(sup_type, server_name):
         img_dict = json.load(f)
     img_dict.pop(sup_type)
     with open(current_dir, 'w', encoding='UTF-8') as f:
+        # noinspection PyTypeChecker
         json.dump(img_dict, f, indent=4, ensure_ascii=False)
 
 
@@ -171,7 +175,7 @@ async def generate_img(sup_type, server_name):
         return '请求超时，请重试'
     _, code = await get_config(server_name)
     code = '' if code == 'jp' else f'_{code}'
-    end_path = os.path.join(R.img('umamusume').path, f'uma_support_chart/end_img{code}/')
+    end_path = os.path.join(res_path, f'uma_support_chart/end_img{code}/')
     if not os.path.exists(end_path):
         os.mkdir(end_path)
     end_img_path = os.path.join(end_path, f'end_{sup_type}{code}.png')

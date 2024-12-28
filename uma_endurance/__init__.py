@@ -1,4 +1,3 @@
-import base64
 import os
 
 from yuiChyan.service import Service
@@ -6,10 +5,6 @@ from .caculate import *
 from ..plugin_utils.base_util import get_img_cq
 
 sv = Service('uma_endurance')
-with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
-    base64_data = base64.b64encode(f.read())
-    s = base64_data.decode()
-sv.help = f'![](data:image/jpeg;base64,{s})'
 
 
 # 帮助界面

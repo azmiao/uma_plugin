@@ -1,20 +1,14 @@
-import base64
 import os
 
-from hoshino import Service
-
+from yuiChyan.service import Service
 from .get_url import generate_img
 from ..plugin_utils.base_util import get_img_cq, get_server_default
 
 sv = Service('uma_support_chart')
-with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
-    base64_data = base64.b64encode(f.read())
-    s = base64_data.decode()
-sv.help = f'![](data:image/jpeg;base64,{s})'
 
 
 # 帮助界面
-@sv.on_fullmatch("支援卡节奏榜帮助")
+@sv.on_match("支援卡节奏榜帮助")
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)

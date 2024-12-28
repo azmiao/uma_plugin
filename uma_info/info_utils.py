@@ -1,6 +1,21 @@
-from hoshino import logger
+import json
+import os
 
+from yuiChyan import logger
 from .detail_class import *
+
+
+async def get_uma_id(name_tmp):
+    config_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uma_info')
+    current_dir = os.path.join(config_dir, 'config_v2.json')
+    with open(current_dir, 'r', encoding='UTF-8') as file:
+        f_data = json.load(file)
+    rep_dir = os.path.join(config_dir, 'replace_dict.json')
+    with open(rep_dir, 'r', encoding='UTF-8') as file:
+        replace_data = json.load(file)
+
+    uma = await query_uma_by_name(name_tmp, f_data, replace_data)
+    return uma.id if uma else None
 
 
 # 根据名称查角色
