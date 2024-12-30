@@ -184,14 +184,16 @@ async def select_source(bot, ev):
 async def change_mode(bot, ev):
     if not priv.check_priv(ev, priv.SUPERUSER):
         msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
-        await bot.finish(ev, msg)
+        await bot.send(ev, msg)
+        return
     mode = ev.message.extract_plain_text()
     current_dir = os.path.join(os.path.dirname(__file__), 'mode.txt')
     with open(current_dir, 'r', encoding='utf-8') as cf:
         mode_tmp = cf.read().strip()
     if mode not in ['on', 'off']:
         msg = f'模式选择错误(on/off)，默认on，当前{mode_tmp}'
-        await bot.finish(ev, msg)
+        await bot.send(ev, msg)
+        return
     with open(current_dir, 'w', encoding='utf-8') as cf:
         cf.write(mode)
     await bot.send(ev, f'已更换转发模式为{mode}')

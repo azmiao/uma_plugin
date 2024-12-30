@@ -193,7 +193,8 @@ async def change_server(bot, ev):
         raise LakePermissionException(ev, '切换服务器仅限群管理员操作哦~')
     server = str(ev.message)
     if server not in server_list:
-        await bot.finish(ev, f'切换失败！目前仅支持服务器：\n{" | ".join(server_list)}')
+        await bot.send(ev, f'切换失败！目前仅支持服务器：\n{" | ".join(server_list)}')
+        return
     msg = await switch_server(group_id, server)
     await bot.send(ev, msg)
 

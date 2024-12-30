@@ -35,14 +35,16 @@ async def check_meanings(bot, ev):
             title = f_data['tasks'][task_id_tmp]['title']
             task_list.append(title)
         msg = await get_title(f_data)
-        await bot.finish(ev, msg)
+        await bot.send(ev, msg)
+        return
     try:
         task_id = int(task_id)
     except:
         return
     number = int(f_data['number'])
     if task_id not in range(1, number + 1):
-        await bot.finish(ev, f'未找到此编号的限时任务：{task_id}\n目前支持 1-{number}')
+        await bot.send(ev, f'未找到此编号的限时任务：{task_id}\n目前支持 1-{number}')
+        return
     msg = await get_task_info(str(task_id), f_data)
     await bot.send(ev, msg)
 

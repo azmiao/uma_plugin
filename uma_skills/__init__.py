@@ -64,10 +64,12 @@ async def check_skill(bot, ev):
                 skill_type_list.append(param)
         # 未识别出技能类型
         if not (rarity_list + limit_list + color_list + skill_type_list):
-            await bot.finish(ev, f'没有识别出任何检索条件呢')
+            await bot.send(ev, f'没有识别出任何检索条件呢')
+            return
         # 当 稀有度 或 条件限制 或 颜色 不止一个参数输入时，那返回必然无结果
         if len(rarity_list) > 1 or len(limit_list) > 1 or len(color_list) > 1:
-            await bot.finish(ev, f'没有搜索出任何马娘技能呢，请确保你输入的检索条件正确且无冲突！')
+            await bot.send(ev, f'没有搜索出任何马娘技能呢，请确保你输入的检索条件正确且无冲突！')
+            return
         msg = await get_skill_list(
             rarity_list[0] if rarity_list else '',
             limit_list[0] if limit_list else '',
