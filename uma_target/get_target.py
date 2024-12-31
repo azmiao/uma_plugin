@@ -4,7 +4,7 @@ import httpx
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 from bs4 import BeautifulSoup
 
-from yuiChyan import base_res_path, logger
+from yuiChyan import base_res_path, logger, font_path
 from ..plugin_utils.base_util import get_img_cq
 
 
@@ -37,7 +37,6 @@ async def generate_img(uma_name):
     target_img = Image.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'target.png'))).convert("RGBA")
     end_img.paste(title_img, (0, 0))
     all_height = 136
-    font_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), f'simhei.ttf')
     font_rgb = ImageColor.getrgb('#8B4513')
     for target in target_list:
         img_font = ImageFont.truetype(font_path, 50, index=0)

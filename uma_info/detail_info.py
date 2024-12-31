@@ -2,7 +2,7 @@ from typing import Dict, Tuple
 
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 
-from yuiChyan import base_res_path
+from yuiChyan import base_res_path, font_path
 from .adaptability import get_adaptability
 from .detail_class import Uma, uma_from_dict
 from ..plugin_utils.base_util import *
@@ -76,7 +76,6 @@ async def get_detail(en_name: str, f_data: Dict[str, Uma]):
 
 # 撰写文字
 async def add_text(image: Image, text: str, xy: Tuple[int, int], size: int):
-    font_path = os.path.join(os.path.dirname(dir_name), f'simhei.ttf')
     img_font = ImageFont.truetype(font_path, size, index=0)
     font_rgb = ImageColor.getrgb('#8B4513')
     im_draw = ImageDraw.Draw(image)

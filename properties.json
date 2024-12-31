@@ -14,9 +14,5 @@
     "res_update_cycle": {
         "notes": "调整图片等资源的数据更新周期，单位：天，默认1，可选值 [ 1 | 2 | 3 | 4 | 5| 6 | 7 ]",
         "current": 1
-    },
-    "if_use_proxy":{
-        "notes": "是否全插件均使用代理，默认false",
-        "current": false
     }
 }
