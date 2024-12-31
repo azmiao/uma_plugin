@@ -48,6 +48,7 @@ async def update_info():
     f_data['skills'] = {}
     res_tag = soup.find('div', {'id': 'jn-json'})
     data_list_str = res_tag.text.replace(' ', '').replace('<br/>', '').replace('&#160;', '_').replace(',]', ']')
+    data_list_str = re.sub(r'[\x00-\x1F\x7F]', '', data_list_str)
     # print(data_list_str)
     data_list = json.loads(data_list_str)
     for data in data_list:
