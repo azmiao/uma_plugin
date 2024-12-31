@@ -29,7 +29,7 @@ async def get_img_dict():
         match = re.match(r'^(\S+?)(\d*)$', img_name_raw)
         img_name = match.group(1)
 
-        uma_id = await get_uma_id(img_name)
+        uma_id = await get_uma_id(img_name, False)
         if not uma_id:
             continue
 
