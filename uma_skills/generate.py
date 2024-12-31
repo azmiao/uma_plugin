@@ -71,18 +71,18 @@ async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list: l
         # 当前技能类型列表
         text = f_data['skills'][skill_jp_name]['技能类型'].replace('条件1: ', '、').replace('条件2: ', '、').replace(
             '条件3: ', '、')
-        currrent_type_list = text.split('、')
+        current_type_list = text.split('、')
         # 去除空值
-        currrent_type_list = list(set(currrent_type_list))
-        if '' in currrent_type_list:
-            currrent_type_list.remove('')
+        current_type_list = list(set(current_type_list))
+        if '' in current_type_list:
+            current_type_list.remove('')
         # 类型列表为空就等于当前列表
-        type_list_tmp = skill_type_list if skill_type_list else currrent_type_list
+        type_list_tmp = skill_type_list if skill_type_list else current_type_list
         # 判断条件
         if rarity_tmp == f_data['skills'][skill_jp_name]['稀有度'] and \
                 limit_tmp == f_data['skills'][skill_jp_name]['条件限制'] and \
                 color_tmp == f_data['skills'][skill_jp_name]['颜色'] and \
-                all(elem in currrent_type_list for elem in type_list_tmp):
+                all(elem in current_type_list for elem in type_list_tmp):
             data_dict['info'][skill_jp_name] = f_data['skills'][skill_jp_name]
     # 如果未找到任何数据
     if not data_dict['info']:

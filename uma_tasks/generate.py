@@ -1,10 +1,10 @@
 import os
 
-from PIL import Image, ImageDraw, ImageFont
-from hoshino import R, logger
-from prettytable import PrettyTable
-
+from yuiChyan import logger, base_res_path
+from yuiChyan.util.chart_generator import create_table, save_fig_as_image
 from ..plugin_utils.base_util import get_img_cq
+
+res_path = os.path.join(base_res_path, 'umamusume')
 
 
 # 获取限时任务列表
@@ -16,7 +16,7 @@ async def get_title(f_data):
     for task_id in list(f_data['tasks'].keys()):
         title = f_data['tasks'][task_id]['title']
         info_data['info'][task_id] = title
-    img_dir = os.path.join(R.img('umamusume').path, 'uma_tasks/tasks_list.png')
+    img_dir = os.path.join(res_path, 'uma_tasks', 'tasks_list.png')
     # 图片文件不存在就创建图片
     if not os.path.exists(img_dir):
         logger.info(f'检测到限时任务列表图片不存在正在开始生成')
@@ -45,7 +45,7 @@ async def get_task_info(task_id, f_data):
                                                                                                         '无')
         info_data['info'][s_task_id]['suggest_uma'] = f_data['tasks'][task_id]['task_list'][s_task_id]['推荐赛马娘']
         info_data['info'][s_task_id]['reward'] = f_data['tasks'][task_id]['task_list'][s_task_id]['奖励']
-    img_dir = os.path.join(R.img('umamusume').path, f'uma_tasks/task_id_{task_id}.png')
+    img_dir = os.path.join(res_path, 'uma_tasks', f'task_id_{task_id}.png')
     # 图片文件不存在就创建图片
     if not os.path.exists(img_dir):
         logger.info(f'检测到{title}图片不存在正在开始生成')
@@ -60,16 +60,36 @@ async def get_task_info(task_id, f_data):
 # 生成图片
 async def create_img(is_title, info_data, filename_tmp):
     if is_title:
-        field_names = ('编号', '任务名')
+        raw_data = {
+            'title': info_data['title'],
+            'index_column': 'task_id',
+            'show_columns': {
+                'task_id': '编号',
+                'task_name': '任务名'
+            }
+        }
     else:
-        field_names = ('任务名', '达成条件', '比赛时间', '比赛环境', '推荐赛马娘', '奖励')
-    titles = info_data['title']
-    table = PrettyTable(field_names=field_names, title=titles)
+        raw_data = {
+            'title': info_data['title'],
+            'index_column': 'task_name',
+            'show_columns': {
+                'task_name': '任务名',
+                'condition': '达成条件',
+                'race_time': '比赛时间',
+                'race_env': '比赛环境',
+                'suggest_uma': '推荐赛马娘',
+                'reward': '奖励'
+            }
+        }
 
+    data_list = []
     for task_id in list(info_data['info'].keys()):
         if is_title:
             task_name = info_data['info'][task_id]
-            table.add_row([task_id, task_name])
+            data_list.append({
+                'task_id': task_id,
+                'task_name': task_name
+            })
         else:
             task_name = info_data['info'][task_id]['task_name']
             condition = info_data['info'][task_id]['condition']
@@ -77,23 +97,18 @@ async def create_img(is_title, info_data, filename_tmp):
             race_env = info_data['info'][task_id]['race_env']
             suggest_uma = info_data['info'][task_id]['suggest_uma']
             reward = info_data['info'][task_id]['reward']
-            table.add_row([task_name, condition, race_time, race_env, suggest_uma, reward])
+            data_list.append({
+                'task_name': task_name,
+                'condition': condition,
+                'race_time': race_time,
+                'race_env': race_env,
+                'suggest_uma': suggest_uma,
+                'reward': reward,
+            })
 
-    table_info = str(table)
-    space = 5
-    current_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'simhei.ttf')
-    font = ImageFont.truetype(current_dir, 20, encoding='utf-8')
-    im = Image.new('RGB', (10, 10), (255, 255, 255, 0))
-    draw = ImageDraw.Draw(im, 'RGB')
-    img_size = draw.multiline_textsize(table_info, font=font)
-    im_new = im.resize((img_size[0] + space * 2, img_size[1] + space * 2))
-    del draw
-    del im
-    draw = ImageDraw.Draw(im_new, 'RGB')
-    draw.multiline_text((space, space), table_info, fill=(0, 0, 0), font=font)
-    save_dir = os.path.join(R.img('umamusume').path, 'uma_tasks/')
+    fig = await create_table(raw_data)
+    save_dir = os.path.join(res_path, 'uma_tasks')
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
     path_dir = os.path.join(save_dir, filename_tmp)
-    im_new.save(path_dir, 'PNG')
-    del draw
+    await save_fig_as_image(fig, path_dir)
