@@ -16,7 +16,7 @@ current_dir = os.path.join(os.path.dirname(__file__), 'config_v2.json')
 date_format = '%#m月%#d日' if platform.system() == 'Windows' else '%-m月%-d日'
 
 sv = Service('uma_info')
-sv_br = Service('uma_bir_push')
+sv_br = Service('uma_bir_push', use_exclude=False)
 
 
 @sv.on_match('马娘数据帮助')
