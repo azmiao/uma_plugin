@@ -63,13 +63,13 @@ async def get_item(server):
             'offset': 0
         }
         resp = httpx.post(url=url, json=json_data, headers=headers, timeout=15, proxy=PROXY)
-        res_dict = await resp.json()
+        res_dict = resp.json()
     elif 'tw' == server:
         resp = httpx.get(url=url, headers=headers, timeout=15, proxy=PROXY)
-        res_dict = await resp.json()
+        res_dict = resp.json()
     elif 'bili' == server:
         resp = httpx.get(url=url, headers=headers, timeout=15)
-        res_dict = await resp.json()
+        res_dict = resp.json()
     else:
         assert Exception('不支持的服务器类型')
     return res_dict
