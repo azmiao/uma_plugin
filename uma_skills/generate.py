@@ -1,10 +1,9 @@
 import os
 
-from PIL import Image, ImageDraw, ImageFont
 from fuzzywuzzy import process
-from prettytable import PrettyTable
 
 from yuiChyan import logger, base_res_path
+from yuiChyan.util.chart_generator import create_table, save_fig_as_image
 from ..plugin_utils.base_util import get_img_cq
 
 
@@ -116,14 +115,27 @@ async def get_skill_list(rarity: str, limit: str, color: str, skill_type_list: l
 
 # 生成图片
 async def create_img(info_data, filename_tmp):
-    field_names = (
-        '技能名', '中文名', '稀有度', '颜色', '繁中译名', '条件限制',
-        '技能数值', '持续时间', '评价分',
-        '需要PT', 'PT评价比', '触发条件', '技能类型'
-    )
-    titles = info_data['title']
-    table = PrettyTable(field_names=field_names, title=titles)
+    raw_data = {
+        'title': info_data['title'],
+        'index_column': 'skill_name',
+        'show_columns': {
+            'skill_name': '技能名',
+            'cn_name': '中文名',
+            'rarity': '稀有度',
+            'color': '颜色',
+            'tw_name': '繁中译名',
+            'limit': '条件限制',
+            'value': '技能数值',
+            'time': '持续时间',
+            'point': '评价分',
+            'pt': '需要PT',
+            'pt_per_point': 'PT评价比',
+            'condition': '触发条件',
+            'skill_type': '技能类型',
+        }
+    }
 
+    data_list = []
     for skill_name in list(info_data['info'].keys()):
         cn_name = info_data['info'][skill_name]['中文名']
         rarity = info_data['info'][skill_name]['稀有度'].replace('·', '')
@@ -137,27 +149,28 @@ async def create_img(info_data, filename_tmp):
         pt_per_point = info_data['info'][skill_name]['PT评价比']
         condition = info_data['info'][skill_name]['触发条件']
         skill_type = info_data['info'][skill_name]['技能类型']
-        table.add_row([
-            skill_name, cn_name, rarity, color, tw_name, limit,
-            value, time, point, pt, pt_per_point, condition, skill_type
-        ])
 
-    table_info = str(table)
-    space = 5
-    current_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'simhei.ttf')
-    font = ImageFont.truetype(current_dir, 20, encoding='utf-8')
-    im = Image.new('RGB', (10, 10), (255, 255, 255, 0))
-    draw = ImageDraw.Draw(im, 'RGB')
-    img_size = draw.multiline_textsize(table_info, font=font)
-    im_new = im.resize((img_size[0] + space * 2, img_size[1] + space * 2))
-    del draw
-    del im
-    draw = ImageDraw.Draw(im_new, 'RGB')
-    draw.multiline_text((space, space), table_info, fill=(0, 0, 0), font=font)
+        data_list.append({
+            'cn_name': cn_name,
+            'rarity': rarity,
+            'color': color,
+            'tw_name': tw_name,
+            'limit': limit,
+            'value': value,
+            'time': time,
+            'point': point,
+            'pt': pt,
+            'pt_per_point': pt_per_point,
+            'condition': condition,
+            'skill_type': skill_type
+        })
+    raw_data['data_list'] = data_list
+
+    fig = await create_table(raw_data)
+
     res_path = os.path.join(base_res_path, 'umamusume')
-    save_dir = os.path.join(res_path, 'uma_skills/')
+    save_dir = os.path.join(res_path, 'uma_skills')
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
     path_dir = os.path.join(save_dir, filename_tmp)
-    im_new.save(path_dir, 'PNG')
-    del draw
+    await save_fig_as_image(fig, path_dir)

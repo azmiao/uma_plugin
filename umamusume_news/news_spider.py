@@ -1,17 +1,17 @@
 import asyncio
-import json
 import operator
-import os
 import random
 import re
 import time
 from datetime import timedelta
 
-from hoshino import R, aiorequests
+import httpx
 
+from yuiChyan import base_res_path
+from yuiChyan.config import PROXY
+from yuiChyan.util import translate
 from .news_class import NewsClass
-from .translator_lite.apis import youdao
-from ..plugin_utils.base_util import get_img_cq, get_proxy
+from ..plugin_utils.base_util import get_img_cq
 from ..uma_info.info_utils import *
 
 # 随机挑选一个小可爱作为header
@@ -54,7 +54,6 @@ async def get_item(server):
     }
     await asyncio.sleep(0.5)
     url = server_params.get('url', '')
-    proxy = get_proxy()
 
     res_dict = {}
     if 'jp' == server:
@@ -63,13 +62,13 @@ async def get_item(server):
             'limit': 10,
             'offset': 0
         }
-        resp = await aiorequests.post(url=url, json=json_data, headers=headers, timeout=15, proxies=proxy)
+        resp = httpx.post(url=url, json=json_data, headers=headers, timeout=15, proxy=PROXY)
         res_dict = await resp.json()
     elif 'tw' == server:
-        resp = await aiorequests.get(url=url, headers=headers, timeout=15, proxies=proxy)
+        resp = httpx.get(url=url, headers=headers, timeout=15, proxy=PROXY)
         res_dict = await resp.json()
     elif 'bili' == server:
-        resp = await aiorequests.get(url=url, headers=headers, timeout=15)
+        resp = httpx.get(url=url, headers=headers, timeout=15)
         res_dict = await resp.json()
     else:
         assert Exception('不支持的服务器类型')
@@ -237,8 +236,8 @@ async def translate_news(news_id):
     data = {'announce_id': news_id}
     head_img = ''
     try:
-        resp = await aiorequests.post(url=url, data=json.dumps(data), headers=headers, timeout=15, proxies=get_proxy())
-        res_dict = await resp.json()
+        resp = httpx.post(url=url, json=json.dumps(data), headers=headers, timeout=15, proxy=PROXY)
+        res_dict = resp.json()
         if res_dict['detail']['title'] == '現在確認している不具合について':
             news_msg = re.match(r'([\s\S]+?【[\s\S]+?)【', res_dict['detail']['message']).group(1)
         else:
@@ -248,20 +247,20 @@ async def translate_news(news_id):
         news_text = '错误！马娘官网连接失败'
         return head_img, news_text
     try:
-        news_text = youdao(news_msg, 'ja', 'zh')
+        news_text = await translate(news_msg, 'ja', 'zh')
         news_text = await second_replace(news_text)
         if res_dict['detail']['image_big']:
             img_url = res_dict['detail']['image_big']
-            dir_path = os.path.join(R.img('umamusume').path, 'umamusume_news')
+            res_path = os.path.join(base_res_path, 'umamusume')
+            dir_path = os.path.join(res_path, 'umamusume_news')
             if not os.path.exists(dir_path):
                 os.mkdir(dir_path)
-            save_dir = os.path.join(R.img('umamusume').path, f'umamusume_news', f'news_img_{news_id}.jpg')
+            save_dir = os.path.join(res_path, f'umamusume_news', f'news_img_{news_id}.jpg')
             if not os.path.exists(save_dir):
-                response = await aiorequests.get(url=img_url, proxies=get_proxy())
+                response = httpx.get(url=img_url, proxy=PROXY)
                 with open(save_dir, 'wb') as f:
-                    f.write(await response.content)
-            img_path = R.img(f'umamusume/umamusume_news/news_img_{news_id}.jpg').path
-            head_img = await get_img_cq(img_path)
+                    f.write(response.content)
+            head_img = await get_img_cq(save_dir)
     except Exception as e:
         e_msg = e
         if str(e) == 'The length of the text to be translated exceeds the limit.':

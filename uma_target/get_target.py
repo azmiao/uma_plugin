@@ -44,7 +44,8 @@ async def generate_img(uma_name):
         end_img.paste(target_img, (0, all_height))
         draw_img = ImageDraw.Draw(end_img)
         # 调整居中
-        img_size = draw_img.multiline_textsize(target, font=img_font)
+        bbox = draw_img.textbbox((0, 0), target, font=img_font)
+        img_size = (bbox[2] - bbox[0], bbox[3] - bbox[1])
         start_width = 900 - img_size[0] / 2
         if start_width < 0:
             start_width = 15.45

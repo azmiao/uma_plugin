@@ -1,4 +1,4 @@
-import requests
+import httpx
 from bs4 import BeautifulSoup
 
 
@@ -17,7 +17,7 @@ class NewsClass:
     # 生成短链 | 防止被TX拦截
     def process_url(self):
         header = {'Content-Type': 'application/json'}
-        res = requests.post('https://osdb.link/', json={'url': self.news_url}, headers=header, timeout=10)
+        res = httpx.post('https://osdb.link/', json={'url': self.news_url}, headers=header, timeout=10)
         soup = BeautifulSoup(res.text, 'lxml')
         show_url = ('▲[短链]' + soup.find('label', {"id": "surl"}).text
                     .replace('Your shortened URL is:', '').strip())

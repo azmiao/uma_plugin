@@ -1,8 +1,7 @@
 import json
 import os
 
-from hoshino import logger, R
-
+from yuiChyan import logger
 from .update_tasks import update_info, judge_update, del_img
 
 # 启动时自动更新至最新版限时任务信息
@@ -14,6 +13,7 @@ async def update():
         logger.info('====未检测到马娘限时任务信息文件，正在开始创建文件和更新信息====')
         init_data = {}
         with open(current_dir, 'w', encoding='UTF-8') as f:
+            # noinspection PyTypeChecker
             json.dump(init_data, f, indent=4, ensure_ascii=False)
         try:
             await update_info()
@@ -30,7 +30,7 @@ async def auto_update():
     logger.info('马娘限时任务检测到更新，正在开始更新')
     try:
         await update_info()
-        await del_img(R.img('umamusume').path)
+        await del_img()
         logger.info('限时任务信息刷新完成')
     except Exception as e:
         logger.error(f'限时任务信息刷新失败：{e}')

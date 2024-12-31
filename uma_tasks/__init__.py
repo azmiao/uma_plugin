@@ -1,9 +1,9 @@
-import base64
 import json
 import os
 
-from hoshino import Service, priv, R
-
+from yuiChyan import LakePermissionException
+from yuiChyan.permission import check_permission, SUPERUSER
+from yuiChyan.service import Service
 from .generate import get_title, get_task_info
 from .update_tasks import del_img, update_info, del_img
 from ..plugin_utils.base_util import get_img_cq
@@ -11,13 +11,9 @@ from ..plugin_utils.base_util import get_img_cq
 current_dir = os.path.join(os.path.dirname(__file__), f'tasks_config.json')
 
 sv = Service('uma_tasks')
-with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
-    base64_data = base64.b64encode(f.read())
-    s = base64_data.decode()
-sv.help = f'![](data:image/jpeg;base64,{s})'
 
 
-@sv.on_fullmatch('马娘限时任务帮助')
+@sv.on_match('马娘限时任务帮助')
 async def get_help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
@@ -50,15 +46,13 @@ async def check_meanings(bot, ev):
 
 
 # 手动更新本地数据
-@sv.on_fullmatch('手动更新限时任务')
+@sv.on_match('手动更新限时任务')
 async def force_update(bot, ev):
-    if not priv.check_priv(ev, priv.SUPERUSER):
-        msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
-        await bot.send(ev, msg)
-        return
+    if not check_permission(ev,  SUPERUSER):
+        raise LakePermissionException(ev, None, SUPERUSER)
     try:
         await update_info()
-        await del_img(R.img('umamusume').path)
+        await del_img()
         await bot.send(ev, '限时任务信息刷新完成')
     except Exception as e:
         await bot.send(ev, f'限时任务信息刷新失败：{e}')

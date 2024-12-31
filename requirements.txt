@@ -1,3 +1,0 @@
-aiohttp==3.8.1
-pathos==0.2.8
-prettytable==3.12.0

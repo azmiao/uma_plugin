@@ -1,26 +1,20 @@
 import asyncio
-import base64
 import os
 
-from hoshino import Service, priv
-
+from yuiChyan import LakePermissionException
+from yuiChyan.permission import check_permission, SUPERUSER
+from yuiChyan.service import Service
 from .news_spider import get_news, judge, news_broadcast, sort_news, translate_news, query_dict
 from ..plugin_utils.base_util import get_img_cq, get_server_default
 
-sv = Service('umamusume_news', enable_on_default=True)
-with open(os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png'), 'rb') as f:
-    base64_data = base64.b64encode(f.read())
-    s = base64_data.decode()
-sv.help = f'![](data:image/jpeg;base64,{s})'
-
-
-sv_uma = Service('umamusume-news-poller', enable_on_default=False)
-sv_uma_tw = Service('umamusume-news-poller-tw', enable_on_default=False)
-sv_uma_bili = Service('umamusume-news-poller-bili', enable_on_default=False)
+sv = Service('umamusume_news')
+sv_uma = Service('umamusume-news-poller', use_exclude=False)
+sv_uma_tw = Service('umamusume-news-poller-tw', use_exclude=False)
+sv_uma_bili = Service('umamusume-news-poller-bili', use_exclude=False)
 
 
 # 帮助界面
-@sv.on_fullmatch("马娘新闻帮助")
+@sv.on_match("马娘新闻帮助")
 async def _help(bot, ev):
     img_path = os.path.join(os.path.dirname(__file__), f'{sv.name}_help.png')
     sv_help = await get_img_cq(img_path)
@@ -52,7 +46,7 @@ async def uma_news(bot, ev):
 
 
 # 马娘新闻播报
-@sv_uma.scheduled_job('cron', minute='*/5')
+@sv_uma.scheduled_job(minute='*/5')
 async def uma_news_poller():
     try:
         group_list = await sv_uma.get_enable_groups()
@@ -72,7 +66,7 @@ async def uma_news_poller():
 
 
 # 台服马娘新闻播报
-@sv_uma_tw.scheduled_job('cron', minute='*/5')
+@sv_uma_tw.scheduled_job(minute='*/5')
 async def uma_news_poller_tw():
     try:
         group_list = await sv_uma_tw.get_enable_groups()
@@ -92,7 +86,7 @@ async def uma_news_poller_tw():
 
 
 # B服马娘新闻播报
-@sv_uma_bili.scheduled_job('cron', minute='*/5')
+@sv_uma_bili.scheduled_job(minute='*/5')
 async def uma_news_poller_bili():
     try:
         group_list = await sv_uma_bili.get_enable_groups()
@@ -182,10 +176,8 @@ async def select_source(bot, ev):
 # 选择模式
 @sv.on_prefix('马娘新闻翻译转发模式')
 async def change_mode(bot, ev):
-    if not priv.check_priv(ev, priv.SUPERUSER):
-        msg = '很抱歉您没有权限进行此操作，该操作仅限维护组'
-        await bot.send(ev, msg)
-        return
+    if not check_permission(ev,  SUPERUSER):
+        raise LakePermissionException(ev, None, SUPERUSER)
     mode = ev.message.extract_plain_text()
     current_dir = os.path.join(os.path.dirname(__file__), 'mode.txt')
     with open(current_dir, 'r', encoding='utf-8') as cf:

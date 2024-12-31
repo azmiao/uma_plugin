@@ -4,8 +4,10 @@ import re
 import shutil
 from datetime import datetime
 
+import httpx
 from bs4 import BeautifulSoup
-from hoshino import aiorequests
+
+from yuiChyan import base_res_path
 
 url = 'https://wiki.biligame.com/umamusume/期间限定任务'
 current_dir = os.path.join(os.path.dirname(__file__), f'tasks_config.json')
@@ -23,8 +25,8 @@ async def get_title_list(soup):
 # 获取最新的更新时间
 async def get_update_time():
     update_url = 'https://wiki.biligame.com/umamusume/index.php?title=期间限定任务&action=history'
-    rep = await aiorequests.get(update_url, timeout=10)
-    soup = BeautifulSoup(await rep.text, 'lxml')
+    rep = httpx.get(update_url, timeout=10)
+    soup = BeautifulSoup(rep.text, 'lxml')
     last_time_tmp = soup.find('a', {'class': 'mw-changeslist-date'}).text.replace(' ', '')
     group = re.search(r'^([0-9]{4})年([0-9]{1,2})月([0-9]{1,2})日\S*([0-9]{2}):([0-9]{2})$', last_time_tmp)
     last_time = datetime(int(group.group(1)), int(group.group(2)), int(group.group(3)), int(group.group(4)),
@@ -34,8 +36,8 @@ async def get_update_time():
 
 # 更新数据
 async def update_info():
-    rep = await aiorequests.get(url, timeout=10)
-    soup = BeautifulSoup(await rep.text, 'lxml')
+    rep = httpx.get(url, timeout=10)
+    soup = BeautifulSoup(rep.text, 'lxml')
     with open(current_dir, 'r', encoding='UTF-8') as f:
         f_data = json.load(f)
     # 获取最新版的更新时间
@@ -89,6 +91,7 @@ async def update_info():
         # 都做完了再写入
         if number <= 0:
             with open(current_dir, 'w', encoding='UTF-8') as f:
+                # noinspection PyTypeChecker
                 json.dump(f_data, f, indent=4, ensure_ascii=False)
             break
 
@@ -106,8 +109,9 @@ async def judge_update():
 
 
 # 若有更新就删除已经生成过的所有图片
-async def del_img(root_path):
-    path = os.path.join(root_path, 'uma_tasks/')
+async def del_img():
+    res_path = os.path.join(base_res_path, 'umamusume')
+    path = os.path.join(res_path, 'uma_tasks')
     if os.path.exists(path):
         shutil.rmtree(path)
         os.mkdir(path)
