@@ -113,11 +113,6 @@ async def search_uma(bot, ev):
 
 @sv_br.scheduled_job(hour='8', minute='31')
 async def push_bir():
-    group_list = await sv_br.get_enable_groups()
-    if not group_list:
-        sv_br.logger.info('所有群均已禁用马娘生日推送服务，将跳过')
-        return
-
     with open(current_dir, 'r', encoding='UTF-8') as file:
         f_data = json.load(file)
     rep_dir = os.path.join(os.path.dirname(__file__), 'replace_dict.json')
