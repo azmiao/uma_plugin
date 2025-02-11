@@ -14,7 +14,7 @@ from ..plugin_utils.base_util import get_server_default
 # 默认：日服jp，台服tw，韩服ko，B服bili
 server_data = {
     'jp': '2021-02-24',
-    'tw': '2022-06-27',
+    'tw': '2022-06-25',
     'ko': '2022-06-20',
     'bili': '2023-08-29'
 }
