@@ -58,12 +58,7 @@ async def get_item(server):
 
     res_dict = {}
     if 'jp' == server:
-        json_data = {
-            'announce_label': 0,
-            'limit': 10,
-            'offset': 0
-        }
-        resp = await aiorequests.post(url=url, json=json_data, headers=headers, timeout=15, proxies=proxy)
+        resp = await aiorequests.get(url=url, headers=headers, timeout=15, proxies=proxy)
         res_dict = await resp.json()
     elif 'tw' == server:
         resp = await aiorequests.get(url=url, headers=headers, timeout=15, proxies=proxy)
@@ -268,3 +263,4 @@ async def translate_news(news_id):
             e_msg = '文章长度超过5000字符无法翻译！'
         news_text = f'错误！翻译失败！{e_msg}'
     return head_img, news_text
+
