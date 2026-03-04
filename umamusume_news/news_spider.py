@@ -57,12 +57,7 @@ async def get_item(server):
 
     res_dict = {}
     if 'jp' == server:
-        json_data = {
-            'announce_label': 0,
-            'limit': 10,
-            'offset': 0
-        }
-        resp = httpx.post(url=url, json=json_data, headers=headers, timeout=15, proxy=PROXY)
+        resp = httpx.get(url=url, headers=headers, timeout=15, proxy=PROXY)
         res_dict = resp.json()
     elif 'tw' == server:
         resp = httpx.get(url=url, headers=headers, timeout=15, proxy=PROXY)
@@ -267,3 +262,4 @@ async def translate_news(news_id):
             e_msg = '文章长度超过5000字符无法翻译！'
         news_text = f'错误！翻译失败！{e_msg}'
     return head_img, news_text
+
